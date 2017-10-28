@@ -8,7 +8,7 @@
 <ui:composition template="/template/interna.xhtml">
 	<ui:define name="titulo">
 		<h:graphicImage library="imagens" name="logoUnity.png" style="height:40px;"/>
-		<h:outputLabel class="label-padrao" value="Dashboard" style="margin-left:373px; font-size:30px; font-family:Ubuntu;"/>
+		<h:outputLabel class="label-padrao" value="Dashboard" style="margin-left:460px; font-size:30px; font-family:Ubuntu;"/>
 	</ui:define>
 	
 	<ui:define name="corpo">
@@ -18,15 +18,15 @@
 		<table>
 			<tr>
 				<td colspan="2">
-					<p:chart type="bar" model="#{graficoEstoque.colunaEstoque}" style="width:1200px; height:300px;"/>
+					<p:chart type="bar" model="#{graficoEstoque.colunaEstoque}" style="width:1330px; height:300px;"/>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<p:chart type="pie" model="#{pizzaTipoMovi.tipoMovi}" style="width:500px; height:300px; margin-right:95px;"/>
+					<p:chart type="pie" model="#{pizzaTipoMovi.tipoMovi}" style="width:500px; height:300px; margin-right:160px;"/>
 				</td>
 				<td>
-					<p:chart type="bar" model="#{graficoColuna.colunaTipoMovi}" style="width:500px; height:300px; margin-left:95px;"/>
+					<p:chart type="bar" model="#{graficoColuna.colunaTipoMovi}" style="width:500px; height:300px; margin-left:160px;"/>
 				</td>
 			</tr>
 		</table>

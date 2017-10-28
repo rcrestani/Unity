@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<ui:composition template="/template/interna.xhtml">
+	<ui:define name="titulo">
+		<h:graphicImage library="imagens" name="logoUnity.png" style="height:40px;"/>
+		<h:outputLabel class="label-padrao" value="Movimentações" style="margin-left:323px; font-size:30px; font-family:Ubuntu;"/>
+	</ui:define>
+	<ui:define name="corpo">
+	
+	
+<!-- DIALOG //////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<p:dialog id="dlg2" rendered="true" position="center" header="Gerenciar Movimentações"
+				widgetVar="dlg2" minHeight="40" width="1050px" showEffect="explode" hideEffect="explode" modal="true">
+
+
+
+	<p:messages id="dlg" autoUpdate="true" closable="true"/>
+	<h:form id="edicao">
+		<p:focus context="talao"/>
+		<center>					
+		<p:panelGrid style="border-collapse: unset;">
+		<p:row>
+			<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Id:" for="id"/>
+			</p:column>
+			<p:column style="border-width:0px;">
+				<p:inputText class="form-padrao form-mov" style="font-size: 18px;" id="id" label="Id" value="#{movBean.mov.id}"
+								size="2" disabled="true"/>
+			</p:column>
+			
+			
+			<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Talão:" for="talao"/>
+			</p:column>
+			<p:column style="border-width:0px;" width="50px">
+				<p:inputText class="form-padrao form-mov" style="font-size: 18px;" id="talao" label="Talão"
+							value="#{movBean.mov.talao}" size="5" maxlength="5"/>
+			</p:column>
+			
+			
+			<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Usuário:" for="usuario"/>
+			</p:column>
+			<p:column style="border-width:0px;">
+				<p:inputText class="form-padrao form-mov" style="font-size: 18px;" id="usuario" label="Usuário" 
+								value="#{movBean.mov.usuario.nome}" disabled="true" size="8"/>
+			</p:column>
+			
+			
+			<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Data:" for="data"/>
+			</p:column>
+			<p:column style="border-width:0px;">
+				<p:calendar id="data" value="#{movBean.mov.data}" pattern="dd-MM-yyyy" mask="true" size="8"
+							required="true" requiredMessage="Data é obrigatória." locale="pt"/>
+			</p:column>
+		</p:row>
+		
+		<p:row>
+            <p:column style="padding: 0px;" colspan="8"></p:column>
+        </p:row>
+		
+		<p:row>	
+			<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Cod. Cliente:" for="cod_cliente"/>
+			</p:column>
+			<p:column style="border-width:0px;">
+				<p:inputText class="form-padrao form-mov" style="font-size: 18px;" id="cod_cliente" label="Cliente"
+				value="#{movBean.mov.cliente.codigo}" size="2" disabled="true"/>
+			</p:column>
+			
+			
+			<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Cliente:" for="cliente"/>
+			</p:column>
+			<p:column style="border-width:0px;" colspan="5">
+				<p:autoComplete id="cliente" minQueryLength="3" size="55"
+								scrollHeight="250" value="#{movBean.cliente.nome}" 
+								completeMethod="#{clienteBean.clienteRN.completeText}" effect="fade"
+								required="true" requiredMessage="Cliente é obrigatório."> 
+					<f:validateLength minimum="10" maximum="100"/> 
+				</p:autoComplete>
+			</p:column>	
+		</p:row>
+
+		<p:row>
+            <p:column style="padding: 0px;" colspan="8"></p:column>
+        </p:row>
+			
+		
+		<p:row>
+			<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Posto:" for="posto"/>
+			</p:column>
+			<p:column style="border-width:0px;" colspan="4">
+				<p:inputText class="form-padrao form-mov" style="font-size: 18px;" id="posto" label="Posto"
+				value="#{movBean.mov.posto}" size="35"/>
+			</p:column>
+		</p:row>
+		
+		
+		<p:row>
+            <p:column style="padding: 0px;" colspan="8"></p:column>
+        </p:row>
+		
+		
+		<p:row>
+			<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Obs:" for="obs"/>
+			</p:column>
+			<p:column style="border-width:0px;" colspan="7">
+				<p:inputTextarea id="obs" rows="2" cols="50" counter="display" maxlength="100" counterTemplate="{0} caracteres restantes." 
+								value="#{movBean.mov.obs}" autoResize="false" />
+    			<h:outputText id="display" />
+			</p:column>
+		</p:row>
+		
+		
+		<p:row>
+            <p:column style="padding: 0px;" colspan="8"></p:column>
+        </p:row>
+	</p:panelGrid>	
+		<p:commandButton class="btnPadrao" action="#{movBean.salvar}" value="Salvar" update="@form"/>
+</center>
+</h:form>
+
+<p:separator/>
+
+<h:form id="itens">
+	<center>
+	
+	<p:panelGrid style="border-collapse: unset;">
+		<p:row>
+			<p:column style="border-width:0px;">
+				<p:inputText class="form-padrao form-mov" style="font-size: 18px; text-align:center;" id="id"
+				value="#{movBean.codProd}" size="1" placeholder="Cod" disabled="true"/>
+			</p:column>
+			
+			<p:column style="border-width:0px;">
+				<p:autoComplete id="produto" minQueryLength="2" size="20"
+								scrollHeight="250" value="#{movBean.nomeProd}" 
+								completeMethod="#{movBean.produtoRN.completeText}" effect="fade"
+								required="true" requiredMessage="Produto é obrigatório." placeholder="Descrição"> 
+					<p:ajax event="itemSelect" listener="#{movBean.onItemSelect}" update=":itens" />
+				</p:autoComplete>
+			</p:column>
+			
+			<p:column style="border-width:0px;">
+				<p:inputText class="form-padrao form-mov" style="font-size: 18px; text-align:center;" id="numeracao"
+							value="#{movBean.itMov.numeracao}" size="7" maxlength="7" placeholder="Nº Equipto" 
+							required="true" requiredMessage="Numeração é obrigatória."/>
+			</p:column>
+			
+			<p:column style="border-width:0px;">
+				<p:selectOneMenu id="tipoMovi" value="#{movBean.itMov.tipoMovi}" style="width:125px; margin-left:0px;"
+									required="true" requiredMessage="Tipo da movimentação é obrigatória.">
+		            <f:selectItem id="subItem" itemLabel="Tipo Movi..." itemValue="" />
+		            <f:selectItem itemLabel="Saída" itemValue="saida" />
+		            <f:selectItem itemLabel="Entrada" itemValue="entrada" />
+		            <f:selectItem itemLabel="Pendente" itemValue="pendente" />
+		            <f:selectItem itemLabel="Devolução" itemValue="devolucao" />
+		            <f:selectItem itemLabel="Manutenção" itemValue="manutencao" />
+        		</p:selectOneMenu>
+			</p:column>
+			
+			<p:column style="border-width:0px;">
+				<p:inputText class="form-padrao form-mov" style="font-size: 18px; text-align:center;" id="qtde"
+							value="#{movBean.itMov.qtde}" size="3" maxlength="3" placeholder="Qtde" 
+							required="true" requiredMessage="Quantidade é obrigatória.">
+							<f:convertNumber/>
+				</p:inputText>
+			</p:column>
+			
+			<p:column style="border-width:0px;">
+				<p:inputText class="form-padrao form-mov" style="font-size: 18px; text-align:center;" id="vUnit"
+							value="#{movBean.itMov.vUnit}" size="8" maxlength="6" placeholder="V.Unit."
+							required="true" requiredMessage="Valor unitário é obrigatório.">
+							<f:convertNumber minFractionDigits="2"/>
+				</p:inputText>
+			</p:column>
+			
+			<p:column style="border-width:0px;">
+				<p:commandButton id="adicionar" value="Adicionar" action="#{movBean.adicionar}"
+									style="width:125px; margin-left:0px;" update=":listaItens:itensMov @form"/>
+			</p:column>
+			
+		</p:row>
+	</p:panelGrid>
+</center>
+</h:form>
+<h:form id="listaItens">
+<p:separator/>
+ <p:outputPanel id="itensMov">
+	<p:dataTable value="#{movBean.listItMov}" var="itMov" scrollable="true" scrollHeight="160">
+		<p:column headerText="Código" style="font-size: 14px; text-align:center; width:30px;">
+             <h:outputText value="#{itMov.codProd.codigo}" />
+        </p:column>
+        
+        <p:column headerText="Descrição" style="font-size: 14px; text-align:center; width:200px;">
+             <h:outputText value="#{itMov.codProd.descricao}" />
+        </p:column>
+        
+        <p:column headerText="Numeração" style="font-size: 14px; text-align:center; width:60px;">
+             <h:outputText value="#{itMov.numeracao}" />
+        </p:column>
+        
+        <p:column headerText="Tipo Movi" style="font-size: 14px; text-align:center; width:80px;">
+             <h:outputText value="#{itMov.tipoMovi}" />
+        </p:column>
+        
+        <p:column headerText="Qtde" style="font-size: 14px; text-align:center; width:40px;">
+             <h:outputText value="#{itMov.qtde}" />
+        </p:column>
+        
+        <p:column headerText="V.Unit." style="font-size: 14px; text-align:center; width:70px;">
+             <h:outputText value="#{itMov.vUnit}">
+             	<f:convertNumber locale="pt_BR" type="currency" />
+             </h:outputText>
+        </p:column>
+        
+        <p:column headerText="Totais" style="font-size: 14px; text-align:center; width:70px;">
+             <h:outputText value="#{itMov.qtde * itMov.vUnit}">
+             	<f:convertNumber locale="pt_BR" type="currency" />
+             </h:outputText>
+        </p:column>
+		
+		<p:column style="text-align: center; width:10px;">
+				<p:commandLink  action="#{movBean.excluirItem}" update=":listaItens:itensMov"
+								onclick="if (!confirm('Confirma a exclusão do item #{itMov.codProd.descricao}?')) return false;">
+					<h:graphicImage library="imagens" name="excluir16.png"/>
+					<f:setPropertyActionListener value="#{itMov}" target="#{movBean.itMov}" />
+				</p:commandLink>
+		</p:column>
+		
+		
+		<f:facet name="footer">
+				<h:outputText value="Total " style="font-size: 18px; text-align:right;" />
+                <h:outputText value="#{movBean.totais}" style="font-size: 18px; text-align:right;">
+                    <f:convertNumber locale="pt_BR" type="currency" />
+                </h:outputText>
+		</f:facet>
+	</p:dataTable>
+</p:outputPanel>
+
+</h:form>
+</p:dialog>	
+<!-- FIM DIALOG //////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
+
+	<h:form id="novo">
+			<h:panelGrid>
+				<p:commandButton class="btnPadrao" value="Incluir" action="#{movBean.limparForm}" oncomplete="PF('dlg2').show();"
+								update=":edicao :listaItens:itensMov @form"/>
+			</h:panelGrid>
+	</h:form>
+	
+	<p:separator/>
+	
+	<h:form id="listagem">
+		<h:panelGrid style="border-collapse: unset;" columns="6">
+
+					<p:calendar id="dataInicial" value="#{movBean.filtro.inicial}" pattern="dd-MM-yyyy"
+							mask="true" size="8" locale="pt" placeholder="Data Inicial"/>
+
+					<p:calendar id="dataFim" value="#{movBean.filtro.fim}" pattern="dd-MM-yyyy"
+							mask="true" size="8" locale="pt" placeholder="Data Final"/>
+
+
+					<p:inputText class="form-padrao form-mov" style="font-size: 18px; text-align: center;" id="numTalao"
+							value="#{movBean.filtro.talao}" size="5" maxlength="5" placeholder="Nº Talão"/>
+
+					<p:autoComplete id="buscaCliente" minQueryLength="3" size="40" scrollHeight="250" value="#{movBean.filtro.cliente}" 
+								completeMethod="#{clienteBean.clienteRN.completeText}" effect="fade" placeholder="Selecionar Cliente"
+								style="font-size: 10px;"/>
+				
+					<p:commandButton class="btnPadrao" value="Consultar" update=":listagem" style="width:120px;"/>
+
+		</h:panelGrid>
+	
+	<p:separator/>
+	
+	
+		<p:dataTable width="400"  value="#{movBean.lazyMov}" lazy="true" widgetVar="tableMov"
+						var="mov" border="1" cellpadding="2" cellspacing="0" rowIndexVar="index"
+						paginator="true" paginatorPosition="bottom" rows="10" id="tbl"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						paginatorAlwaysVisible="true"
+						currentPageReportTemplate="{totalRecords} Movimentações">
+			
+			<p:column width="1">
+				<p:rowToggler />
+        	</p:column>
+			
+			<p:column headerText="Data" style="text-align: center;" width="25" sortBy="#{mov.data}">
+				<h:outputText value="#{mov.data}">
+					<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
+				</h:outputText>
+			</p:column>
+			
+			<p:column headerText="Nº Talão" style="text-align: center;" width="20"  sortBy="#{mov.talao}">
+				<h:outputText value="#{mov.talao}"/>
+			</p:column>
+			
+			<p:column headerText="Cliente" width="160">
+				<h:outputText value="#{mov.cliente.nome}"/>
+			</p:column>
+			
+			<p:column headerText="Posto" width="60">
+				<h:outputText value="#{mov.posto}"/>
+			</p:column>
+			
+			<p:column style="text-align: center;" width="40" headerText="Editar">
+				<p:commandLink update=":edicao :listaItens:itensMov" action="#{movBean.editar}" oncomplete="PF('dlg2').show();">
+					<h:graphicImage library="imagens" name="editar16.png"/>
+					<f:setPropertyActionListener value="#{mov}" target="#{movBean.mov}"/>
+				</p:commandLink>
+			
+			</p:column>
+
+			<p:rowExpansion>
+				<p:panelGrid style="border-collapse: unset; width:600px;">
+					<p:row>
+						<p:column style="border-width:0px;" width="50px">
+							<h:outputLabel class="label-padrao" value="Usuário:"/>
+						</p:column>
+						<p:column style="border-width:0px; font-size:18px;" width="50px" colspan="2">
+							<h:outputText value="#{mov.usuario.nome}"/>
+						</p:column>
+					</p:row>
+					
+					<p:row>
+						<p:column style="border-width:0px;" width="50px">
+							<h:outputLabel class="label-padrao" value="Observação:"/>
+						</p:column>
+						<p:column style="border-width:0px; font-size:18px;" width="50px" colspan="3">
+							<h:outputText value="#{mov.obs}"/>
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+			</p:rowExpansion>
+		</p:dataTable>
+		
+	</h:form>
+
+	
+</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<ui:composition template="/template/interna.xhtml">
+	<ui:define name="titulo">
+		<h:graphicImage library="imagens" name="logoUnity.png" style="height:40px;"/>
+		<h:outputLabel class="label-padrao" value="Fechamento" style="margin-left:343px; font-size:30px; font-family:Ubuntu;"/>
+	</ui:define>
+	<ui:define name="corpo">
+	
+	<p:messages id="dlg" autoUpdate="true" closable="true"/>
+	
+	<h:form id="listagem">
+		<h:panelGrid style="border-collapse: unset;" columns="6">
+
+					<p:calendar id="dataInicial" value="#{fechamentoBean.dataInicial}" pattern="dd-MM-yyyy"
+							mask="true" size="8" locale="pt" placeholder="Data Início"
+							required="true" requiredMessage="Data inicial é obrigatória."/>
+
+					<p:calendar id="dataFim" value="#{fechamentoBean.dataFinal}" pattern="dd-MM-yyyy"
+							mask="true" size="8" locale="pt" placeholder="Data Fim"
+							required="true" requiredMessage="Data final é obrigatória."/>
+
+					<p:autoComplete id="buscaCliente" minQueryLength="3" size="40" scrollHeight="250"
+									value="#{fechamentoBean.nomeCliente}" 
+									completeMethod="#{clienteBean.clienteRN.completeText}"
+									effect="fade" placeholder="Selecionar Cliente"
+									style="font-size: 10px;"/>
+
+					
+					<p:selectOneMenu id="tipoMovi" value="#{fechamentoBean.tipoMovi}" style="width:125px; margin-left:0px;"
+										required="true" requiredMessage="Tipo da movimentação é obrigatória.">
+			            <f:selectItem id="subItem" itemLabel="Saída" itemValue="saida" />
+			            <f:selectItem itemLabel="Entrada" itemValue="entrada" />
+			            <f:selectItem itemLabel="Pendente" itemValue="pendente" />
+			            <f:selectItem itemLabel="Devolução" itemValue="devolucao" />
+			            <f:selectItem itemLabel="Manutenção" itemValue="manutencao" />
+	        		</p:selectOneMenu>
+
+				
+					<p:commandButton class="btnPadrao" value="Consultar" action="#{fechamentoBean.filtrar}" update="lista"
+										style="width:120px;"/>
+
+		</h:panelGrid>
+	
+	<p:separator/>
+	
+	
+		<p:dataTable value="#{fechamentoBean.lista}" var="fechamento" id="lista"
+						scrollable="true" scrollHeight="290"
+						emptyMessage="Nenhum registro encontrado"
+						currentPageReportTemplate="{totalRecords} Registros">
+			
+			<p:column headerText="Data" style="text-align: center;" width="25" sortBy="#{fechamento.data}">
+				<h:outputText value="#{fechamento.data}">
+					<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
+				</h:outputText>
+			</p:column>
+			
+			<p:column headerText="Nº Talão" style="text-align: center;" width="20" sortBy="#{fechamento.talao}">
+				<h:outputText value="#{fechamento.talao}"/>
+			</p:column>
+			
+			<p:column headerText="Cliente" width="190" sortBy="#{fechamento.cliente}">
+				<h:outputText value="#{fechamento.cliente}"/>
+			</p:column>
+			
+			<p:column headerText="Tipo" style="font-size: 14px; text-align:center; width:50px;">
+				<h:outputText value="#{fechamento.tipoMovi}"/>
+			</p:column>
+			
+			<p:column headerText="Totais" style="font-size: 14px; text-align:center; width:70px;" sortBy="#{fechamento.totais}">
+	             <h:outputText value="#{fechamento.totais}">
+	             	<f:convertNumber locale="pt_BR" type="currency" />
+	             </h:outputText>
+        	</p:column>
+        
+	        <f:facet name="footer">
+					<h:outputText value="#{fechamentoBean.registros} registros" style="font-size: 18px; text-align:right; margin-right:680px;" />
+					<h:outputText value="Total " style="font-size: 18px; text-align:right;" />
+	                <h:outputText value="#{fechamentoBean.totalGeral}" style="font-size: 18px; text-align:right;">
+	                    <f:convertNumber locale="pt_BR" type="currency" />
+	                </h:outputText>
+			</f:facet>
+		</p:dataTable>
+		
+	</h:form>
+	
+	<center>
+		<h:form id="impressao">
+			<h:commandLink style="margin-right:40px;">
+				<f:setPropertyActionListener target="#{fechamentoBean.tipoRelatorio}" value="1"/> 
+				<p:fileDownload value="#{fechamentoBean.arquivoRetorno}"/> 
+				<h:graphicImage library="imagens" name="pdf.png" title="Imprimir PDF"/>
+			</h:commandLink>
+			<h:commandLink style="margin-right:40px;">
+				<f:setPropertyActionListener target="#{fechamentoBean.tipoRelatorio}" value="2"/>
+				<p:fileDownload value="#{fechamentoBean.arquivoRetorno}"/>
+				<h:graphicImage library="imagens" name="excel.png" 	title="Imprimir Excel"/>
+			</h:commandLink>
+			<h:commandLink style="margin-right:40px;">
+				<f:setPropertyActionListener target="#{fechamentoBean.tipoRelatorio}" value="3"/>
+				<p:fileDownload value="#{fechamentoBean.arquivoRetorno}"/>
+				<h:graphicImage library="imagens" name="html.png" title="Imprimir HTML"/>
+			</h:commandLink>
+			<h:commandLink>
+				<f:setPropertyActionListener target="#{fechamentoBean.tipoRelatorio}" value="4"/>
+				<p:fileDownload value="#{fechamentoBean.arquivoRetorno}"/>
+				<h:graphicImage library="imagens" name="ods.png" 	title="Imprimir Planilha Open Office"/>
+			</h:commandLink>
+		</h:form>
+	</center>
+	</ui:define>
+</ui:composition>
+</html>

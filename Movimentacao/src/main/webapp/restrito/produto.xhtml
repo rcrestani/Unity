@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<ui:composition template="/template/interna.xhtml">
+	<ui:define name="titulo">
+		<h:graphicImage library="imagens" name="logoUnity.png" style="height:40px;"/>
+		<h:outputLabel class="label-padrao" value="Produtos" style="margin-left:373px; font-size:30px; font-family:Ubuntu;"/>
+	</ui:define>
+	<ui:define name="corpo">
+	<p:messages id="pdt" autoUpdate="true" closable="true"/>
+
+	<p:dialog id="dlg1" rendered="true" position="center" header="Gerenciar Produtos"
+				widgetVar="dlg1" minHeight="40" showEffect="explode" hideEffect="explode" modal="true">
+		
+    	<h:form id="pdtEdicao">
+		
+		<h:inputHidden value="#{produtoBean.produto.codigo}"/>
+							
+		<p:panelGrid style="border-collapse: unset;">
+		<p:row>
+			<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Descrição:" for="descricao"/>
+			</p:column>
+			<p:column style="border-width:0px; width:30px;">
+				<h:inputText class="form-padrao form-usuarios" style="font-size: 18px;" id="descricao"
+							label="Descrição" value="#{produtoBean.produto.descricao}" size="30" 
+							maxlength="100" required="true" requiredMessage="Descrição do Produto é obrigatório!" > 
+					<f:validateLength minimum="2" maximum="50"/> 
+				</h:inputText>
+			</p:column>
+			
+			<p:column style="border-width:0px;">
+				<h:outputText class="label-padrao" value="Status:" />
+			</p:column>
+			<p:column style="border-width:0px;">
+				<p:selectBooleanButton id="status" value="#{produtoBean.produto.status}" onLabel="Ativo" offLabel="Inativo"
+										style="width:60px; margin-left:5px; padding-left: 5px; padding-right: 15px;" />
+ 
+			</p:column>
+		</p:row>
+		
+		<p:row>
+		<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Quantidade:" for="qtde"/>
+			</p:column>
+			<p:column style="border-width:0px;" colspan="4">
+				<h:inputText style="width:138px; font-size: 18px;" class="form-padrao form-usuarios" id="qtde" 
+							label="Quantidade" value="#{produtoBean.produto.qtde}" maxlength="3" disabled="true"> 
+				</h:inputText>
+			</p:column>
+		</p:row>
+		
+		
+		<p:row>
+            <p:column style="padding: 0px;" colspan="4"></p:column>
+        </p:row>
+			
+	</p:panelGrid>	
+		<h:commandButton class="btnPadrao" style="font-size: 18px;" action="#{produtoBean.salvar}" value="Salvar" update=":pdtListagem"/>
+	
+	</h:form>
+	</p:dialog>
+	
+	
+	
+	<p:dialog id="dlg2" rendered="true" position="center" header="Enviar Relatório por E-mail"
+				widgetVar="dlg2" minHeight="40" showEffect="explode" hideEffect="explode" modal="true">
+		
+    	<h:form id="pdtEmail">
+										
+		<p:panelGrid style="border-collapse: unset;">
+		<p:row>
+			<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Destinatários:" for="destinatarios" title="Separar os e-mails por vírgula"/>
+			</p:column>
+			<p:column style="border-width:0px; width:60px;">
+				<h:inputText class="form-padrao form-usuarios" style="font-size: 18px; width:560px;" id="destinatarios"
+							label="Descrição" value="#{produtoBean.destinatario}"  
+							required="true" requiredMessage="Destinatário é obrigatório!"
+							title="Separar os e-mails por vírgula"> 
+				</h:inputText>
+				<h:outputLabel class="label-padrao" style="color:red; font-size:12px;" value="Separar os e-mails por vírgula."/>
+			</p:column>
+			
+			
+		</p:row>
+		
+		<p:row>
+		<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Tipo Relatório:" for="tipoRelatorio"/>
+			</p:column>
+			<p:column style="border-width:0px;" colspan="4">
+				<p:selectOneMenu id="tipoMovi" value="#{produtoBean.formatoRelatorio}" style="width:125px; margin-left:0px;">
+		            <f:selectItem id="subItem" itemLabel="PDF" itemValue="pdf" />
+		            <f:selectItem itemLabel="Excel" itemValue="xls" />
+		            <f:selectItem itemLabel="HTML" itemValue="html" />
+		            <f:selectItem itemLabel="Open Office" itemValue="ods" />
+        		</p:selectOneMenu>
+			</p:column>
+		</p:row>
+		
+		
+		<p:row>
+            <p:column style="padding: 0px;" colspan="4"></p:column>
+        </p:row>
+			
+	</p:panelGrid>	
+		<h:commandButton class="btnPadrao" style="font-size: 18px;" action="#{produtoBean.sendEmail}" value="Enviar" />
+	
+	</h:form>
+	</p:dialog>
+	
+	
+	
+	
+	
+	<h:form id="pdtNovo">
+			<h:panelGrid columns="7">
+
+				<p:commandButton class="btnPadrao" value="Novo Produto" action="#{produtoBean.limparForm}" oncomplete="PF('dlg1').show();"
+				update=":pdtEdicao" style="margin-right:25px;"/>
+				
+				<p:commandButton class="btnPadrao" value="Relatório p/ E-mail" onclick="PF('dlg2').show();"
+				style="margin-right:25px;"/>
+				
+				<p:commandButton class="btnPadrao" value="Agendar Envio" action="#{produtoBean.limparFormTask}" oncomplete="PF('dlg3').show();"
+								update=":pdtTask :pdtTaskLista" style="margin-right:200px;"/>
+				
+				<h:commandLink style="margin-right:40px;">
+					<f:setPropertyActionListener target="#{produtoBean.tipoRelatorio}" value="1"/> 
+					<p:fileDownload value="#{produtoBean.arquivoRetorno}"/> 
+					<h:graphicImage library="imagens" name="pdf.png" title="Imprimir PDF"/>
+				</h:commandLink>
+				<h:commandLink style="margin-right:40px;">
+					<f:setPropertyActionListener target="#{produtoBean.tipoRelatorio}" value="2"/>
+					<p:fileDownload value="#{produtoBean.arquivoRetorno}"/>
+					<h:graphicImage library="imagens" name="excel.png" 	title="Imprimir Excel"/>
+				</h:commandLink>
+				<h:commandLink style="margin-right:40px;">
+					<f:setPropertyActionListener target="#{produtoBean.tipoRelatorio}" value="3"/>
+					<p:fileDownload value="#{produtoBean.arquivoRetorno}"/>
+					<h:graphicImage library="imagens" name="html.png" title="Imprimir HTML"/>
+				</h:commandLink>
+				<h:commandLink>
+					<f:setPropertyActionListener target="#{produtoBean.tipoRelatorio}" value="4"/>
+					<p:fileDownload value="#{produtoBean.arquivoRetorno}"/>
+					<h:graphicImage library="imagens" name="ods.png" 	title="Imprimir Planilha Open Office"/>
+				</h:commandLink>
+			</h:panelGrid>
+	</h:form>
+	
+	<p:separator/>
+	<h:form id="pdtListagem">
+	
+		<h:panelGrid columns="4">
+				<p:selectOneMenu id="status" value="#{produtoBean.filtro.status}" style="width:125px">
+		            <f:selectItem id="subItem" itemLabel="Status" itemValue="" />
+		            <f:selectItem itemLabel="Ativo" itemValue="true" />
+		            <f:selectItem itemLabel="Inativo" itemValue="false" />
+        		</p:selectOneMenu>
+							
+				<p:autoComplete id="acMinLength" minQueryLength="2" size="30" scrollHeight="250" value="#{produtoBean.filtro.descricao}" 
+								completeMethod="#{produtoBean.produtoRN.completeText}" effect="fade" placeholder="Busca por descrição"/>
+								
+				<p:commandButton class="btnPadrao" value="Consultar" update=":pdtListagem" />
+		</h:panelGrid>
+	
+	<p:separator/>
+	
+	
+		<p:dataTable width="400"  value="#{produtoBean.lazyProduto}" lazy="true"
+						var="produto" border="1" cellpadding="2" cellspacing="0" rowIndexVar="index"
+						paginator="true" paginatorPosition="bottom" rows="10" id="tbl"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						paginatorAlwaysVisible="true"
+						currentPageReportTemplate="{totalRecords} Produtos">
+			
+			<p:column style="text-align: center;" headerText="Id" width="40" sortBy="#{produto.codigo}">
+				<h:outputText value="#{produto.codigo}"/>
+			</p:column>
+			
+			<p:column width="450" headerText="Descrição" sortBy="#{produto.descricao}">
+				<h:outputText value="#{produto.descricao}"/>
+			</p:column>
+			
+			<p:column style="text-align: center;" headerText="Quantidade" sortBy="#{produto.qtde}">
+				<h:outputText value="#{produto.qtde}"/>
+			</p:column>
+
+			<p:column style="text-align: center;" width="40" headerText="Status">
+				<p:commandLink action="#{produtoBean.sts}" update=":pdtListagem">
+					<h:graphicImage library="imagens" name="status_#{produto.status}.png" style="border:0"/>
+					<f:setPropertyActionListener value="#{produto}" target="#{produtoBean.produto}"/>
+				</p:commandLink>
+				
+			</p:column>
+			<p:column style="text-align: center;" width="40" headerText="Editar">
+				<p:commandLink  update=":pdtEdicao" onclick="PF('dlg1').show();">
+						<h:graphicImage library="imagens" name="editar16.png"/>
+						<f:setPropertyActionListener value="#{produto}" target="#{produtoBean.produto}"/>
+				</p:commandLink>
+			</p:column>
+	
+		</p:dataTable>
+		
+	</h:form>
+	
+	
+	<p:dialog id="dlg3" rendered="true" position="center" header="Agendar Envio do Relatório por E-mail"
+				widgetVar="dlg3" minHeight="40" width="1050px" showEffect="explode" hideEffect="explode" modal="true">
+		
+    	<h:form id="pdtTask">
+										
+		<p:panelGrid style="border-collapse: unset;">
+		<p:row>
+			<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Nome do Relatório:" for="nomeRelatorio" />
+			</p:column>
+			<p:column style="border-width:0px; width:60px;">
+				<h:inputText class="form-padrao form-usuarios" style="font-size: 18px; width:260px;" id="nomeRelatorio"
+							label="Nome do Relatório" value="#{produtoBean.produtoTask.nomeRelatorio}"  
+							required="true" requiredMessage="Nome do Relatório é obrigatório!"> 
+				</h:inputText>
+			</p:column>
+			
+			<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Hora:" for="hora"/>
+			</p:column>
+			<p:column style="border-width:0px;">
+        		<p:spinner id="hora" value="#{produtoBean.produtoTask.hora}" stepFactor="1" min="0" max="23" size="5"/>
+			</p:column>
+			
+		</p:row>
+		
+		<p:row>
+			<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Dias da Semana:" for="diasDaSemana" />
+			</p:column>
+			<p:column style="border-width:0px;">
+				<p:selectCheckboxMenu id="diasDaSemana" value="#{produtoBean.diasSelecionados}" label="Dias da Semana"
+	                              filter="true" filterMatchMode="startsWith" panelStyle="width:300px">
+	            	<f:selectItems value="#{produtoBean.diasDaSemana}" />
+        		</p:selectCheckboxMenu>
+			</p:column>
+			<p:column style="border-width:0px;">
+				<h:outputText class="label-padrao" value="Status:" />
+			</p:column>
+			<p:column style="border-width:0px;">
+				<p:selectBooleanButton id="status" value="#{produtoBean.produtoTask.status}" onLabel="Ativo" offLabel="Inativo"
+										style="width:60px; margin-left:5px; padding-left: 5px; padding-right: 15px;" />
+ 
+			</p:column>
+			
+		</p:row>
+		
+		<p:row>
+			<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="E-mails:" for="emails" />
+			</p:column>
+			<p:column style="border-width:0px;" colspan="3">
+				<p:chips value="#{produtoBean.emails}"/>
+			</p:column>
+		</p:row>
+		<p:row>
+		<p:column style="border-width:0px;">
+		</p:column>
+		<p:column style="border-width:0px;">
+			<h:outputLabel class="label-padrao" style="color:red; font-size:12px;" value="Tecle Enter após inserir cada e-mail."/>
+		</p:column>
+		</p:row>
+		
+		<p:row>
+            <p:column style="padding: 0px;" colspan="4"></p:column>
+        </p:row>
+			
+	</p:panelGrid>	
+		<p:commandButton class="btnPadrao" style="font-size: 18px;" action="#{produtoBean.salvarTarefa}" value="Salvar" 
+							update=":pdtTaskLista:listaTask @form"/>
+	
+	</h:form>
+	
+	<h:form id="pdtTaskLista">
+		<p:outputPanel id="listaTask">
+			<p:dataTable value="#{produtoBean.listaTask}" var="produtoTask" scrollable="true" scrollHeight="160">
+			
+				<p:column headerText="Id" style="font-size: 14px; text-align:center; width:10px;">
+		             <h:outputText value="#{produtoTask.id}" />
+		        </p:column>
+		        
+		        <p:column headerText="Relatório" style="font-size: 14px; text-align:center; width:40px;">
+		             <h:outputText value="#{produtoTask.nomeRelatorio}" />
+		        </p:column>
+		        
+		        <p:column headerText="E-mails" style="font-size: 14px; text-align:center; width:200px;">
+		             <h:outputText value="#{produtoTask.emails}" />
+		        </p:column>
+		        
+		        <p:column headerText="Hora" style="font-size: 14px; text-align:center; width:20px;">
+		             <h:outputText value="#{produtoTask.hora}" />
+		        </p:column>
+		        
+		        <p:column headerText="Dias de Envio" style="font-size: 14px; text-align:center; width:150px;">
+		             <h:outputText value="#{produtoTask.diasDaSemana}" />
+		        </p:column>
+		        
+		        <p:column style="text-align: center; width:20px;" headerText="Status">
+					<p:commandLink action="#{produtoBean.statusTask}" update=":pdtTaskLista">
+						<h:graphicImage library="imagens" name="status_#{produtoTask.status}.png" style="border:0"/>
+						<f:setPropertyActionListener value="#{produtoTask}" target="#{produtoBean.produtoTask}"/>
+					</p:commandLink>
+				</p:column>
+				
+				<p:column style="text-align: center; width:20px;" headerText="Editar">
+					<p:commandLink update=":pdtTask" action="#{produtoBean.editarTask}">
+						<h:graphicImage library="imagens" name="editar16.png"/>
+						<f:setPropertyActionListener value="#{produtoTask}" target="#{produtoBean.produtoTask}"/>
+					</p:commandLink>
+				</p:column>
+		        
+		        
+				
+			</p:dataTable>
+		</p:outputPanel>
+	</h:form>
+	
+	</p:dialog>
+	
+	
+	
+	
+	</ui:define>
+</ui:composition>
+</html>

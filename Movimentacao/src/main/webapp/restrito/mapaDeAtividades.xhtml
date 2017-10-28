@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<ui:composition template="/template/interna.xhtml">
+	<ui:define name="titulo">
+		<h:graphicImage library="imagens" name="logoUnity.png" style="height:40px;"/>
+		<h:outputLabel class="label-padrao" value="Mapa de Atividades" style="margin-left:183px; font-size:30px; font-family:Ubuntu;"/>
+	</ui:define>
+	<ui:define name="corpo">
+	<p:messages id="dlg" autoUpdate="true" closable="true"/>
+<!-- FILTROS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+		<h:form id="filtros">
+			<h:panelGrid style="border-collapse: unset;" columns="4">
+					<p:calendar id="dataInicial" value="#{mapaDeAtividadesBean.atividadesFiltro.inicial}" pattern="dd-MM-yyyy"
+							mask="true" size="8" locale="pt" placeholder="Data Inicial"/>
+
+					<p:calendar id="dataFim" value="#{mapaDeAtividadesBean.atividadesFiltro.fim}" pattern="dd-MM-yyyy"
+							mask="true" size="8" locale="pt" placeholder="Data Final"/>
+					<p:commandButton class="btnPadrao" value="Consultar" action="#{mapaDeAtividadesBean.filtroLista}" update=":listaForm:lista"
+										style="width:120px;"/>
+			</h:panelGrid>
+		</h:form>
+<!-- FIM FILTROS///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<p:separator/>
+
+<!-- DATATABLE///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<h:form id="listaForm">	
+		<p:dataTable value="#{mapaDeAtividadesBean.listaMapaDeAtividades}" var="mapaDeAtividades" id="lista"
+								scrollable="true" scrollHeight="450" scrollWidth="1350"
+								emptyMessage="Nenhum registro encontrado"
+								currentPageReportTemplate="{totalRecords} Registros">
+					
+					<p:column headerText="Negócio" width="190" sortBy="#{mapaDeAtividades.negocio}">
+						<h:outputText value="#{mapaDeAtividades.negocio}" style="font-size:10px;"/>
+					</p:column>
+					
+					<p:column headerText="1" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia1}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia1}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage1}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia1}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="2" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia2}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia2}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage2}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia2}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="3" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia3}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia3}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage3}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia3}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="4" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia4}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia4}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage4}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia4}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="5" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia5}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia5}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage5}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia5}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="6" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia6}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia6}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage6}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia6}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="7" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia7}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia7}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage7}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia7}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="8" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia8}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia8}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage8}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia8}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="9" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia9}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia9}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage9}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia9}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="10" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia10}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia10}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage10}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia10}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="11" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia11}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia11}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage11}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia11}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="12" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia12}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia12}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage12}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia12}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="13" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia13}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia13}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage13}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia13}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="14" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia14}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia14}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage14}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia14}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="15" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia15}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia15}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage15}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia15}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="16" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia16}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia16}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage16}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia16}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="17" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia17}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia17}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage17}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia17}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="18" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia18}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia18}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage18}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia18}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="19" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia19}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia19}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage19}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia19}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="20" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia20}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia20}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage20}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia20}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="21" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia21}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia21}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage21}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia21}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="22" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia22}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia22}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage22}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia22}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="23" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia23}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia23}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage23}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia23}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="24" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia24}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia24}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage24}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia24}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="25" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia25}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia25}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage25}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia25}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="26" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia26}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia26}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage26}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia26}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="27" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia27}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia27}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage27}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia27}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="28" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia28}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia28}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage28}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia28}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="29" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia29}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia29}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage29}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia29}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="30" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia30}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia30}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage30}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia30}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="31" style="text-align: center;" width="10">
+						<p:commandLink update=":atividades" action="#{mapaDeAtividadesBean.visualizar}" oncomplete="PF('dlg1').show();">
+							<h:graphicImage title="#{mapaDeAtividades.dia31}" library="mapaAtividades"
+								name="#{mapaDeAtividades.dia31}.png" style="border:0"
+								rendered="#{mapaDeAtividades.displayImage31}"/>
+							<f:setPropertyActionListener value="#{mapaDeAtividades.atividadeDia31}" target="#{mapaDeAtividadesBean.atividades}"/>
+						</p:commandLink>
+					</p:column>
+					
+					<f:facet name="footer">
+					<h:outputText value="#{mapaDeAtividadesBean.registros} registros" style="font-size: 18px; text-align:right; margin-right:180px;" />
+					<h:outputText value="Total " style="font-size: 18px; text-align:right;" />
+	                <h:outputText value="#{mapaDeAtividadesBean.totalGeral}" style="font-size: 18px; text-align:right;">
+	                    <f:convertNumber locale="pt_BR" type="currency" />
+	                </h:outputText>
+			</f:facet>
+		</p:dataTable>
+	</h:form>
+<!-- DATATABLE///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+<!-- DIALOG ATIVIDADES//////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<p:dialog id="dlg1" rendered="true" position="center" header="Visualizar Atividade"
+				widgetVar="dlg1" minHeight="40" showEffect="explode" hideEffect="explode" modal="true" resizable="false">
+    	<h:form id="atividades">
+			<p:panelGrid style="border-collapse: unset;">
+				<p:row>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" value="Negócio:"/>
+					</p:column>
+					<p:column style="border-width:0px;" colspan="3">
+						<h:outputLabel class="label-padrao" value="#{mapaDeAtividadesBean.negocioCliente}"/>
+					</p:column>
+					
+					<p:column style="border-width:0px;" colspan="2">
+						<h:outputLabel class="label-padrao" value="Atividade:"/>
+					</p:column>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" value="#{mapaDeAtividadesBean.atividades.tipoAtividade}"/>
+ 					</p:column>
+				</p:row>
+				
+				<p:row>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" value="Comentário:" for="comentario"/>
+					</p:column>
+					<p:column style="border-width:0px;" colspan="6">
+						<p:inputTextarea id="comentario" rows="5" cols="50" counter="display" maxlength="1000" counterTemplate="{0} caracteres restantes." 
+								value="#{mapaDeAtividadesBean.atividades.obs}" autoResize="false" />
+    					<h:outputText id="display" />
+					</p:column>
+				</p:row>
+				
+				<p:row>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" value="Prazo:" for="prazo"/>
+					</p:column>
+					<p:column style="border-width:0px;">
+						<p:calendar id="prazo" value="#{mapaDeAtividadesBean.atividades.prazo}" pattern="dd-MM-yyyy HH:mm"
+							mask="true" size="14" locale="pt" placeholder="Data e Hora" stepMinute="30"/>
+					</p:column>
+					
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" value="Responsável:" for="responsavel"/>
+											
+					</p:column>
+					<p:column style="border-width:0px;">
+						<p:inputText id="responsavel" class="form-padrao form-mov" value="#{mapaDeAtividadesBean.atividades.usuario.nome}" 
+		             				disabled="true"/>
+		        	</p:column>
+				</p:row>
+				
+				<p:row>
+					<p:column style="border-width:0px;" colspan="2">
+						<h:outputText class="label-padrao" value="Finalizado:" style="margin-right:20px;"/>
+						<p:selectBooleanCheckbox value="#{mapaDeAtividadesBean.atividades.finalizado}" style="margin-bottom:8px;"/>
+					</p:column>	
+				</p:row>
+				
+			</p:panelGrid>
+		</h:form>
+	</p:dialog>
+<!-- FIM DIALOG ATIVIDADES///////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	
+
+
+	</ui:define>
+</ui:composition>
+</html>

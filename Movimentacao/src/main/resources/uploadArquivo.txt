@@ -1,0 +1,8 @@
+Endereço do servidor===============================================================
+			String pastaCartoesVisita = Constantes.CAMINHO_SERVIDOR + "/resources/cartoesVisita";
+			
+			File file = new File(pastaCartoesVisita, fileNameMD5);
+			
+		    OutputStream out = new FileOutputStream(file);
+		    out.write(event.getFile().getContents());
+		    out.close();

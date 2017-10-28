@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<ui:composition template="/template/interna.xhtml">
+	<ui:define name="titulo">
+		<h:graphicImage library="imagens" name="logoUnity.png" style="height:40px;"/>
+		<h:outputLabel class="label-padrao" value="Cartões de Visita" style="margin-left:323px; font-size:30px; font-family:Ubuntu;"/>
+	</ui:define>
+	<ui:define name="corpo">
+
+<!-- NOVOS ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+		<h:form id="novos">
+			<p:commandButton class="btnPadrao" value="Novo Cartão" action="#{cartaoVisitaBean.novo}" 
+				oncomplete="PF('dlg1').show();" update=":cartaoVisita"/>
+		</h:form>
+<!-- FIM NOVOS ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+		<p:separator/>
+<!-- FILTROS /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+		<h:form id="filtros">
+		
+		</h:form>
+<!-- FIM FILTROS /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+<!-- DIALOG CARTAO DE VISITA//////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+		<p:dialog id="dlg1" rendered="true" position="center" header="Cadastro de Cartão de Visita"
+						widgetVar="dlg1" minHeight="40" showEffect="explode" hideEffect="explode" modal="true" resizable="false">
+		    <p:messages id="dlg" autoUpdate="true" closable="true"/>
+		    
+		    <h:form id="cartaoVisita">
+		    	<p:panelGrid style="border-collapse: unset;">
+					<p:row>
+						<p:column style="border-width:0px;">
+							<h:outputLabel class="label-padrao" value="ID:"/>
+						</p:column>
+						<p:column style="border-width:0px;">
+							<h:inputText style="width:75px; font-size: 18px;" class="form-padrao form-usuarios" id="id"
+								value="#{cartaoVisitaBean.cartaoVisita.id}" disabled="true"> 
+							</h:inputText>
+						</p:column>
+						
+						<p:column style="border-width:0px;">
+							<h:outputLabel class="label-padrao" value="Nome:"/>
+						</p:column>
+						<p:column style="border-width:0px;">
+							<h:inputText style="width:200px; font-size: 18px;" class="form-padrao form-usuarios" id="nome"
+								value="#{cartaoVisitaBean.cartaoVisita.nome}" maxlength="250"
+								required="true" requiredMessage="O Campo nome é obrigatório e com mínimo de 10 caracteres"> 
+								<f:validateLength minimum="5" maximum="30"/>
+							</h:inputText>
+						</p:column>
+						
+						<p:column style="border-width:0px;">
+							<h:outputLabel class="label-padrao" value="Empresa:"/>
+						</p:column>
+						<p:column style="border-width:0px;">
+							<h:inputText style="width:200px; font-size: 18px;" class="form-padrao form-usuarios" id="empresa"
+								value="#{cartaoVisitaBean.cartaoVisita.empresa}" maxlength="250"
+								required="true" requiredMessage="O Campo empresa é obrigatório e com mínimo de 10 caracteres"> 
+								<f:validateLength minimum="5" maximum="30"/>
+							</h:inputText>
+						</p:column>
+					</p:row>
+					
+					<p:row>
+						<p:column style="border-width:0px;">
+							<h:outputLabel class="label-padrao" value="Cargo:"/>
+						</p:column>
+						<p:column style="border-width:0px;">
+							<h:inputText style="width:150px; font-size: 18px;" class="form-padrao form-usuarios" id="cargo"
+								value="#{cartaoVisitaBean.cartaoVisita.cargo}" maxlength="50">
+							</h:inputText>
+						</p:column>
+						
+						<p:column style="border-width:0px;">
+							<h:outputLabel class="label-padrao" value="Telefone:"/>
+						</p:column>
+						<p:column style="border-width:0px;">
+							<h:inputText style="width:150px; font-size: 18px;" class="form-padrao form-usuarios" id="telefone"
+								value="#{cartaoVisitaBean.cartaoVisita.foneFixo}" maxlength="50">
+							</h:inputText>
+						</p:column>
+						
+						<p:column style="border-width:0px;">
+							<h:outputLabel class="label-padrao" value="Celular:"/>
+						</p:column>
+						<p:column style="border-width:0px;">
+							<h:inputText style="width:150px; font-size: 18px;" class="form-padrao form-usuarios" id="celular"
+								value="#{cartaoVisitaBean.cartaoVisita.foneMovel}" maxlength="50">
+							</h:inputText>
+						</p:column>
+					</p:row>
+					
+					<p:row>
+						<p:column style="border-width:0px;">
+							<h:outputLabel class="label-padrao" value="Cartão Frente:"/>
+						</p:column>
+						<p:column style="border-width:0px;" colspan="3">
+							 <p:fileUpload fileUploadListener="#{cartaoVisitaBean.fileUploadFrente}" mode="advanced"
+							 	dragDropSupport="true" update="dlg" sizeLimit="900000"
+							 	invalidSizeMessage="Máximo de 900kb por arquivo" allowTypes="/(\.|\/)(jpe?g)$/"
+							 	invalidFileMessage="Arquivo inválido"
+							 	label="Escolher" uploadLabel="Enviar" cancelLabel="Cancelar"
+							 	onclick="trocaCursor('wait' , this)" oncomplete="trocaCursor('default')"/>
+						</p:column>
+					</p:row>
+					
+					<p:row>
+						<p:column style="border-width:0px;">
+							<h:outputLabel class="label-padrao" value="Cartão Verso:"/>
+						</p:column>
+						<p:column style="border-width:0px;" colspan="3">
+							 <p:fileUpload fileUploadListener="#{cartaoVisitaBean.fileUploadVerso}" mode="advanced"
+							 	dragDropSupport="true" update="dlg" sizeLimit="900000"
+							 	invalidSizeMessage="Máximo de 900kb por arquivo" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+							 	label="Escolher" uploadLabel="Enviar" cancelLabel="Cancelar"
+							 	onclick="trocaCursor('wait' , this)" oncomplete="trocaCursor('default')"/>
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+				<p:separator/>
+			<p:commandButton class="btnPadrao" action="#{cartaoVisitaBean.salvar}" value="Salvar" update="@form"/>
+		    </h:form>
+		</p:dialog>
+<!-- FIM DIALOG CARTAO DE VISITA //////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+<!-- DATA SCROLLER //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<h:form id="listaCartaoVisita">
+		 <p:dataScroller id="scrollerCartaoVisita" value="#{cartaoVisitaBean.listaCartaoVisita}" var="cartaoVisita" chunkSize="20">
+			 <f:facet name="header">	
+			 	<h:outputText value="#{cartaoVisitaBean.qtde}" style="font-size: 18px; text-align:right;" />
+			 	<h:outputText value=" Cartões de Visita" style="font-size: 18px; text-align:right;" />
+		 	</f:facet>
+		 	
+		 	<f:facet name="loader">
+	            <p:commandButton type="button" value="Exibir mais" icon="ui-icon-circle-triangle-s"/>
+	        </f:facet>
+	         <p:commandLink style="float:right" update=":cartaoVisita" oncomplete="PF('dlg1').show();">
+									<h:graphicImage library="imagens" name="editar16.png"/>
+									<f:setPropertyActionListener value="#{cartaoVisita}" target="#{cartaoVisitaBean.cartaoVisita}"/>
+					</p:commandLink>
+	        	<h:panelGrid columns="3" style="width:100%" >
+	        		<p:graphicImage library="cartoesVisita" name="#{cartaoVisita.arquivoImagemFrente}"/>
+	                <p:graphicImage library="cartoesVisita" name="#{cartaoVisita.arquivoImagemVerso}"/>
+	                
+	               <p:outputPanel>
+	               
+					
+	                <h:panelGrid columns="2" cellpadding="4">
+	                
+	                	<h:outputText class="label-padrao" value="Nome:" style="font-size: 14px;"/>
+	         	 		<h:outputText value="#{cartaoVisita.nome}" style="font-weight: bold; font-family: Arial;
+	             												color: #343436; font-size: 14px;"/>
+	             		
+	             		<h:outputText class="label-padrao" value="Cargo:" style="font-size: 14px;"/>
+			            <h:outputText value="#{cartaoVisita.cargo}" style="font-weight: bold; font-family: Arial;
+	             												color: #343436; font-size: 14px;"/>
+	             											
+	        			<h:outputText class="label-padrao" value="Empresa:" style="font-size: 14px;"/>
+			            <h:outputText value="#{cartaoVisita.empresa}" style="font-weight: bold; font-family: Arial;
+	             												color: #343436; font-size: 14px;"/>
+			            
+			            <h:outputText class="label-padrao" value="Telefone:" style="font-size: 14px;"/>
+			            <h:outputText value="#{cartaoVisita.foneFixo}" style="font-weight: bold; font-family: Arial;
+	             												color: #343436; font-size: 14px;"/>
+	             		
+	             		<h:outputText class="label-padrao" value="Celular:" style="font-size: 14px;"/>
+			            <h:outputText value="#{cartaoVisita.foneMovel}" style="font-weight: bold; font-family: Arial;
+	             												color: #343436; font-size: 14px;"/>
+			        </h:panelGrid>
+			        </p:outputPanel>
+			    </h:panelGrid>
+       	 
+	         <p:separator style="height:10px;"/>
+		 </p:dataScroller>
+	</h:form>
+<!-- FIM DATA SCROLLER //////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	</ui:define>
+</ui:composition>
+</html>

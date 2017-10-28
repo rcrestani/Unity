@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<ui:composition template="/template/interna.xhtml">
+	<ui:define name="titulo">
+		<h:graphicImage library="imagens" name="logoUnity.png" style="height:40px;"/>
+		<h:outputLabel class="label-padrao" value="Atividades" style="margin-left:373px; font-size:30px; font-family:Ubuntu;"/>
+	</ui:define>
+	<ui:define name="corpo">
+		<p:messages id="dlg" showDetail="true" autoUpdate="true" closable="true"/>
+<!-- NOVOS ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+		<h:form id="novos">
+			<p:commandButton class="btnPadrao" value="Nova Atividade" action="#{atividadesBean.novo}"
+								oncomplete="PF('dlg1').show();" update=":atividades"/>
+								
+			<p:commandButton class="btnPadrao" value="Novo Negócio" action="/restrito/negocios.jsf" />
+												
+			<p:commandButton id="pendentes" class="notification element-animation" action="#{atividadesBean.carregarPendentes}" 
+							value="#{atividadesBean.qtdeNotification}" 
+							style="float:right;" rendered="#{atividadesBean.notification}"
+							title="Atividades Pendentes" update=":listaAtividades:scrollerAtividades"/>
+		</h:form>
+		
+<!-- FIM NOVOS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+		
+		<p:separator/>
+<!-- FILTROS ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+		<h:form id="filtros">
+			<h:panelGrid style="border-collapse: unset;" columns="4">
+					<p:calendar id="dataInicial" value="#{atividadesBean.filtro.inicial}" pattern="dd-MM-yyyy"
+							mask="true" size="8" locale="pt" placeholder="Data Inicial"/>
+
+					<p:calendar id="dataFim" value="#{atividadesBean.filtro.fim}" pattern="dd-MM-yyyy"
+							mask="true" size="8" locale="pt" placeholder="Data Final"/>
+					
+					<p:autoComplete id="buscaCliente" minQueryLength="3" size="40" scrollHeight="250" value="#{atividadesBean.filtro.cliente}" 
+								completeMethod="#{negociosBean.negociosRN.negociosPorCliente}" placeholder="Selecionar Negócio"
+								style="font-size: 10px;"/>
+					
+					<p:selectOneMenu id="status" value="#{atividadesBean.filtro.status}" style="width:125px">
+			            <f:selectItem id="statusSubItem" itemLabel="Status"/>
+			            <f:selectItem itemLabel="Pendentes" itemValue="false" />
+			            <f:selectItem itemLabel="Finalizados" itemValue="true" />
+	        		</p:selectOneMenu>
+					
+					<p:selectOneMenu id="tipoAtividade" value="#{atividadesBean.filtro.tipoAtividade}" style="width:125px">
+			            <f:selectItem id="tipoSubItem" itemLabel="Atividade"/>
+			            <f:selectItem itemLabel="E-mail" itemValue="E-mail" />
+			            <f:selectItem itemLabel="Ligação" itemValue="Ligação" />
+			            <f:selectItem itemLabel="Visita" itemValue="Visita" />
+			            <f:selectItem itemLabel="Proposta" itemValue="Proposta" />
+			            <f:selectItem itemLabel="Reunião" itemValue="Reunião" />
+			            <f:selectItem itemLabel="Financeiro" itemValue="Financeiro" />
+	        		</p:selectOneMenu>
+	        		
+					<p:selectOneMenu id="ordenacao" value="#{atividadesBean.filtro.ordenacao}" style="width:125px">
+			            <f:selectItem id="ordenacaoSubItem" itemLabel="Ordenação"/>
+			            <f:selectItem itemLabel="Antigas" itemValue="antigas" />
+			            <f:selectItem itemLabel="Recentes" itemValue="recentes" />
+	        		</p:selectOneMenu>
+					
+					<p:autoComplete id="buscaUsuario" minQueryLength="3" size="20" scrollHeight="100" dropdown="true" dropdownMode="true"
+								value="#{atividadesBean.nomeUsuario}" 
+								completeMethod="#{atividadesBean.usuarioRN.completeText}" placeholder="Usuário"
+								style="font-size: 10px;"/>
+					
+					<p:commandButton class="btnPadrao" value="Consultar" action="#{atividadesBean.filtroLista}" update=":listaAtividades" style="width:120px;"/>
+
+		</h:panelGrid>
+			
+			
+			<p:separator/>
+		</h:form>
+<!-- FIM FILTROS ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+<!-- DIALOG ATIVIDADES//////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<p:dialog id="dlg1" rendered="true" position="center" header="Cadastro de nova atividade"
+				widgetVar="dlg1" minHeight="40" showEffect="explode" hideEffect="explode" modal="true" resizable="false">
+    	<h:form id="atividades">
+			<p:panelGrid style="border-collapse: unset;">
+				<p:row>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" value="Negócio:" for="negocio"/>
+					</p:column>
+					<p:column style="border-width:0px;" colspan="3">
+						<p:autoComplete id="negocio" minQueryLength="3" size="40" scrollHeight="250" value="#{atividadesBean.negocioCliente}" 
+								completeMethod="#{negociosBean.negociosRN.negociosPorCliente}" placeholder="Selecionar Negócio"
+								dropdown="true" style="font-size: 10px;" disabled="#{atividadesBean.bloquearCampo}"/>
+					</p:column>
+					
+					<p:column style="border-width:0px;" colspan="2">
+						<h:outputLabel class="label-padrao" value="Atividade:" for="atividade"/>
+					</p:column>
+					<p:column style="border-width:0px;">
+						<p:selectOneMenu id="atividade" value="#{atividadesBean.atividades.tipoAtividade}" style="width:125px">
+				            <f:selectItem id="origemSubItem" itemLabel="E-mail" itemValue="E-mail" />
+				            <f:selectItem itemLabel="Ligação" itemValue="Ligação" />
+				            <f:selectItem itemLabel="Visita" itemValue="Visita" />
+				            <f:selectItem itemLabel="Proposta" itemValue="Proposta" />
+				            <f:selectItem itemLabel="Reunião" itemValue="Reunião" />
+				            <f:selectItem itemLabel="Financeiro" itemValue="Financeiro" />
+		        		</p:selectOneMenu>
+ 					</p:column>
+				</p:row>
+				
+				<p:row>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" value="Comentário:" for="comentario"/>
+					</p:column>
+					<p:column style="border-width:0px;" colspan="6">
+						<p:inputTextarea id="comentario" rows="5" cols="50" counter="display" maxlength="1000" counterTemplate="{0} caracteres restantes." 
+								value="#{atividadesBean.atividades.obs}" autoResize="false" />
+    					<h:outputText id="display" />
+					</p:column>
+				</p:row>
+				
+				<p:row>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" value="Prazo:" for="prazo"/>
+					</p:column>
+					<p:column style="border-width:0px;">
+						<p:calendar id="prazo" value="#{atividadesBean.atividades.prazo}" pattern="dd-MM-yyyy HH:mm"
+							mask="true" size="14" locale="pt" placeholder="Data e Hora" stepMinute="30"/>
+					</p:column>
+					
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" value="Responsável:" for="responsavel"/>
+											
+					</p:column>
+					<p:column style="border-width:0px;">
+					<p:inputText id="responsavel" class="form-padrao form-mov" value="#{atividadesBean.atividades.usuario.nome}" 
+		             				rendered="#{atividadesBean.bloquerCampoUsuario}"	disabled="true"/>
+		             	<p:autoComplete id="novoUsuario" minQueryLength="2" size="20" scrollHeight="200" value="#{atividadesBean.nomeUsuario}" 
+								completeMethod="#{atividadesBean.usuarioRN.completeText}" placeholder="Selecionar Usuário"
+								dropdown="true" style="font-size: 10px;" rendered="#{atividadesBean.habilitarListaUsuario}"/>
+		        	</p:column>
+		        	
+		        	<p:column style="border-width:0px;">
+		        	<p:commandButton style="font-size: 18px;" action="#{atividadesBean.encaminhar}" value="->" update=":atividades"/>
+		        	</p:column>	
+				</p:row>
+				
+				<p:row>
+					<p:column style="border-width:0px;" colspan="2">
+						<h:outputText class="label-padrao" value="Finalizado:" style="margin-right:20px;"/>
+						<p:selectBooleanCheckbox value="#{atividadesBean.atividades.finalizado}" style="margin-bottom:8px;"/>
+					</p:column>	
+				</p:row>
+				
+			</p:panelGrid>
+			<p:separator/>
+			<h:commandButton class="btnPadrao" style="font-size: 18px; margin-left: 300px;" action="#{atividadesBean.salvar}"
+								value="Salvar" update=":listaAtividades"/>
+		</h:form>
+	</p:dialog>
+<!-- FIM DIALOG ATIVIDADES///////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	
+<!-- DATA SCROLLER //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	<h:form id="listaAtividades"> 
+	    <p:dataScroller id="scrollerAtividades" value="#{atividadesBean.listaAtividades}" var="atividades" chunkSize="20">
+	        <f:facet name="header">
+	            <h:outputText value="#{atividadesBean.qtde}" style="font-size: 18px; text-align:right;" />
+	            <h:outputText value=" Atividades" style="font-size: 18px; text-align:right;" />
+	        </f:facet>
+	 
+	        <f:facet name="loader">
+	            <p:commandButton type="button" value="Exibir mais" icon="ui-icon-circle-triangle-s"/>
+	        </f:facet>
+	 
+	        <h:panelGrid columns="2" style="width:100%" columnClasses="logo,detail">
+	            <p:graphicImage library="imagens" name="#{atividades.tipoAtividade}.png" /> 
+	 
+	            <p:outputPanel>
+	                <h:panelGrid columns="6" cellpadding="4">
+	                	  <h:outputText class="label-padrao" value="Atividade:" style="font-size: 14px;"/>
+	                    <h:outputText value="#{atividades.tipoAtividade}" style="font-weight: bold; font-family: Arial;
+	                    													color: #343436; font-size: 14px;"/>
+	                    
+	                     <h:outputText class="label-padrao" value="Negócio:" style="font-size: 14px;"/>
+	                    <h:outputText value="#{atividades.negocios.cliente.nome}" style="font-weight: bold; font-family: Arial;
+	                    															color: #343436; font-size: 12px;"/>
+	                    
+	                    <h:outputText class="label-padrao" value="Data:" style="font-size: 14px;"/>
+	                    <h:outputText value="#{atividades.data}" style="font-weight: bold; font-family: Arial;
+	                    													color: #343436; font-size: 14px;">
+	                    	<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+	                    </h:outputText>           
+	 					
+	 					<h:outputText class="label-padrao" value="Prazo:" style="font-size: 14px;"/>
+	                    <h:outputText value="#{atividades.prazo}" style="font-weight: bold; font-family: Arial;  border-radius: 8px;  border: solid #1f628d 2px;
+	                    													color: #1f628d; font-size: 14px; padding: 4px;">
+	                    	<f:convertDateTime pattern="dd/MM/yyyy - HH:mm" locale="pt_BR" />
+	                    </h:outputText>
+	 					
+	 					 <h:outputText class="label-padrao" value="Responsável:" style="font-size: 14px;"/>
+	                    <h:outputText value="#{atividades.usuario.nome}" style="font-weight: bold; font-family: Arial;
+	                    													color: #343436; font-size: 14px;"/>
+	                    
+	                    <h:outputText class="label-padrao" value="Finalizado:" style="font-size: 14px;"/>
+	                    <p:commandLink action="#{atividadesBean.status}" update=":listaAtividades :novos">
+							<h:graphicImage library="imagens" name="status_#{atividades.finalizado}.png" style="border:0"/>
+							<f:setPropertyActionListener value="#{atividades}" target="#{atividadesBean.atividades}"/>
+						</p:commandLink>
+						
+						
+	                    
+	                </h:panelGrid>
+	              	
+	              	<p:separator/>
+	              	
+	                <p:panelGrid style="border-collapse: unset;">
+		                <p:row>
+		                	<p:column style="border-width:0px;" colspan="2">
+			                	<h:outputText class="label-padrao" value="Comentário:" style="font-size: 14px;"/>
+			                </p:column>
+			                <p:column style="border-width:0px;" colspan="4">
+			                    <p:outputLabel value="#{atividades.obs}" colspan="2" style="font-weight: bold; font-family: Arial;
+			                    													color: #343436; font-size: 14px;"/>
+			                </p:column>                
+		                	
+		                	
+		                	<p:column style="border-width:0px;" colspan="2">
+			                	<h:outputText class="label-padrao" value="Editar:" style="font-size: 14px;"/>
+			                </p:column>
+		                	<p:column style="border-width:0px;" colspan="2">  													
+			                    <p:commandLink update=":atividades" action="#{atividadesBean.editar}" oncomplete="PF('dlg1').show();">
+									<h:graphicImage library="imagens" name="editar16.png"/>
+									<f:setPropertyActionListener value="#{atividades}" target="#{atividadesBean.atividades}"/>
+								</p:commandLink>
+							</p:column>
+						</p:row>
+	                </p:panelGrid>
+	            </p:outputPanel>
+	        </h:panelGrid>
+	        <p:separator style="height:10px;"/>
+	    </p:dataScroller>
+	</h:form>
+<!-- FIM DATA SCROLLER ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2017-02-22T21:35:26 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Fechamento" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8a6b5f2c-a2c9-4c19-a65e-5075022519cc">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="net.sf.jasperreports.print.create.bookmarks" value="false"/>
+	<parameter name="dataInicial" class="java.util.Date"/>
+	<parameter name="dataFinal" class="java.util.Date"/>
+	<parameter name="codCliente" class="java.lang.Integer"/>
+	<parameter name="tipoMovi" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="cliente" class="java.lang.String">
+		<fieldDescription><![CDATA[cliente]]></fieldDescription>
+	</field>
+	<field name="data" class="java.util.Date">
+		<fieldDescription><![CDATA[data]]></fieldDescription>
+	</field>
+	<field name="totais" class="java.lang.Float">
+		<fieldDescription><![CDATA[totais]]></fieldDescription>
+	</field>
+	<field name="dataInicial" class="java.util.Date">
+		<fieldDescription><![CDATA[dataInicial]]></fieldDescription>
+	</field>
+	<field name="talao" class="java.lang.Integer">
+		<fieldDescription><![CDATA[talao]]></fieldDescription>
+	</field>
+	<field name="dataFinal" class="java.util.Date">
+		<fieldDescription><![CDATA[dataFinal]]></fieldDescription>
+	</field>
+	<field name="tipoMovi" class="java.lang.String">
+		<fieldDescription><![CDATA[tipoMovi]]></fieldDescription>
+	</field>
+	<sortField name="cliente"/>
+	<variable name="tipomovi1" class="java.lang.Integer" resetType="Column" calculation="Count">
+		<variableExpression><![CDATA[$F{tipoMovi}]]></variableExpression>
+	</variable>
+	<variable name="totais1" class="java.lang.Double" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{totais}]]></variableExpression>
+	</variable>
+	<variable name="tipoMovi1" class="java.lang.Integer" resetType="Column" calculation="Count">
+		<variableExpression><![CDATA[$F{tipoMovi}]]></variableExpression>
+	</variable>
+	<variable name="totais2" class="java.lang.Float" calculation="Sum">
+		<variableExpression><![CDATA[$F{totais}]]></variableExpression>
+	</variable>
+	<variable name="tipoMovi2" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{tipoMovi}]]></variableExpression>
+	</variable>
+	<background>
+		<band height="4"/>
+	</background>
+	<title>
+		<band height="72">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="60" width="595" height="12" backcolor="#006699" uuid="f7736c69-e574-4204-88a5-9390eff199ba"/>
+				<staticText>
+					<reportElement x="19" y="-50" width="280" height="40" forecolor="#000000" uuid="2392916e-774a-4d19-89d1-ba982cac0a85"/>
+					<textElement verticalAlignment="Middle">
+						<font size="26" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Performancelab]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="330" y="-34" width="235" height="20" forecolor="#000000" uuid="1804b148-ffaf-4c86-8527-14e025d6a2e4"/>
+					<textElement textAlignment="Right">
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Movimentações - Fechamento]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="62" y="11" width="68" height="19" uuid="9ae56a35-2a15-4844-aa5b-d6aebadabff2"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataInicial}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="11" width="62" height="19" uuid="3b4974be-f4ed-4bd7-a9a2-5ca5922f57cc"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<text><![CDATA[Período de ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="130" y="11" width="19" height="19" uuid="3e16eca7-3451-4fe3-83ba-89ab6642e9a9"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<text><![CDATA[a]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="150" y="11" width="80" height="19" uuid="6ee87667-ccd7-41f0-9c87-fe66f59ff8b6"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataFinal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="32">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<line>
+				<reportElement x="-20" y="27" width="595" height="1" forecolor="#666666" uuid="e61b549c-8038-4d67-972f-236c06fa805e"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="7" width="80" height="20" uuid="a9e02bb6-f357-4c17-a053-c0a2705fa03c">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="7" width="190" height="20" uuid="db5ee2e6-bd13-47b7-b3cf-0d98b0aa5fbc"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cliente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="290" y="7" width="40" height="20" uuid="6b2cb83a-5cc5-4c96-9ed4-208a3046930a"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Talão]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="340" y="7" width="80" height="20" uuid="bb5a84e9-a850-4795-a002-4c670992b4d2"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="430" y="7" width="85" height="20" uuid="3b2c6f03-e5df-4f61-9302-15b5fec2ca23"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Totais]]></text>
+			</staticText>
+			<line>
+				<reportElement x="-20" y="6" width="595" height="1" forecolor="#666666" uuid="0e232531-6103-44c7-ac5c-383a25739aac"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="30">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<line>
+				<reportElement x="-20" y="29" width="595" height="1" forecolor="#666666" uuid="f27ee7ea-f5a0-4827-8fc3-dee1b3c02d9d"/>
+			</line>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="0" y="5" width="80" height="20" uuid="b233eb62-3cb7-4d78-b70c-82e09784f98a">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{data}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="90" y="5" width="190" height="19" uuid="b93a9626-22ba-4115-8d3d-e4ffcc63d12d"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="290" y="5" width="40" height="20" uuid="b3afbea5-8ef9-4fb8-a861-86b65b9ede2b"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{talao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="340" y="5" width="80" height="20" uuid="ef84e207-9eac-4493-8a51-7331190ae915"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipoMovi}]]></textFieldExpression>
+			</textField>
+			<textField pattern="R$0.00">
+				<reportElement x="430" y="5" width="85" height="20" uuid="3460359e-4078-45b6-8a5d-c12e3f67baeb"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{totais}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20">
+			<textField>
+				<reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="3767ac4c-1a8c-424b-b578-ea5e6ba9518c"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="18ce2951-4443-40b3-ab7f-f4018fcbdf42"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="0" y="4" width="180" height="13" uuid="532a56ef-b5fd-48d0-8c30-42bf5ac7b765"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="31">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<staticText>
+				<reportElement x="327" y="8" width="100" height="20" uuid="f0ce4603-61c5-40ce-904b-bded75d70f56">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Geral: ]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="-20" y="4" width="595" height="2" uuid="b2b85d25-a20a-4e8e-b19a-5c3ce7709c6d"/>
+			</line>
+			<staticText>
+				<reportElement x="20" y="8" width="120" height="20" uuid="6e45d26d-a80e-4fde-9a5a-92ccfd2dbedc">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font fontName="Calibri" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[movimentações]]></text>
+			</staticText>
+			<textField pattern="R$0.00">
+				<reportElement x="430" y="8" width="125" height="20" uuid="ed7a6ac9-b551-4979-a801-6e2efe267367">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Calibri" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totais2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-6" y="8" width="26" height="20" uuid="27636d66-9ed9-4f68-a48b-2def1367b871"/>
+				<textElement>
+					<font fontName="Calibri" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{tipoMovi2}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<ui:composition template="/template/interna.xhtml">
+	<ui:define name="titulo">
+		<h:graphicImage library="imagens" name="logoUnity.png" style="height:40px;"/>
+		<h:outputLabel class="label-padrao" value="Negócios" style="margin-left:373px; font-size:30px; font-family:Ubuntu;"/>
+	</ui:define>
+	<ui:define name="corpo">
+		<p:messages id="dlg" showDetail="true" autoUpdate="true" closable="true" />
+<!-- DIALOG NEGOCIO/////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	
+	<p:dialog id="dlg1" rendered="true" position="center" header="Cadastro de novo negócio"
+				widgetVar="dlg1" minHeight="40" width="1050px" showEffect="explode" hideEffect="explode" modal="true"
+				showCloseIcon="true">
+    	<h:form id="negocio">
+		
+		<h:inputHidden id="qtdeAtividades" value="#{negociosBean.negocios.qtdeAtividades}"/>
+			
+		<p:panelGrid style="border-collapse: unset;">
+		<p:row>
+			<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Cliente:" for="nome"/>
+			</p:column>
+			<p:column style="border-width:0px; width:30px;">
+				<p:autoComplete id="acMinLength" minQueryLength="3" size="30" scrollHeight="250" value="#{negociosBean.cliente.nome}" 
+								completeMethod="#{negociosBean.clienteSemNegocios}" effect="fade"
+								required="true" requiredMessage="Cliente é obrigatório." disabled="#{negociosBean.bloquearCampo}"/>
+			</p:column>
+			
+			<p:column style="border-width:0px;">
+				<h:outputText class="label-padrao" value="Status:" />
+			</p:column>
+			<p:column style="border-width:0px;">
+				<p:selectOneMenu id="status" value="#{negociosBean.negocios.status}" style="width:125px">
+			            <f:selectItem id="subItem" itemLabel="Lead" itemValue="Lead" />
+			            <f:selectItem itemLabel="Prospect" itemValue="Prospect" />
+			            <f:selectItem itemLabel="POC / Proposal" itemValue="POC / Proposal" />
+			            <f:selectItem itemLabel="Contract" itemValue="Contract" />
+			            <f:selectItem itemLabel="Active Client" itemValue="Active Client" />
+			            <f:selectItem itemLabel="Declined" itemValue="Declined" />
+	        		</p:selectOneMenu>
+ 
+			</p:column>
+		</p:row>
+		
+		<p:row>
+			<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Produtos:" for="produtos"/>
+			</p:column>
+			<p:column style="border-width:0px;">
+				<p:autoComplete id="produtos" minQueryLength="2" size="10" scrollHeight="250" value="#{negociosBean.produtos}" dropdown="true"
+								multiple="true" completeMethod="#{produtoBean.produtoRN.completeText}" effect="fade"
+								required="true" requiredMessage="Produto é obrigatório."/>
+			</p:column>
+			
+			<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Valor:" for="valor"/>
+			</p:column>
+			<p:column style="border-width:0px;">
+				<p:inputText class="form-padrao form-mov" style="font-size: 18px; text-align:center;" id="valor"
+							value="#{negociosBean.negocios.valor}" size="8" maxlength="7">
+							<f:convertNumber minFractionDigits="2"/>
+				</p:inputText>
+			</p:column>
+		</p:row>
+		
+		<p:row>
+			<p:column style="border-width:0px;">
+				<h:outputText class="label-padrao" value="Origem:" />
+			</p:column>
+			<p:column style="border-width:0px;">
+				<p:selectOneMenu id="origem" value="#{negociosBean.negocios.origem}" style="width:125px">
+			            <f:selectItem id="origemSubItem" itemLabel="Landing Bastão" itemValue="Landing Bastão" />
+			            <f:selectItem itemLabel="Landing Supervisão" itemValue="Landing Supervisão" />
+			            <f:selectItem itemLabel="Site Oficial" itemValue="Site Oficial" />
+			            <f:selectItem itemLabel="Contato FSO" itemValue="Contato FSO" />
+			            <f:selectItem itemLabel="Indicação" itemValue="Indicação" />
+			            <f:selectItem itemLabel="JSeg" itemValue="JSeg" />
+			            <f:selectItem itemLabel="Digital Security" itemValue="Digital Security" />
+	        		</p:selectOneMenu>
+ 
+			</p:column>
+			
+			<p:column style="border-width:0px;">
+				<h:outputText class="label-padrao" value="Responsável:" />
+			</p:column>	
+			<p:column style="border-width:0px;">
+		             <p:inputText class="form-padrao form-mov" value="#{negociosBean.negocios.usuario.nome}" disabled="true"/>
+		        </p:column>	
+		</p:row>
+		
+		<p:row>				
+			<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Observação:" for="obs"/>
+			</p:column>
+			<p:column style="border-width:0px;" colspan="7">
+				<p:inputTextarea id="obs" rows="3" cols="50" counter="display" maxlength="1000" counterTemplate="{0} caracteres restantes." 
+								value="#{negociosBean.negocios.obs}" autoResize="false" />
+    			<h:outputText id="display" />
+			</p:column>
+		</p:row>
+	
+		<p:row>
+			<p:column style="border-width:0px;" colspan="2">
+				<h:outputText class="label-padrao" value="Tornar Responsável?" style="margin-right:20px;"/>
+				<p:selectBooleanCheckbox value="#{negociosBean.responsavel}" />
+			</p:column>	
+		</p:row>
+		
+		<p:row>
+            <p:column style="padding: 0px;" colspan="4"></p:column>
+        </p:row>
+			
+	</p:panelGrid>	
+		<h:commandButton class="btnPadrao" style="font-size: 18px;" action="#{negociosBean.salvar}" value="Salvar" update=":listagem :novo"/>
+	
+	</h:form>
+	
+	<!-- FORM CONTATOS ////////////////////////////////////////////////////// -->
+		
+	<h:form id="listaContatos">
+	<p:commandButton class="btnPadrao" action="#{negociosBean.addContato}" value="Adicionar Contato"
+						update="@form" rendered="#{negociosBean.exibirContatos}"/>
+			<p:dataTable id="tabelaContatos" widgetVar="cellContatos" value="#{negociosBean.listaContatos}" style="width:800px;" var="contatos"
+							editable="true" editMode="cell" scrollable="true" scrollHeight="80" emptyMessage="Não possui contatos"
+							rendered="#{negociosBean.exibirContatos}">
+				
+				<p:ajax event="cellEdit" listener="#{negociosBean.onCellEdit}"/>
+				
+				<p:column ariaHeaderText="Nome" headerText="Nome" style="font-size: 14px; text-align:left; width:100px;">
+		            <p:cellEditor> 
+		              <f:facet name="output"><h:outputText value="#{contatos.nome}" /></f:facet>
+		              <f:facet name="input"><h:inputText value="#{contatos.nome}" /></f:facet>
+		            </p:cellEditor>
+		        </p:column>
+		        
+		        <p:column ariaHeaderText="Email" headerText="E-mail" style="font-size: 14px; text-align:left; width:150px;">
+		             <p:cellEditor> 
+		              <f:facet name="output"><h:outputText value="#{contatos.email}" /></f:facet>
+		              <f:facet name="input"><h:inputText value="#{contatos.email}" /></f:facet>
+		            </p:cellEditor>
+		        </p:column>
+		        
+		        <p:column ariaHeaderText="Telefone" headerText="Telefone" style="font-size: 14px; text-align:center; width:60px;">
+		             <p:cellEditor> 
+		              <f:facet name="output"><h:outputText value="#{contatos.telefone}" /></f:facet>
+		              <f:facet name="input"><p:inputMask value="#{contatos.telefone}" mask="(99) 999999999" maxlength="11"/></f:facet>
+		            </p:cellEditor>
+		        </p:column>
+		        
+			</p:dataTable>
+			
+			<p:contextMenu for="tabelaContatos" widgetVar="cMenu">
+				<p:menuitem value="Editar Célula" icon="ui-icon-search" onclick="PF('cellContatos').showCellEditor();return false;"/>
+				<p:menuitem value="Hide Menu" icon="ui-icon-close" onclick="PF('cMenu').hide()"/>
+			</p:contextMenu>
+	</h:form>
+	
+	<!-- FIM FORM CONTATOS ////////////////////////////////////////////////////// -->
+	
+	</p:dialog>
+<!-- FIM DIALOG /////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+<!-- DIALOG NOVO CLIENTE/////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<p:dialog id="dlg2" rendered="true" position="center" header="Gerenciar Clientes"
+				widgetVar="dlg2" minHeight="40" showEffect="explode" hideEffect="explode" modal="true">
+    	<h:form id="cliente">
+		
+		<h:inputHidden value="#{clienteBean.cliente.codigo}"/>
+							
+		<p:panelGrid style="border-collapse: unset;">
+		<p:row>
+			<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Nome:" for="nome"/>
+			</p:column>
+			<p:column style="border-width:0px; width:80px;" colspan="4">
+				<p:autoComplete id="cliente" minQueryLength="3" size="55"
+								scrollHeight="250" value="#{clienteBean.cliente.nome}" 
+								completeMethod="#{clienteBean.clienteRN.completeText}"
+								required="true" requiredMessage="Nome do Cliente é obrigatório."> 
+					<f:validateLength minimum="10" maximum="100"/>
+				</p:autoComplete>
+			
+			</p:column>
+			
+			
+		</p:row>
+<!-- WEBSERVICE CORREIOS PARA PEGAR O ENDEREÇO //////////////////////////////////////////////////////////////////////// -->		
+		
+			<p:row>
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" value="CEP:" for="cep"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<h:inputText style="width:138px; font-size: 18px;" class="form-padrao form-usuarios" id="cep" 
+								label="CEP" value="#{clienteBean.cep}" maxlength="250"> 
+					</h:inputText>
+					
+				</p:column>
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" value="" for="cep"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<p:commandButton class="btnPadrao" style="font-size: 18px; float:right;" value="Buscar CEP" action="#{clienteBean.buscarEndereco}"
+									onclick="trocaCursor('wait' , this)" oncomplete="trocaCursor('default')" update=":cliente"/>
+				</p:column>
+			</p:row>
+			
+			<p:row>
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" value="Endereço:" for="endereco"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<h:inputText style="width:338px; font-size: 18px;" class="form-padrao form-usuarios" id="endereco" 
+								label="Endereço" value="#{clienteBean.cliente.endereco}" maxlength="250"> 
+					</h:inputText>
+				</p:column>
+				
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" value="Número:" for="numero"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<h:inputText style="width:80px; font-size: 18px;" class="form-padrao form-usuarios" id="numero" 
+								label="Número" value="#{clienteBean.cliente.numero}" maxlength="10"> 
+					</h:inputText>
+				</p:column>
+				
+			</p:row>
+			
+			<p:row>
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" value="Bairro:" for="bairro"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<h:inputText style="width:200px; font-size: 18px;" class="form-padrao form-usuarios" id="bairro" 
+								label="Bairro" value="#{clienteBean.cliente.bairro}" maxlength="150"> 
+					</h:inputText>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" value="Cidade:" for="cidade"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<h:inputText style="width:238px; font-size: 18px;" class="form-padrao form-usuarios" id="cidade" 
+								label="Cidade" value="#{clienteBean.cliente.cidade}" maxlength="150"> 
+					</h:inputText>
+				</p:column>
+				
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" value="UF:" for="uf"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<h:inputText style="width:50px; font-size: 18px;" class="form-padrao form-usuarios" id="uf" 
+								label="UF" value="#{clienteBean.cliente.uf}" maxlength="2"> 
+					</h:inputText>
+				</p:column>
+				
+			</p:row>
+	
+<!-- FIM WEBSERVICE CORREIOS PARA PEGAR O ENDEREÇO //////////////////////////////////////////////////////////////////////// -->	
+		<p:row>
+		<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Observação:" for="obs"/>
+			</p:column>
+			<p:column style="border-width:0px;" colspan="4">
+				<h:inputText style="width:538px; font-size: 18px;" class="form-padrao form-usuarios" id="obs" 
+							label="Observação" value="#{clienteBean.cliente.obs}" maxlength="150"> 
+				</h:inputText>
+			</p:column>
+		</p:row>
+		
+		
+		<p:row>
+            <p:column style="padding: 0px;" colspan="4"></p:column>
+        </p:row>
+			
+	</p:panelGrid>	
+		<h:commandButton class="btnPadrao" style="font-size: 18px;" action="#{clienteBean.salvar}" value="Salvar"/>
+	
+	</h:form>
+	
+</p:dialog>
+<!-- FIM DIALOG /////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	<h:form id="novo">
+			<h:panelGrid columns="5">
+				<p:commandButton class="btnPadrao" value="Novo Cliente" action="#{clienteBean.novo}"
+								onclick="PF('dlg2').show();" update=":cliente"/>
+								
+				<p:commandButton class="btnPadrao" value="Novo Negócio" action="#{negociosBean.limpaForm}"
+								oncomplete="PF('dlg1').show();" update=":negocio :listaContatos"/>
+								
+				<h:outputText class="label-padrao" value="" style="font-size: 18px; text-align:right;" />
+				<h:outputText class="label-padrao" value="Total " style="font-size: 25px; font-weight:bold; text-align:right; padding-left:550px;" />
+                <h:outputText class="label-padrao" value="#{negociosBean.total}" style="font-size: 25px; font-weight:bold; text-align:right;">
+                     <f:convertNumber locale="pt_BR" type="currency" />
+                </h:outputText>
+								
+			</h:panelGrid>			
+	</h:form>
+	<p:separator/>
+	
+	<h:form id="filtro">
+		<h:panelGrid style="border-collapse: unset;" columns="5">					
+					<p:calendar id="dataInicial" value="#{negociosBean.filtro.inicial}" pattern="dd-MM-yyyy"
+							mask="true" size="8" locale="pt" placeholder="Data Inicial"/>
+
+					<p:calendar id="dataFim" value="#{negociosBean.filtro.fim}" pattern="dd-MM-yyyy"
+							mask="true" size="8" locale="pt" placeholder="Data Final"/>
+
+					<p:selectOneMenu id="status" value="#{negociosBean.filtro.status}" style="width:125px">
+			            <f:selectItem id="subItem" itemLabel="Status Negócio" itemValue="" />
+			            <f:selectItem itemLabel="Lead" itemValue="Lead" />
+			            <f:selectItem itemLabel="Prospect" itemValue="Prospect" />
+			            <f:selectItem itemLabel="POC / Proposal" itemValue="POC / Proposal" />
+			            <f:selectItem itemLabel="Contract" itemValue="Contract" />
+			            <f:selectItem itemLabel="Active Client" itemValue="Active Client" />
+			            <f:selectItem itemLabel="Declined" itemValue="Declined" />
+	        		</p:selectOneMenu>
+	        		
+					<p:autoComplete id="buscaCliente" minQueryLength="3" size="40" scrollHeight="250" value="#{negociosBean.filtro.cliente}" 
+								completeMethod="#{negociosBean.negociosRN.negociosPorCliente}" effect="fade" placeholder="Selecionar Negócio"
+								style="font-size: 10px;"/>
+				
+					<p:commandButton class="btnPadrao" value="Consultar" action="#{negociosBean.valorTotal}" update=":listagem :novo" style="width:120px;"/>
+
+		</h:panelGrid>
+	</h:form>
+	
+	<p:separator/>
+<!-- DATATABLE /////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<h:form id="listagem">
+	<p:dataTable width="400"  value="#{negociosBean.lazyNegocios}" lazy="true" widgetVar="tableNegocios"
+						var="negocios" border="1" cellpadding="2" cellspacing="0" rowIndexVar="index"
+						paginator="true" paginatorPosition="bottom" rows="10" id="tbl"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						paginatorAlwaysVisible="true"
+						currentPageReportTemplate="{totalRecords} Negócios">
+			
+			
+			<p:column width="1">
+				<p:rowToggler />
+        	</p:column>
+			
+			<p:column headerText="Id" style="text-align: center;" width="10"  sortBy="#{negocios.id}">
+				<h:outputText value="#{negocios.id}"/>
+			</p:column>
+			
+			
+			<p:column headerText="Data" style="text-align: center;" width="30" sortBy="#{negocios.dataHora}">
+				<h:outputText value="#{negocios.dataHora}">
+					<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" />
+				</h:outputText>
+			</p:column>
+			
+			<p:column headerText="Cliente" width="160">
+				<h:outputText value="#{negocios.cliente.nome}"/>
+			</p:column>
+			
+			<p:column headerText="Valor" style="font-size: 14px; text-align:center;" width="40">
+	             <h:outputText value="#{negocios.valor}">
+	             	<f:convertNumber locale="pt_BR" type="currency" />
+	             </h:outputText>
+        	</p:column>
+			
+			<p:column headerText="Status" style="text-align: center;" width="40"  sortBy="#{negocios.status}">
+				<h:outputText value="#{negocios.status}"/>
+			</p:column>
+			
+			<p:column headerText="Atividades" width="30" style="text-align: center;">
+				<h:outputText value="#{negocios.qtdeAtividades} - " style="font-size:18px;"/>
+				<p:commandLink action="#{negociosBean.viewAtividades}">
+					<h:graphicImage library="imagens" name="lupa.png"/>
+					<f:setPropertyActionListener value="#{negocios}" target="#{negociosBean.negocios}"/>
+				</p:commandLink>
+			</p:column>
+			
+			<p:column style="text-align: center;" width="15" headerText="Editar">
+				<p:commandLink update=":negocio :listaContatos" action="#{negociosBean.editar}" oncomplete="PF('dlg1').show();">
+					<h:graphicImage library="imagens" name="editar16.png"/>
+					<f:setPropertyActionListener value="#{negocios}" target="#{negociosBean.negocios}"/>
+				</p:commandLink>
+			
+			</p:column>
+			
+			<p:rowExpansion>
+				<p:panelGrid style="border-collapse: unset; width:950px;">
+					<p:row>
+						<p:column style="border-width:0px;" width="50px">
+							<h:outputLabel class="label-padrao" value="Responsável:"/>
+						</p:column>
+						<p:column style="border-width:0px; font-size:18px;" width="50px" colspan="5">
+							<h:outputText value="#{negocios.usuario.nome}"/>
+						</p:column>
+					</p:row>
+					
+					<p:row>
+						<p:column style="border-width:0px;" width="50px">
+							<h:outputLabel class="label-padrao" value="Origem:"/>
+						</p:column>
+						<p:column style="border-width:0px; font-size:18px;" width="50px" colspan="5">
+							<h:outputText value="#{negocios.origem}"/>
+						</p:column>
+					</p:row>
+					
+					<p:row>
+						<p:column style="border-width:0px;" width="50px">
+							<h:outputLabel class="label-padrao" value="Observação:"/>
+						</p:column>
+						<p:column style="border-width:0px; font-size:18px; height:80px;" width="150px" colspan="5">
+							<h:outputText value="#{negocios.obs}"/>
+						</p:column>
+					</p:row>
+					
+				</p:panelGrid>
+			</p:rowExpansion>	
+	</p:dataTable>
+	
+</h:form>
+
+	
+	</ui:define>
+</ui:composition>
+</html>

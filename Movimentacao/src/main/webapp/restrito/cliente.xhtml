@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<ui:composition template="/template/interna.xhtml">
+	<ui:define name="titulo">
+		<h:graphicImage library="imagens" name="logoUnity.png" style="height:40px;"/>
+		<h:outputLabel class="label-padrao" value="Clientes" style="margin-left:373px; font-size:30px; font-family:Ubuntu;"/>
+	</ui:define>
+	<ui:define name="corpo">
+	
+	<p:messages id="dlg" showDetail="true" autoUpdate="true" closable="true"/>
+	
+	<!-- DIOLOG CLIENTE//////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<p:dialog id="dlg1" rendered="true" position="center" header="Gerenciar Clientes"
+				widgetVar="dlg1" minHeight="40" showEffect="explode" hideEffect="explode" modal="true">
+				
+    <h:form id="edicao">
+		
+		<h:inputHidden value="#{clienteBean.cliente.codigo}"/>
+							
+		<p:panelGrid style="border-collapse: unset;">
+		<p:row>
+			<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Nome:" for="nome"/>
+			</p:column>
+			<p:column style="border-width:0px; width:80px;" colspan="4">
+				<p:autoComplete id="cliente" minQueryLength="3" size="55"
+								scrollHeight="250" value="#{clienteBean.cliente.nome}" 
+								completeMethod="#{clienteBean.clienteRN.completeText}"
+								required="true" requiredMessage="Nome do Cliente é obrigatório."> 
+					<f:validateLength minimum="10" maximum="100"/>
+				</p:autoComplete>
+			
+			</p:column>
+			
+			
+		</p:row>
+<!-- WEBSERVICE CORREIOS PARA PEGAR O ENDEREÇO //////////////////////////////////////////////////////////////////////// -->		
+		
+			<p:row>
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" value="CEP:" for="cep"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<h:inputText style="width:138px; font-size: 18px;" class="form-padrao form-usuarios" id="cep" 
+								label="CEP" value="#{clienteBean.cep}" maxlength="250"> 
+					</h:inputText>
+					
+				</p:column>
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" value="" for="cep"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<p:commandButton class="btnPadrao" style="font-size: 18px; float:right;" value="Buscar CEP" action="#{clienteBean.buscarEndereco}"
+									onclick="trocaCursor('wait' , this)" oncomplete="trocaCursor('default')" update=":edicao"/>
+				</p:column>
+			</p:row>
+			
+			<p:row>
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" value="Endereço:" for="endereco"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<h:inputText style="width:338px; font-size: 18px;" class="form-padrao form-usuarios" id="endereco" 
+								label="Endereço" value="#{clienteBean.cliente.endereco}" maxlength="250"> 
+					</h:inputText>
+				</p:column>
+				
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" value="Número:" for="numero"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<h:inputText style="width:80px; font-size: 18px;" class="form-padrao form-usuarios" id="numero" 
+								label="Número" value="#{clienteBean.cliente.numero}" maxlength="10"> 
+					</h:inputText>
+				</p:column>
+				
+			</p:row>
+			
+			<p:row>
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" value="Bairro:" for="bairro"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<h:inputText style="width:200px; font-size: 18px;" class="form-padrao form-usuarios" id="bairro" 
+								label="Bairro" value="#{clienteBean.cliente.bairro}" maxlength="150"> 
+					</h:inputText>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" value="Cidade:" for="cidade"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<h:inputText style="width:238px; font-size: 18px;" class="form-padrao form-usuarios" id="cidade" 
+								label="Cidade" value="#{clienteBean.cliente.cidade}" maxlength="150"> 
+					</h:inputText>
+				</p:column>
+				
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" value="UF:" for="uf"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<h:inputText style="width:50px; font-size: 18px;" class="form-padrao form-usuarios" id="uf" 
+								label="UF" value="#{clienteBean.cliente.uf}" maxlength="2"> 
+					</h:inputText>
+				</p:column>
+				
+			</p:row>
+	
+<!-- FIM WEBSERVICE CORREIOS PARA PEGAR O ENDEREÇO //////////////////////////////////////////////////////////////////////// -->			
+		
+		
+		<p:row>
+		<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Observação:" for="obs"/>
+			</p:column>
+			<p:column style="border-width:0px;" colspan="4">
+				<h:inputText style="width:538px; font-size: 18px;" class="form-padrao form-usuarios" id="obs" 
+							label="Observação" value="#{clienteBean.cliente.obs}" maxlength="150"> 
+				</h:inputText>
+			</p:column>
+		</p:row>
+		
+		
+		<p:row>
+            <p:column style="padding: 0px;" colspan="4"></p:column>
+        </p:row>
+			
+	</p:panelGrid>	
+		<h:commandButton class="btnPadrao" style="font-size: 18px;" action="#{clienteBean.salvar}" value="Salvar" update=":listagem"/>
+	
+	</h:form>
+	
+	</p:dialog>
+	<!-- FIM DIOLOG CLIENTE//////////////////////////////////////////////////////////////////////////////////////////////// -->
+	
+	<h:form id="novo">
+			<h:panelGrid>
+				<p:commandButton class="btnPadrao" value="Novo Cliente" action="#{clienteBean.novo}" onclick="PF('dlg1').show();"
+									update=":edicao"/>
+			</h:panelGrid>
+	</h:form>
+	<p:separator/>
+	<h:form id="listagem">
+	
+		<h:panelGrid columns="4">
+					<p:selectOneMenu id="status" value="#{clienteBean.filtro.status}" style="width:125px">
+			            <f:selectItem id="subItem" itemLabel="Status" itemValue="" />
+			            <f:selectItem itemLabel="Ativo" itemValue="true" />
+			            <f:selectItem itemLabel="Inativo" itemValue="false" />
+	        		</p:selectOneMenu>
+        		
+				<!-- <p:inputText class="form-padrao form-usuarios" value="#{clienteBean.filtro.nome}" 
+							id="nome" placeholder="Busca por nome"/> -->
+							
+				<p:autoComplete id="acMinLength" minQueryLength="3" size="30" scrollHeight="250" value="#{clienteBean.filtro.nome}" 
+								completeMethod="#{clienteBean.clienteRN.completeText}" effect="fade" placeholder="Busca por nome"/>
+			
+				<p:commandButton class="btnPadrao" value="Consultar" update=":listagem" />
+
+		</h:panelGrid>
+	
+	<p:separator/>
+	
+	
+		<p:dataTable width="400"  value="#{clienteBean.lazyCliente}" lazy="true" widgetVar="tableClientes"
+						var="cliente" border="1" cellpadding="2" cellspacing="0" rowIndexVar="index"
+						paginator="true" paginatorPosition="bottom" rows="10" id="tbl"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						paginatorAlwaysVisible="true"
+						currentPageReportTemplate="{totalRecords} Clientes">
+			
+			<p:column style="text-align: center;" headerText="Id" width="40" sortBy="#{cliente.codigo}">
+				<h:outputText value="#{cliente.codigo}"/>
+			</p:column>
+			
+			<p:column width="550" headerText="Nome" sortBy="#{cliente.nome}">
+				<h:outputText value="#{cliente.nome}"/>
+			</p:column>
+			
+			<p:column headerText="Observação" sortBy="#{cliente.obs}">
+				<h:outputText value="#{cliente.obs}"/>
+			</p:column>
+
+			<p:column style="text-align: center;" width="40" headerText="Editar">
+				<p:commandLink action="#{clienteBean.editar}" oncomplete="PF('dlg1').show();" update=":edicao">
+					<h:graphicImage library="imagens" name="editar16.png"/>
+					<f:setPropertyActionListener value="#{cliente}" target="#{clienteBean.cliente}"/>
+				</p:commandLink>
+			
+			</p:column>
+			
+			<p:column style="text-align: center;" width="40" headerText="Status">
+				<p:commandLink action="#{clienteBean.status}" update=":listagem">
+					<h:graphicImage library="imagens" name="status_#{cliente.status}.png" style="border:0"/>
+					<f:setPropertyActionListener value="#{cliente}" target="#{clienteBean.cliente}"/>
+				</p:commandLink>
+			
+			</p:column>
+			
+		</p:dataTable>
+		
+	</h:form>
+
+	
+	
+	</ui:define>
+</ui:composition>
+</html>

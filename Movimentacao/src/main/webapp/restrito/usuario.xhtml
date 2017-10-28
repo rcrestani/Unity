@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags">
+<ui:composition template="/template/interna.xhtml">
+	<ui:define name="titulo">
+		<h:graphicImage library="imagens" name="logoUnity.png" style="height:40px;"/>
+		<h:outputLabel class="label-padrao" value="Usuários" style="margin-left:373px; font-size:30px; font-family:Ubuntu;"/>
+	</ui:define>
+	<ui:define name="corpo">
+	
+	<sec:ifAnyGranted roles="ROLE_ADM">
+	<p:messages id="dlg" autoUpdate="true" closable="true"/>
+	<!-- DIOLOG USUÁRIO//////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<p:dialog id="dlg1" rendered="true" position="center" header="Gerenciar Usuários"
+				widgetVar="dlg1" minHeight="40" showEffect="explode" hideEffect="explode" modal="true">
+				
+		<h:form id="edicao">
+	        <p:messages id="dlg" autoUpdate="true" closable="true"/>
+			<h:inputHidden value="#{usuarioBean.usuario.codigo}"/>
+								
+			<p:panelGrid style="border-collapse: unset;">
+			<p:row>
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" value="Nome:" for="nome"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<p:inputText class="form-padrao form-usuarios" id="nome" label="Nome" value="#{usuarioBean.usuario.nome}" size="30" 
+						maxlength="30" required="true" requiredMessage="Você não tem nome?"> 
+						<f:validateLength minimum="10" maximum="30"/> 
+					</p:inputText>
+				</p:column>
+				
+				<p:column style="border-width:0px;">
+				<h:outputLabel class="label-padrao" value="Login:" for="login"/>
+				</p:column>
+				
+				<p:column style="border-width:0px;">
+				<p:inputText class="form-padrao form-usuarios" id="login" 
+							label="Login" 
+							value="#{usuarioBean.usuario.login}" 
+							size="15" maxlength="15" required="true"
+							validatorMessage="Login deve ter no mínimo 5 e no máximo 15 caracteres e só pode ter os símbolos '.' e '_'.">
+					<f:validateRegex pattern="([a-z]|[0-9]|[.]|[_]){5,15}"/>
+				</p:inputText>
+				</p:column>
+				
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" value="E-mail:" for="email"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<p:inputText class="form-padrao form-usuarios" id="email" label="email" value="#{usuarioBean.usuario.email}" size="50" 
+						maxlength="50" required="true" requiredMessage="E-mail é obrigatório"> 
+						<f:validateLength minimum="10" maximum="50"/> 
+					</p:inputText>
+				</p:column>
+			</p:row>
+	
+			<p:row>
+	            <p:column style="padding: 0px;" colspan="6"></p:column>
+	        </p:row>
+				
+			
+			<p:row>
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" value="Telegram ID:" for="telegramId"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+				<p:inputText class="form-padrao form-usuarios" style="font-size: 18px; text-align:center;" id="telegramId"
+							value="#{usuarioBean.usuario.telegramId}" maxlength="10">
+							<f:convertNumber/>
+				</p:inputText>
+			</p:column>
+				
+				
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" value="Senha:" for="senha"/>
+				</p:column>
+				
+				<p:column style="border-width:0px;">
+					<p:password class="form-padrao form-usuarios" id="senha" label="Senha" value="#{usuarioBean.usuario.senha}" size="10"
+					maxlength="10" redisplay="true"/>
+				</p:column>
+				
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" value="Confirmar Senha:" for="confirmarsenha"/>
+				</p:column>
+				
+				<p:column style="border-width:0px;">
+					<p:password class="form-padrao form-usuarios" id="confirmarsenha" label="Confirmar Senha" value="#{usuarioBean.confirmarSenha}" 
+					size="10" maxlength="10" redisplay="true"/>
+				</p:column>
+			</p:row>
+			<p:row>
+	            <p:column style="padding: 0px;" colspan="6"></p:column>
+	        </p:row>
+		</p:panelGrid>
+		
+			<h:commandButton class="btnPadrao" action="#{usuarioBean.salvar}" value="Salvar" update=":listagem"/>
+	
+		</h:form>
+	</p:dialog>
+<!-- FIM DIOLOG USUÁRIO//////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+<!-- FILTROS/////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<h:form id="novo">
+			<h:panelGrid>
+				<p:commandButton class="btnPadrao" value="Novo Usuário" action="#{usuarioBean.novo}" onclick="PF('dlg1').show();"
+									update=":edicao"/>
+			</h:panelGrid>
+	</h:form>
+<!-- FIM FILTROS/////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+<!-- DATATABLE///////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<h:form id="listagem">
+		<p:dataTable width="400"  value="#{usuarioBean.lazyUsuario}" lazy="true"
+						var="usuario" border="1" cellpadding="2" cellspacing="0" rowIndexVar="index"
+						paginator="true" paginatorPosition="bottom" rows="10" id="tbl">
+		
+			<p:column headerText="Nome" width="70" sortBy="#{usuario.nome}">
+				<h:outputText value="#{usuario.nome}"/>
+			</p:column>
+			
+			<p:column style="text-align: center;" headerText="Login" width="70" sortBy="#{usuario.login}">
+				<h:outputText value="#{usuario.login}"/>
+			</p:column>
+			
+			<p:column headerText="E-mail" width="100" sortBy="#{usuario.email}">
+				<h:outputText value="#{usuario.email}"/>
+			</p:column>
+			
+			<p:column style="text-align: center;" headerText="Telegram ID" width="50">
+				<h:outputText value="#{usuario.telegramId}"/>
+			</p:column>
+			
+			<p:column style="text-align: center;" width="20" headerText="Editar">
+				<p:commandLink  action="#{usuarioBean.editar}" update=":edicao" onclick="PF('dlg1').show();">
+					<h:graphicImage library="imagens" name="editar16.png"/>
+					<f:setPropertyActionListener value="#{usuario}" target="#{usuarioBean.usuario}"/>
+				</p:commandLink>
+			
+			</p:column>
+			
+			<p:column style="text-align: center;" width="20" headerText="Status">
+				<p:commandLink action="#{usuarioBean.status}" update=":listagem">
+					<h:graphicImage library="imagens" name="status_#{usuario.ativo}.png" style="border:0"/>
+					<f:setPropertyActionListener value="#{usuario}" target="#{usuarioBean.usuario}"/>
+				</p:commandLink>
+			
+			</p:column>
+			
+		</p:dataTable>
+	</h:form>
+<!-- FIM DATATABLE/////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+</sec:ifAnyGranted>
+</ui:define>
+</ui:composition>
+</html>

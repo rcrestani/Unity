@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<ui:composition template="/template/interna.xhtml">
+	<ui:define name="titulo">
+		<h:graphicImage library="imagens" name="logoUnity.png" style="height:40px;"/>
+		<h:outputLabel class="label-padrao" value="Trocar Senha" style="margin-left:353px; font-size:30px; font-family:Ubuntu;"/>
+	</ui:define>
+	<ui:define name="corpo">
+	
+	<p:messages id="dlg" autoUpdate="true" closable="true" style="color: #cce8f6;"/>
+	<h:form>
+				
+			<p:panelGrid style="border-collapse: unset;">
+				<p:row>
+								
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" value="Senha Atual:"/>
+					</p:column>
+					<p:column style="border-width:0px;" width="50px">
+						<p:password class="form-padrao form-mov" style="font-size: 18px;" id="senhaAtual"
+									value="#{usuarioBean.senhaAtual}" size="10" minlength="4" maxlength="10"
+										required="true" requiredMessage="Senha Atual é obrigatória."/>
+					</p:column>
+				</p:row>
+				
+				<p:row>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" value="Nova Senha:"/>
+					</p:column>
+					<p:column style="border-width:0px;" width="50px">
+						<p:password class="form-padrao form-mov" style="font-size: 18px;" id="senhaNova"
+									value="#{usuarioBean.senhaNova}" size="10" maxlength="10"
+									required="true" requiredMessage="Nova Senha é obrigatória."/>
+					</p:column>
+				</p:row>
+				
+				<p:row>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" value="Confirmar Senha:"/>
+					</p:column>
+					<p:column style="border-width:0px;" width="50px">
+						<p:password class="form-padrao form-mov" style="font-size: 18px;" id="confirmarSenha"
+									value="#{usuarioBean.confirmarSenha}" size="10" maxlength="10"
+									required="true" requiredMessage="Confirmar Senha é obrigatório."/>
+					</p:column>
+				</p:row>
+			</p:panelGrid>
+				<p:commandButton class="btnPadrao" action="#{usuarioBean.trocarSenha}" value="Alterar" update="@form"/>
+		</h:form>
+	
+</ui:define>
+</ui:composition>
+</html>

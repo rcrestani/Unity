@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2017-02-25T12:08:37 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Fechamento" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8a6b5f2c-a2c9-4c19-a65e-5075022519cc">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="FechamentoAdapter"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="qtde" class="java.lang.Integer">
+		<fieldDescription><![CDATA[qtde]]></fieldDescription>
+	</field>
+	<field name="codigo" class="java.lang.Integer">
+		<fieldDescription><![CDATA[codigo]]></fieldDescription>
+	</field>
+	<field name="descricao" class="java.lang.String">
+		<fieldDescription><![CDATA[descricao]]></fieldDescription>
+	</field>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="72">
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="60" width="595" height="12" backcolor="#006699" uuid="f7736c69-e574-4204-88a5-9390eff199ba"/>
+				<staticText>
+					<reportElement x="19" y="-60" width="280" height="43" forecolor="#000000" uuid="2392916e-774a-4d19-89d1-ba982cac0a85"/>
+					<textElement>
+						<font fontName="Calibri" size="34" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Performancelab]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="330" y="-34" width="235" height="20" forecolor="#000000" uuid="1804b148-ffaf-4c86-8527-14e025d6a2e4"/>
+					<textElement textAlignment="Right">
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Posição do Estoque Atual]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="41">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<staticText>
+				<reportElement x="0" y="11" width="80" height="19" uuid="3b4974be-f4ed-4bd7-a9a2-5ca5922f57cc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<text><![CDATA[Estoque em]]></text>
+			</staticText>
+			<textField pattern="d/M/yyyy">
+				<reportElement x="82" y="11" width="138" height="19" uuid="385d2ff1-c0c3-4435-8455-17952f88742c"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="32">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<line>
+				<reportElement x="-20" y="27" width="595" height="1" forecolor="#666666" uuid="e61b549c-8038-4d67-972f-236c06fa805e"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="7" width="80" height="20" uuid="a9e02bb6-f357-4c17-a053-c0a2705fa03c">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="7" width="190" height="20" uuid="db5ee2e6-bd13-47b7-b3cf-0d98b0aa5fbc"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descrição]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="290" y="7" width="40" height="20" uuid="6b2cb83a-5cc5-4c96-9ed4-208a3046930a"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Qtde]]></text>
+			</staticText>
+			<line>
+				<reportElement x="-20" y="6" width="595" height="1" forecolor="#666666" uuid="0e232531-6103-44c7-ac5c-383a25739aac"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="30">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<line>
+				<reportElement x="-20" y="21" width="595" height="1" forecolor="#666666" uuid="f27ee7ea-f5a0-4827-8fc3-dee1b3c02d9d"/>
+			</line>
+			<textField>
+				<reportElement x="0" y="0" width="80" height="20" uuid="e0a891b4-a5a0-4021-96c4-6d0247dd6c1e"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="90" y="0" width="189" height="20" uuid="9d1ef032-366b-4024-9937-dc0515093442"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="290" y="0" width="40" height="20" uuid="43aea269-ff6a-499d-8d5e-58d65f8d6fb8"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{qtde}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band>
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="17">
+			<textField>
+				<reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="3767ac4c-1a8c-424b-b578-ea5e6ba9518c"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="18ce2951-4443-40b3-ab7f-f4018fcbdf42"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="0" y="4" width="260" height="13" uuid="532a56ef-b5fd-48d0-8c30-42bf5ac7b765"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>

@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-@Entity (name = "cartaoVisita")
+@Entity (name="cartaoVisita")
 public class CartaoVisita implements Serializable
 {
 	private static final long serialVersionUID = -2100680725931240152L;

@@ -8,5 +8,4 @@ public interface CartaoVisitaDAO
 	public void excluir(CartaoVisita cartaoVisita);
 	public CartaoVisita carregar(Integer id);
 	public List<CartaoVisita> listar(CartaoVisitaFiltro filtro);
-
 }

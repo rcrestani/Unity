@@ -34,9 +34,7 @@ public class CartaoVisitaDAOHibernate implements CartaoVisitaDAO
 	public List<CartaoVisita> listar(CartaoVisitaFiltro filtro) 
 	{
 		Criteria criteria = this.session.createCriteria(CartaoVisita.class);
-		
-		
-		
+				
 		return criteria.list();
 	}
 }

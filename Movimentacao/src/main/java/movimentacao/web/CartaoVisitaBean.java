@@ -28,6 +28,7 @@ import movimentacao.cartaoVisita.CartaoVisita;
 import movimentacao.cartaoVisita.CartaoVisitaFiltro;
 import movimentacao.cartaoVisita.CartaoVisitaRN;
 import movimentacao.enderecoRaiz.Constantes;
+import movimentacao.telegramBot.Robot;
 import movimentacao.util.RedimensionarImagem;
 
 @ManagedBean (name = "cartaoVisitaBean")
@@ -69,6 +70,14 @@ public class CartaoVisitaBean implements Serializable
 	{
 		this.cartaoVisita = new CartaoVisita();
 		//this.ativaUpload = false;
+		
+		return null;
+	}
+	
+	public String ativarBot()
+	{
+		Robot robot = new Robot();
+		robot.telegramBot();
 		
 		return null;
 	}

@@ -2,8 +2,11 @@ package movimentacao.cartaoVisita;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Restrictions;
 
 public class CartaoVisitaDAOHibernate implements CartaoVisitaDAO
 {
@@ -34,7 +37,12 @@ public class CartaoVisitaDAOHibernate implements CartaoVisitaDAO
 	public List<CartaoVisita> listar(CartaoVisitaFiltro filtro) 
 	{
 		Criteria criteria = this.session.createCriteria(CartaoVisita.class);
-				
+		
+		if(StringUtils.isNotEmpty(filtro.getNome()))
+		{
+			criteria.add(Restrictions.ilike("nome", filtro.getNome(), MatchMode.ANYWHERE));
+		}
+						
 		return criteria.list();
 	}
 }

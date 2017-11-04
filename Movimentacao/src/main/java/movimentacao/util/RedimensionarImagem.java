@@ -7,8 +7,6 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import movimentacao.enderecoRaiz.Constantes;
-
 public class RedimensionarImagem {
 
 	public void redimensionar(BufferedImage image, String name) throws IOException
@@ -22,7 +20,7 @@ public class RedimensionarImagem {
 	        Graphics2D g = newImage.createGraphics();
 	        g.drawImage(imagem, 0, 0, largura, altura, null);
 	        
-	        ImageIO.write(newImage, "JPG", new File(Constantes.CAMINHO_SERVIDOR + "/resources/cartoesVisita" , name));
+	        ImageIO.write(newImage, "JPG", new File("/opt/unityImages/cartoesVisita/" , name));
 
 	}
 

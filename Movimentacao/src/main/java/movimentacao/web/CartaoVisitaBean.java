@@ -27,8 +27,6 @@ import org.primefaces.event.FileUploadEvent;
 import movimentacao.cartaoVisita.CartaoVisita;
 import movimentacao.cartaoVisita.CartaoVisitaFiltro;
 import movimentacao.cartaoVisita.CartaoVisitaRN;
-import movimentacao.enderecoRaiz.Constantes;
-import movimentacao.telegramBot.Robot;
 import movimentacao.util.RedimensionarImagem;
 
 @ManagedBean (name = "cartaoVisitaBean")
@@ -56,8 +54,8 @@ public class CartaoVisitaBean implements Serializable
 	{
 		if(StringUtils.isEmpty(this.cartaoVisita.getArquivoImagemFrente()))
 		{
-			this.cartaoVisita.setArquivoImagemFrente("provisorio");
-			this.cartaoVisita.setArquivoImagemVerso("provisorio");
+			this.cartaoVisita.setArquivoImagemFrente("cartaoDefault.jpg");
+			this.cartaoVisita.setArquivoImagemVerso("cartaoDefault.jpg");
 		}
 		
 		this.cartaoVisitaRN.salvar(this.cartaoVisita);
@@ -70,14 +68,6 @@ public class CartaoVisitaBean implements Serializable
 	{
 		this.cartaoVisita = new CartaoVisita();
 		//this.ativaUpload = false;
-		
-		return null;
-	}
-	
-	public String ativarBot()
-	{
-		Robot robot = new Robot();
-		robot.telegramBot();
 		
 		return null;
 	}
@@ -127,14 +117,19 @@ public class CartaoVisitaBean implements Serializable
 			    
 			    //Atualizando o objeto com o arquivo salvo=======================
 			    this.cartaoVisita.setArquivoImagemFrente(fileNameMD5);
+			    this.cartaoVisitaRN.salvar(this.cartaoVisita);
 			    
 			    FacesContext.getCurrentInstance().addMessage(
 			               null, new FacesMessage("Upload completo! A Imagem " + event.getFile().getFileName() + " foi salva!"));
 			}
 			else
 			{
-				File file = new File(Constantes.CAMINHO_SERVIDOR + "/resources/cartoesVisita/" + this.cartaoVisita.getArquivoImagemFrente());
-				file.delete();
+				if(!this.cartaoVisita.getArquivoImagemFrente().equals("cartaoDefault.jpg"))
+				{
+					File file = new File("/opt/unityImages/cartoesVisita/" + this.cartaoVisita.getArquivoImagemFrente());
+					file.delete();
+				}
+				
 
 				//Passando o stream do evento do arquivo para o tipo BufferedImage============
 				BufferedImage imagem = ImageIO.read(event.getFile().getInputstream());
@@ -205,14 +200,18 @@ public class CartaoVisitaBean implements Serializable
 					    
 					    //Atualizando o objeto com o arquivo salvo=======================
 					    this.cartaoVisita.setArquivoImagemVerso(fileNameMD5);
+					    this.cartaoVisitaRN.salvar(this.cartaoVisita);
 					    
 					    FacesContext.getCurrentInstance().addMessage(
 					               null, new FacesMessage("Upload completo! A Imagem " + event.getFile().getFileName() + " foi salva!"));
 					}
 					else
 					{
-						File file = new File(Constantes.CAMINHO_SERVIDOR + "/resources/cartoesVisita/" + this.cartaoVisita.getArquivoImagemVerso());
-						file.delete();
+						if(!this.cartaoVisita.getArquivoImagemVerso().equals("cartaoDefault.jpg"))
+						{
+							File file = new File("/opt/unityImages/cartoesVisita/" + this.cartaoVisita.getArquivoImagemVerso());
+							file.delete();
+						}
 
 						//Passando o stream do evento do arquivo para o tipo BufferedImage============
 						BufferedImage imagem = ImageIO.read(event.getFile().getInputstream());
@@ -234,7 +233,7 @@ public class CartaoVisitaBean implements Serializable
 				              null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Erro", e.getMessage()));
 				}
     }
-	
+
 	private String formatDate(Date data) 
 	{
 		DateFormat dateFormat = new SimpleDateFormat("ddMMyyyyhhmm");

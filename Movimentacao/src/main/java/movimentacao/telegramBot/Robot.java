@@ -100,23 +100,41 @@ public class Robot
 					List<CartaoVisita> lista = cartaoVisitaRN.listar(filtro);
 					String dados = "";
 					
-					for(int x = 0; x < lista.size(); x++)
+					if(lista.size() > 1)
 					{
-						String index = String.format("%d", x);
-						dados = dados + "\n" + index + ": " + lista.get(x).getNome() + " - " + lista.get(x).getEmpresa();
+						for(int x = 0; x < lista.size(); x++)
+						{
+							dados = dados + "\nID: " + lista.get(x).getId() + " - " + lista.get(x).getNome() + " - " + lista.get(x).getEmpresa();
+						}
+						
+						//envio de "Escrevendo" antes de enviar a resposta
+						baseResponse = bot.execute(new SendChatAction(update.message().chat().id(), ChatAction.find_location));
+						//verificação de ação de chat foi enviada com sucesso
+						System.out.println("Resposta de Chat Action Enviada?" + baseResponse.isOk());
+						
+						//envio da mensagem de resposta
+						sendResponse = bot.execute(new SendMessage(update.message().chat().id(),"Cartões Encontrado:"));
+						sendResponse = bot.execute(new SendMessage(update.message().chat().id(), dados));
+						sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
+								"Escolha digitando CV [espaço] ID:"));
+						//verificação de mensagem enviada com sucesso
+						System.out.println("Mensagem Enviada?" +sendResponse.isOk());
+					}
+					else
+					{
+						Integer id = Integer.parseInt(partes[1]);
+						filtro.setId(id);
+						cartaoVisita = cartaoVisitaRN.carregar(id);
+						sendResponse = bot.execute(new SendDocument(update.message().chat().id(),
+								new File("/home/rcrestani/Pictures/" + cartaoVisita.getArquivoImagemFrente())));
+						//verificação de mensagem enviada com sucesso
+						System.out.println("Mensagem Enviada?" +sendResponse.isOk());
 					}
 					
-					//envio de "Escrevendo" antes de enviar a resposta
-					baseResponse = bot.execute(new SendChatAction(update.message().chat().id(), ChatAction.find_location));
-					//verificação de ação de chat foi enviada com sucesso
-					System.out.println("Resposta de Chat Action Enviada?" + baseResponse.isOk());
 					
-					//envio da mensagem de resposta
-					sendResponse = bot.execute(new SendMessage(update.message().chat().id(),"Cartões Encontrado:"));
-					sendResponse = bot.execute(new SendMessage(update.message().chat().id(), dados));
-					//sendResponse = bot.execute(new SendDocument(update.message().chat().id(), new File("/home/rcrestani/Pictures/Batman.jpg")));
-					//verificação de mensagem enviada com sucesso
-					System.out.println("Mensagem Enviada?" +sendResponse.isOk());
+					
+					
+					
 					sendResponse = null;
 				}
 				

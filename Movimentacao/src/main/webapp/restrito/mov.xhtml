@@ -79,7 +79,7 @@
 			</p:column>
 			<p:column style="border-width:0px;" colspan="5">
 				<p:autoComplete id="cliente" minQueryLength="3" size="55"
-								scrollHeight="250" value="#{movBean.cliente.nome}" 
+								scrollHeight="250" value="#{movBean.cliente.nome}" forceSelection="true"
 								completeMethod="#{clienteBean.clienteRN.completeText}" effect="fade"
 								required="true" requiredMessage="Cliente é obrigatório."> 
 					<f:validateLength minimum="10" maximum="100"/> 
@@ -142,7 +142,7 @@
 			
 			<p:column style="border-width:0px;">
 				<p:autoComplete id="produto" minQueryLength="2" size="20"
-								scrollHeight="250" value="#{movBean.nomeProd}" 
+								scrollHeight="250" value="#{movBean.nomeProd}" forceSelection="true"
 								completeMethod="#{movBean.produtoRN.completeText}" effect="fade"
 								required="true" requiredMessage="Produto é obrigatório." placeholder="Descrição"> 
 					<p:ajax event="itemSelect" listener="#{movBean.onItemSelect}" update=":itens" />

@@ -68,20 +68,29 @@ public class NegociosSemAtividadesBean implements Serializable
 			{
 				this.negocios = listaNegocios.get(x);
 				this.atividades = this.atividadesRN.ultimaAtividade(this.negocios);
-				
+								
 				//Tratando os negócios sem atividades, os que possuem estão sendo setados no else abaixo===============
 				if(this.atividades == null)
 				{
-					NegociosSemAtividades negSemAtiv = new NegociosSemAtividades();
-					negSemAtiv.setStatusNegocio(this.negocios.getStatus());
-					negSemAtiv.setNomeNegocio(this.negocios.getCliente().getNome());
-					negSemAtiv.setValorNegocio(this.negocios.getValor());
-					negSemAtiv.setPrazoAtividade(dataFinal);
-					negSemAtiv.setAcaoAtividade("E-mail");
-					negSemAtiv.setObsAtividade("NEGÓCIO SEM ATIVIDADE");
-					negSemAtiv.setResponsavel(this.negocios.getUsuario().getNome());
+					try
+					{
+						NegociosSemAtividades negSemAtiv = new NegociosSemAtividades();
+						negSemAtiv.setStatusNegocio(this.negocios.getStatus());
+						negSemAtiv.setNomeNegocio(this.negocios.getCliente().getNome());
+						negSemAtiv.setValorNegocio(this.negocios.getValor());
+						negSemAtiv.setPrazoAtividade(dataFinal);
+						negSemAtiv.setAcaoAtividade("E-mail");
+						negSemAtiv.setObsAtividade("NEGÓCIO SEM ATIVIDADE");
+						negSemAtiv.setResponsavel(this.negocios.getUsuario().getNome());
+						
+						this.lista.add(negSemAtiv);
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+						return "/restrito/errorPage.jsf";
+					}
 					
-					this.lista.add(negSemAtiv);
 				}
 				else
 				{
@@ -108,6 +117,7 @@ public class NegociosSemAtividadesBean implements Serializable
 					catch (ParseException e) 
 					{
 						e.printStackTrace();
+						return "/restrito/errorPage.jsf";
 					}
 				}
 				

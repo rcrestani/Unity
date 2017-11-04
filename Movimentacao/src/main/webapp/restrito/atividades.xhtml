@@ -64,7 +64,7 @@
 	        		</p:selectOneMenu>
 					
 					<p:autoComplete id="buscaUsuario" minQueryLength="3" size="20" scrollHeight="100" dropdown="true" dropdownMode="true"
-								value="#{atividadesBean.nomeUsuario}" 
+								value="#{atividadesBean.nomeUsuario}" forceSelection="true"
 								completeMethod="#{atividadesBean.usuarioRN.completeText}" placeholder="Usuário"
 								style="font-size: 10px;"/>
 					
@@ -89,7 +89,7 @@
 					<p:column style="border-width:0px;" colspan="3">
 						<p:autoComplete id="negocio" minQueryLength="3" size="40" scrollHeight="250" value="#{atividadesBean.negocioCliente}" 
 								completeMethod="#{negociosBean.negociosRN.negociosPorCliente}" placeholder="Selecionar Negócio"
-								dropdown="true" style="font-size: 10px;" disabled="#{atividadesBean.bloquearCampo}"/>
+								forceSelection="true" dropdown="true" style="font-size: 10px;" disabled="#{atividadesBean.bloquearCampo}"/>
 					</p:column>
 					
 					<p:column style="border-width:0px;" colspan="2">
@@ -135,7 +135,7 @@
 					<p:inputText id="responsavel" class="form-padrao form-mov" value="#{atividadesBean.atividades.usuario.nome}" 
 		             				rendered="#{atividadesBean.bloquerCampoUsuario}"	disabled="true"/>
 		             	<p:autoComplete id="novoUsuario" minQueryLength="2" size="20" scrollHeight="200" value="#{atividadesBean.nomeUsuario}" 
-								completeMethod="#{atividadesBean.usuarioRN.completeText}" placeholder="Selecionar Usuário"
+								forceSelection="true" completeMethod="#{atividadesBean.usuarioRN.completeText}" placeholder="Selecionar Usuário"
 								dropdown="true" style="font-size: 10px;" rendered="#{atividadesBean.habilitarListaUsuario}"/>
 		        	</p:column>
 		        	

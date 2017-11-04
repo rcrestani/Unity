@@ -27,7 +27,7 @@
 			</p:column>
 			<p:column style="border-width:0px; width:30px;">
 				<p:autoComplete id="acMinLength" minQueryLength="3" size="30" scrollHeight="250" value="#{negociosBean.cliente.nome}" 
-								completeMethod="#{negociosBean.clienteSemNegocios}" effect="fade"
+								completeMethod="#{negociosBean.clienteSemNegocios}" effect="fade" forceSelection="true"
 								required="true" requiredMessage="Cliente é obrigatório." disabled="#{negociosBean.bloquearCampo}"/>
 			</p:column>
 			
@@ -53,7 +53,7 @@
 			</p:column>
 			<p:column style="border-width:0px;">
 				<p:autoComplete id="produtos" minQueryLength="2" size="10" scrollHeight="250" value="#{negociosBean.produtos}" dropdown="true"
-								multiple="true" completeMethod="#{produtoBean.produtoRN.completeText}" effect="fade"
+								multiple="true" completeMethod="#{produtoBean.produtoRN.completeText}" effect="fade" forceSelection="true"
 								required="true" requiredMessage="Produto é obrigatório."/>
 			</p:column>
 			

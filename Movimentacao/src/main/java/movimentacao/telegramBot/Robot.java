@@ -23,8 +23,7 @@ public class Robot
 {
 	public void telegramBot()
 	{
-
-		CartaoVisita cartaoVisita = new CartaoVisita();
+    	CartaoVisita cartaoVisita = new CartaoVisita();
 		CartaoVisitaRN cartaoVisitaRN = new CartaoVisitaRN();
 		CartaoVisitaFiltro filtro = new CartaoVisitaFiltro();
 		
@@ -43,11 +42,12 @@ public class Robot
 				
 		//controle de off-set, isto é, a partir deste ID será lido as mensagens pendentes na fila
 		int m=0;
-		
+    	
+    	
 		//loop infinito pode ser alterado por algum timer de intervalo curto
-		while (true){
-		
-			//executa comando no Telegram para obter as mensagens pendentes a partir de um off-set (limite inicial)
+		while (true)
+		{
+	    	//executa comando no Telegram para obter as mensagens pendentes a partir de um off-set (limite inicial)
 			updatesResponse =  bot.execute(new GetUpdates().limit(100).offset(m));
 			
 			//lista de mensagens
@@ -64,6 +64,7 @@ public class Robot
 				
 				if(update.message().text().equals("menu"))
 				{
+					System.out.println("ID: " + update.message().chat().id());
 					//envio de "Escrevendo" antes de enviar a resposta
 					baseResponse = bot.execute(new SendChatAction(update.message().chat().id(), ChatAction.typing.name()));
 					//verificação de ação de chat foi enviada com sucesso
@@ -88,7 +89,7 @@ public class Robot
 					//envio da mensagem de resposta
 					sendResponse = bot.execute(new SendMessage(update.message().chat().id(),"Cartões de Visita:"));
 					sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
-							"Digite CV [espaço] e escolha por nome, empresa, telefone ou qualquer parte destes"));
+							"Digite CV [espaço] e digite o nome ou a Empresa, pode ser qualquer parte destes"));
 					//sendResponse = bot.execute(new SendDocument(update.message().chat().id(), new File("/home/rcrestani/Pictures/Batman.jpg")));
 					//verificação de mensagem enviada com sucesso
 					System.out.println("Mensagem Enviada?" +sendResponse.isOk());
@@ -98,53 +99,73 @@ public class Robot
 				{
 					filtro.setNome(partes[1]);
 					List<CartaoVisita> lista = cartaoVisitaRN.listar(filtro);
-					String dados = "";
-					
-					if(lista.size() > 1)
+					if(lista.size() == 0)
 					{
-						for(int x = 0; x < lista.size(); x++)
-						{
-							dados = dados + "\nID: " + lista.get(x).getId() + " - " + lista.get(x).getNome() + " - " + lista.get(x).getEmpresa();
-						}
-						
+						filtro.setEmpresa(partes[1]);
+						lista = cartaoVisitaRN.listar(filtro);
+					}
+										
+					sendResponse = bot.execute(new SendMessage(update.message().chat().id(),"Cartões Encontrado:"));
+					for(int x = 0; x < lista.size(); x++)
+					{
 						//envio de "Escrevendo" antes de enviar a resposta
 						baseResponse = bot.execute(new SendChatAction(update.message().chat().id(), ChatAction.find_location));
 						//verificação de ação de chat foi enviada com sucesso
 						System.out.println("Resposta de Chat Action Enviada?" + baseResponse.isOk());
 						
 						//envio da mensagem de resposta
-						sendResponse = bot.execute(new SendMessage(update.message().chat().id(),"Cartões Encontrado:"));
-						sendResponse = bot.execute(new SendMessage(update.message().chat().id(), dados));
-						sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
-								"Escolha digitando CV [espaço] ID:"));
-						//verificação de mensagem enviada com sucesso
-						System.out.println("Mensagem Enviada?" +sendResponse.isOk());
-					}
-					else
-					{
-						Integer id = Integer.parseInt(partes[1]);
-						filtro.setId(id);
-						cartaoVisita = cartaoVisitaRN.carregar(id);
-						sendResponse = bot.execute(new SendDocument(update.message().chat().id(),
-								new File("/home/rcrestani/Pictures/" + cartaoVisita.getArquivoImagemFrente())));
-						//verificação de mensagem enviada com sucesso
-						System.out.println("Mensagem Enviada?" +sendResponse.isOk());
+						
+						sendResponse = bot.execute(new SendMessage(update.message().chat().id(), 
+								"ID: " + lista.get(x).getId() + " - " + lista.get(x).getNome() + " - " + lista.get(x).getEmpresa()));
+						
 					}
 					
-					
-					
-					
+					sendResponse = bot.execute(new SendMessage(update.message().chat().id(),
+							"Escolha digitando CVID [espaço] Número correspondente:"));
+					//verificação de mensagem enviada com sucesso
+					System.out.println("Mensagem Enviada?" +sendResponse.isOk());
 					
 					sendResponse = null;
 				}
-				
-				
-				
+				else if(itemMenu.equals("CVID"))
+				{
+					boolean control = false;
+					Integer id = null;
+					try
+					{
+						id = Integer.parseInt(partes[1]);
+						control = true;
+					}
+					catch(Exception e)
+					{
+						control = false;
+						e.getMessage();
+					}
+					
+					if(control == true)
+					{
+						cartaoVisita = cartaoVisitaRN.carregar(id);
+						sendResponse = bot.execute(new SendDocument(update.message().chat().id(),
+								new File("/opt/unityImages/cartoesVisita/" + cartaoVisita.getArquivoImagemFrente())));
+						sendResponse = bot.execute(new SendDocument(update.message().chat().id(),
+								new File("/opt/unityImages/cartoesVisita/" + cartaoVisita.getArquivoImagemVerso())));
+						//verificação de mensagem enviada com sucesso
+						System.out.println("Mensagem Enviada?" +sendResponse.isOk());
+					}
+					
+				}
 				
 			}
-			updates.clear();
-		}
-
-	}
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+	    }
+            
+	}  
+		
+		
 
 }

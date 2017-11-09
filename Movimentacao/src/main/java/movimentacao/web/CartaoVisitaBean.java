@@ -27,6 +27,7 @@ import org.primefaces.event.FileUploadEvent;
 import movimentacao.cartaoVisita.CartaoVisita;
 import movimentacao.cartaoVisita.CartaoVisitaFiltro;
 import movimentacao.cartaoVisita.CartaoVisitaRN;
+import movimentacao.telegramBot.Robot;
 import movimentacao.util.RedimensionarImagem;
 
 @ManagedBean (name = "cartaoVisitaBean")
@@ -60,6 +61,14 @@ public class CartaoVisitaBean implements Serializable
 		
 		this.cartaoVisitaRN.salvar(this.cartaoVisita);
 		//this.ativaUpload = true;
+		
+		return null;
+	}
+	
+	public String ativarBot()
+	{
+		Robot robot = new Robot();		
+		robot.telegramBot();         
 		
 		return null;
 	}

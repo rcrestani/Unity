@@ -1,10 +1,23 @@
 package movimentacao.webservice;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.jws.*;
 
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.TelegramBotAdapter;
+import com.pengrad.telegrambot.model.request.ChatAction;
+import com.pengrad.telegrambot.request.SendChatAction;
+import com.pengrad.telegrambot.request.SendDocument;
+import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.response.BaseResponse;
+import com.pengrad.telegrambot.response.SendResponse;
+
+import movimentacao.cartaoVisita.CartaoVisita;
+import movimentacao.cartaoVisita.CartaoVisitaFiltro;
+import movimentacao.cartaoVisita.CartaoVisitaRN;
 import movimentacao.cliente.Cliente;
 import movimentacao.cliente.ClienteRN;
 import movimentacao.negocios.Negocios;
@@ -120,6 +133,66 @@ public class UnityWS
 		}
 		
 		return listaWS;
+	}
+	
+	@WebMethod
+	public boolean cartaoPorId(Integer id , Integer telegramId)
+	{
+		TelegramBot bot = TelegramBotAdapter.build("344152536:AAGkvoBIMyNaMyfu7ijntUmVMAFv2OYVn4A");
+		SendResponse sendResponse;
+		CartaoVisitaRN cartaoRN = new CartaoVisitaRN();
+		CartaoVisita cartaoVisita = cartaoRN.carregar(id);
+		
+		sendResponse = bot.execute(new SendDocument(telegramId,
+				new File("/opt/unityImages/cartoesVisita/" + cartaoVisita.getArquivoImagemFrente())));
+		sendResponse = bot.execute(new SendDocument(telegramId,
+				new File("/opt/unityImages/cartoesVisita/" + cartaoVisita.getArquivoImagemVerso())));
+		
+		//verificação de mensagem enviada com sucesso
+		 return sendResponse.isOk();
+		
+	}
+	
+	@WebMethod
+	public boolean listaCartaoVisita(String texto , Integer telegramId)
+	{
+		TelegramBot bot = TelegramBotAdapter.build("344152536:AAGkvoBIMyNaMyfu7ijntUmVMAFv2OYVn4A");
+		SendResponse sendResponse;
+		BaseResponse baseResponse;
+		
+		CartaoVisitaFiltro filtro = new CartaoVisitaFiltro();
+		CartaoVisitaRN cartaoVisitaRN = new CartaoVisitaRN();
+		
+		String partes[] = texto.split(" ");
+		
+		filtro.setNome(partes[1]);
+		
+		List<CartaoVisita> lista = cartaoVisitaRN.listar(filtro);
+		if(lista.size() == 0)
+		{
+			filtro.setEmpresa(partes[1]);
+			lista = cartaoVisitaRN.listar(filtro);
+		}
+		
+		sendResponse = bot.execute(new SendMessage(telegramId,"Cartões Encontrado:"));
+		for(int x = 0; x < lista.size(); x++)
+		{
+			//envio de "Escrevendo" antes de enviar a resposta
+			baseResponse = bot.execute(new SendChatAction(telegramId, ChatAction.find_location));
+			//verificação de ação de chat foi enviada com sucesso
+			System.out.println("Resposta de Chat Action Enviada?" + baseResponse.isOk());
+			
+			//envio da mensagem de resposta
+			
+			sendResponse = bot.execute(new SendMessage(telegramId, 
+					"ID: " + lista.get(x).getId() + " - " + lista.get(x).getNome() + " - " + lista.get(x).getEmpresa()));
+		}
+		
+		sendResponse = bot.execute(new SendMessage(telegramId,
+				"Escolha digitando CVID [espaço] Número correspondente:"));
+		
+		//verificação de mensagem enviada com sucesso
+		return sendResponse.isOk();
 	}
 
 }

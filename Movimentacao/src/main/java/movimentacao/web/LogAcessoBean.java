@@ -2,6 +2,7 @@ package movimentacao.web;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import javax.faces.bean.ManagedBean;
@@ -67,7 +68,7 @@ public class LogAcessoBean
 		
 		logAcesso = logAcessoRN.buscaPorSessionId(sessionId);
 		
-		logAcesso.setDataLogout(dataHora.getTime());		
+		logAcesso.setDataLogout(new Date());		
 		
 		logAcessoRN.salvar(logAcesso);
 		

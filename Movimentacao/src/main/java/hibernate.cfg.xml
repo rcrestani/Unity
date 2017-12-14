@@ -27,6 +27,6 @@
 		<mapping class="movimentacao.negocios.atividades.Atividades"/>
 		<mapping class="movimentacao.negocios.contatos.Contatos"/>
 		<mapping class="movimentacao.cartaoVisita.CartaoVisita"/>
-		
+		<mapping class="movimentacao.projetoAES.ControleFrota"/>
 	</session-factory>
 </hibernate-configuration>

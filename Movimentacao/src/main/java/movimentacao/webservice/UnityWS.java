@@ -28,6 +28,8 @@ import movimentacao.produto.Produto;
 import movimentacao.produto.ProdutoRN;
 import movimentacao.produtoTask.ProdutoTask;
 import movimentacao.produtoTask.ProdutoTaskRN;
+import movimentacao.projetoAES.ControleFrota;
+import movimentacao.projetoAES.ControleFrotaRN;
 
 @WebService
 public class UnityWS 
@@ -193,6 +195,14 @@ public class UnityWS
 		
 		//verificação de mensagem enviada com sucesso
 		return sendResponse.isOk();
+	}
+	
+	@WebMethod
+	public void salvarControleFrota(ControleFrota controleFrota)
+	{
+		ControleFrotaRN controleFrotaRN = new ControleFrotaRN();
+		
+		controleFrotaRN.salvar(controleFrota);
 	}
 
 }

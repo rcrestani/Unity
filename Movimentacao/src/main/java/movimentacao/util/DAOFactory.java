@@ -11,6 +11,7 @@ import movimentacao.negocios.atividades.AtividadesDAOHibernate;
 import movimentacao.negocios.contatos.ContatosDAOHibernate;
 import movimentacao.produto.ProdutoDAOHibernate;
 import movimentacao.produtoTask.ProdutoTaskDAOHibernate;
+import movimentacao.projetoAES.ControleFrotaDAOHibernate;
 import movimentacao.usuario.*;
 
 public class DAOFactory 
@@ -101,5 +102,13 @@ public class DAOFactory
 		cartaoVisitaDAO.setSession(HibernateUtil.getSessionFactory().getCurrentSession());
 		
 		return cartaoVisitaDAO;
+	}
+	
+	public static ControleFrotaDAOHibernate criarControleFrotaDAO()
+	{
+		ControleFrotaDAOHibernate controleFrotaDAO = new ControleFrotaDAOHibernate();
+		controleFrotaDAO.setSession(HibernateUtil.getSessionFactory().getCurrentSession());
+		
+		return controleFrotaDAO;
 	}
 }

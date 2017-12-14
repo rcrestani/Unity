@@ -8,10 +8,11 @@
 	<http auto-config="true">
 		<intercept-url pattern="/restrito/**" access="ROLE_USUARIO" />
 		<form-login login-page="/index.jsf"
-					always-use-default-target="true"
+					always-use-default-target="false"
 					default-target-url="/restrito/principal.jsf"
 					authentication-failure-url="/index.jsf?login_error=1" />
 		<logout />
+		
 	</http>
 	
 	<authentication-manager>
@@ -21,7 +22,7 @@
 				authorities-by-username-query="SELECT u.login, p.permissao FROM usuario u, usuario_permissao p 
 												WHERE u.codigo = p.usuario AND u.login = ?"
 				users-by-username-query="SELECT login, senha, true FROM usuario WHERE login = ?" />
-				
+			
 		</authentication-provider>
 	</authentication-manager>
 </beans:beans>

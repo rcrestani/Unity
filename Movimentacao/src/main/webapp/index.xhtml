@@ -11,11 +11,6 @@
 	</ui:define>
 	
 	<ui:define name="corpo">
-	<h:panelGroup rendered="#{!empty param.login_error}"> 
-		<span style="font-color:red"> Erro ao efetuar o login.</span><br />
-		<br/>
-		Motivo: #{SPRING_SECURITY_LAST_EXCEPTION.message}
-	</h:panelGroup>
 	<div class="centro">
 		<form id="login" method="post" action="#{request.contextPath}/j_spring_security_check">
 			<div class="tituloLog">Acesso ao Sistema</div>
@@ -29,9 +24,12 @@
 				<input class="btnLog" type="submit" value="Entrar"/>
 			</div>
 		</form>
+			<h:outputText value="Usuário ou senha incorretos" rendered="#{!empty param.login_error}"
+						style="color: darkred; width:150px;"/>
 	</div>
-
-
+	
+		
+	
 </ui:define>
 </ui:composition>
 </html>

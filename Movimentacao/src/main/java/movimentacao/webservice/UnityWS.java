@@ -2,6 +2,7 @@ package movimentacao.webservice;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.jws.*;
@@ -197,6 +198,7 @@ public class UnityWS
 		return sendResponse.isOk();
 	}
 	
+	//Métodos da classe controle frota================================================
 	@WebMethod
 	public void salvarControleFrota(ControleFrota controleFrota)
 	{
@@ -204,5 +206,21 @@ public class UnityWS
 		
 		controleFrotaRN.salvar(controleFrota);
 	}
-
+	
+	@WebMethod
+	public ControleFrota consultaRegistroSaida(String vtr , Date data)
+	{
+		ControleFrotaRN controleFrotaRN = new ControleFrotaRN();
+		
+		return controleFrotaRN.consultaRegistroSaida(vtr, data);
+	}
+	
+	@WebMethod
+	public ControleFrota ultimoRegistro()
+	{
+		ControleFrotaRN controleFrotaRN = new ControleFrotaRN();
+		
+		return controleFrotaRN.ultimoRegistro();
+	}
+	//=================================================================================
 }

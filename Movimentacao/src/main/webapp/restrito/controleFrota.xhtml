@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<ui:composition template="/template/interna.xhtml">
+	<ui:define name="titulo">
+		<h:graphicImage library="imagens" name="logoUnity.png" style="height:40px;"/>
+		<h:outputLabel class="label-padrao" value="Controle Frota" style="margin-left:400px; font-size:30px; font-family:Ubuntu;"/>
+	</ui:define>
+	<ui:define name="corpo">
+	<p:messages id="cfb" autoUpdate="true" closable="true"/>
+	<h:form id="filtro">
+	
+		<h:panelGrid columns="6">
+					
+       		<p:calendar id="dataInicial" value="#{controleFrotaBean.filtro.inicio}" pattern="dd-MM-yyyy"
+						mask="true" size="8" locale="pt" placeholder="Data Inicial"/>
+
+			<p:calendar id="dataFim" value="#{controleFrotaBean.filtro.fim}" pattern="dd-MM-yyyy"
+					mask="true" size="8" locale="pt" placeholder="Data Final"/>
+			
+			<p:autoComplete id="buscaColetor" dropdown="true" forceSelection="true" size="20" scrollHeight="250" value="#{controleFrotaBean.filtro.coletor}" 
+								completeMethod="#{controleFrotaBean.controleFrotaRN.completeColetor}" effect="fade" placeholder="Selecionar Base"
+								style="font-size: 10px;"/>
+								
+			<p:autoComplete id="buscaVtr" dropdown="true" forceSelection="true" size="20" scrollHeight="250" value="#{controleFrotaBean.filtro.vtr}" 
+								completeMethod="#{controleFrotaBean.controleFrotaRN.completeVtr}" effect="fade" placeholder="Selecionar Veículo"
+								style="font-size: 10px;"/>		
+			
+			<p:autoComplete id="buscaCondutor" dropdown="true" forceSelection="true" size="20" scrollHeight="250" value="#{controleFrotaBean.filtro.motorista}" 
+								completeMethod="#{controleFrotaBean.controleFrotaRN.completeCondutor}" effect="fade" placeholder="Selecionar Condutor"
+								style="font-size: 10px;"/>
+		
+			<p:commandButton class="btnPadrao" value="Consultar" update=":listagem" />
+
+		</h:panelGrid>
+	</h:form>
+	
+	<p:separator/>
+	
+	
+	<h:form id="listagem">
+	
+		<p:dataTable width="400"  value="#{controleFrotaBean.lazyControleFrota}" lazy="true" widgetVar="tableControleFrota"
+						var="controleFrota" border="1" cellpadding="2" cellspacing="0" rowIndexVar="index"
+						paginator="true" paginatorPosition="bottom" rows="10" id="tbl"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						paginatorAlwaysVisible="true"
+						currentPageReportTemplate="{totalRecords} Registros">
+			
+			<p:column style="text-align: center;" headerText="Id" width="40" sortBy="#{controleFrota.id}">
+				<h:outputText value="#{controleFrota.id}"/>
+			</p:column>
+			
+			<p:column style="text-align: center;" width="80" headerText="Id Coleta" sortBy="#{controleFrota.codColeta}">
+				<h:outputText value="#{controleFrota.codColeta}"/>
+			</p:column>
+			
+			<p:column style="text-align: center;" width="200" headerText="Base Coletora" sortBy="#{controleFrota.coletor}">
+				<h:outputText value="#{controleFrota.coletor}"/>
+			</p:column>
+			
+			<p:column style="text-align: center;" width="100" headerText="Veículo" sortBy="#{controleFrota.vtr}">
+				<h:outputText value="#{controleFrota.vtr}"/>
+			</p:column>
+			
+			<p:column style="text-align: center;" width="300" headerText="Condutor" sortBy="#{controleFrota.motorista}">
+				<h:outputText value="#{controleFrota.motorista}"/>
+			</p:column>
+			
+			<p:column style="text-align: center;" width="140" headerText="Saída" sortBy="#{controleFrota.saida}">
+				<h:outputText value="#{controleFrota.saida}">
+					<f:convertDateTime pattern="dd/MM/yyyy - H:mm" locale="pt_BR" />
+				</h:outputText>
+			</p:column>
+			
+			<p:column style="text-align: center;" width="140" headerText="Chegada" sortBy="#{controleFrota.chegada}">
+				<h:outputText value="#{controleFrota.chegada}">
+					<f:convertDateTime pattern="dd/MM/yyyy - H:mm" locale="pt_BR" />
+				</h:outputText>
+			</p:column>
+			
+			<p:column style="text-align: center;" width="120" headerText="Tempo Serviço" sortBy="#{controleFrota.tempoMissao}">
+				<h:outputText value="#{controleFrota.tempoMissao}"/>
+			</p:column>
+			
+			
+		</p:dataTable>
+		
+	</h:form>
+	
+	<p:separator/>
+	
+	<h:form id="reports">
+			<h:panelGrid columns="5">
+				<h:outputLabel class="label-padrao" value="Exportar Relatório: " style="margin-left:400px; font-size:20px; font-family:Ubuntu;"/>
+			
+				<h:commandLink style="margin-right:40px;">
+					<f:setPropertyActionListener target="#{controleFrotaBean.tipoRelatorio}" value="1"/> 
+					<p:fileDownload value="#{controleFrotaBean.arquivoRetorno}"/> 
+					<h:graphicImage library="imagens" name="pdf.png" title="Imprimir PDF"/>
+				</h:commandLink>
+				<h:commandLink style="margin-right:40px;">
+					<f:setPropertyActionListener target="#{controleFrotaBean.tipoRelatorio}" value="2"/>
+					<p:fileDownload value="#{controleFrotaBean.arquivoRetorno}"/>
+					<h:graphicImage library="imagens" name="excel.png" 	title="Imprimir Excel"/>
+				</h:commandLink>
+				<h:commandLink style="margin-right:40px;">
+					<f:setPropertyActionListener target="#{controleFrotaBean.tipoRelatorio}" value="3"/>
+					<p:fileDownload value="#{controleFrotaBean.arquivoRetorno}"/>
+					<h:graphicImage library="imagens" name="html.png" title="Imprimir HTML"/>
+				</h:commandLink>
+				<h:commandLink>
+					<f:setPropertyActionListener target="#{controleFrotaBean.tipoRelatorio}" value="4"/>
+					<p:fileDownload value="#{controleFrotaBean.arquivoRetorno}"/>
+					<h:graphicImage library="imagens" name="ods.png" 	title="Imprimir Planilha Open Office"/>
+				</h:commandLink>
+			</h:panelGrid>
+	</h:form>
+	
+	</ui:define>
+</ui:composition>
+</html>

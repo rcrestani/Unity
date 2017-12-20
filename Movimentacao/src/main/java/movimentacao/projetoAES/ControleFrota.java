@@ -1,6 +1,7 @@
 package movimentacao.projetoAES;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,19 +15,29 @@ public class ControleFrota implements Serializable
 	@Id
 	@GeneratedValue
 	private Integer id;
+	private Integer codColeta;
 	private String vtr;
 	private String motorista;
 	private String coletor;
-	private String saida;
-	private String chegada;
+	private Date saida;
+	private Date chegada;
 	private String tempoMissao;
 	
+	//Variáveis para o relatório===================
+	private Date periodoInicial;
+	private Date periodoFinal;
 	
 	public Integer getId() {
 		return id;
 	}
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	public Integer getCodColeta() {
+		return codColeta;
+	}
+	public void setCodColeta(Integer codColeta) {
+		this.codColeta = codColeta;
 	}
 	public String getVtr() {
 		return vtr;
@@ -46,16 +57,16 @@ public class ControleFrota implements Serializable
 	public void setColetor(String coletor) {
 		this.coletor = coletor;
 	}
-	public String getSaida() {
+	public Date getSaida() {
 		return saida;
 	}
-	public void setSaida(String saida) {
+	public void setSaida(Date saida) {
 		this.saida = saida;
 	}
-	public String getChegada() {
+	public Date getChegada() {
 		return chegada;
 	}
-	public void setChegada(String chegada) {
+	public void setChegada(Date chegada) {
 		this.chegada = chegada;
 	}
 	public String getTempoMissao() {
@@ -64,16 +75,29 @@ public class ControleFrota implements Serializable
 	public void setTempoMissao(String tempoMissao) {
 		this.tempoMissao = tempoMissao;
 	}
-	
-	
+	public Date getPeriodoInicial() {
+		return periodoInicial;
+	}
+	public void setPeriodoInicial(Date periodoInicial) {
+		this.periodoInicial = periodoInicial;
+	}
+	public Date getPeriodoFinal() {
+		return periodoFinal;
+	}
+	public void setPeriodoFinal(Date periodoFinal) {
+		this.periodoFinal = periodoFinal;
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((chegada == null) ? 0 : chegada.hashCode());
+		result = prime * result + ((codColeta == null) ? 0 : codColeta.hashCode());
 		result = prime * result + ((coletor == null) ? 0 : coletor.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((motorista == null) ? 0 : motorista.hashCode());
+		result = prime * result + ((periodoFinal == null) ? 0 : periodoFinal.hashCode());
+		result = prime * result + ((periodoInicial == null) ? 0 : periodoInicial.hashCode());
 		result = prime * result + ((saida == null) ? 0 : saida.hashCode());
 		result = prime * result + ((tempoMissao == null) ? 0 : tempoMissao.hashCode());
 		result = prime * result + ((vtr == null) ? 0 : vtr.hashCode());
@@ -93,6 +117,11 @@ public class ControleFrota implements Serializable
 				return false;
 		} else if (!chegada.equals(other.chegada))
 			return false;
+		if (codColeta == null) {
+			if (other.codColeta != null)
+				return false;
+		} else if (!codColeta.equals(other.codColeta))
+			return false;
 		if (coletor == null) {
 			if (other.coletor != null)
 				return false;
@@ -107,6 +136,16 @@ public class ControleFrota implements Serializable
 			if (other.motorista != null)
 				return false;
 		} else if (!motorista.equals(other.motorista))
+			return false;
+		if (periodoFinal == null) {
+			if (other.periodoFinal != null)
+				return false;
+		} else if (!periodoFinal.equals(other.periodoFinal))
+			return false;
+		if (periodoInicial == null) {
+			if (other.periodoInicial != null)
+				return false;
+		} else if (!periodoInicial.equals(other.periodoInicial))
 			return false;
 		if (saida == null) {
 			if (other.saida != null)

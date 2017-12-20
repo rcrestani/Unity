@@ -65,4 +65,5 @@ encoding//src/main/resources=UTF-8
 encoding//src/main/webapp/relatorios/FechamentoGeral.jrxml=UTF-8
 encoding//src/main/webapp/relatorios/PosicaoEstoque.jrxml=UTF-8
 encoding//src/main/webapp/relatorios/PosicaoEstoqueConn.jrxml=UTF-8
+encoding//src/main/webapp/relatorios/controleFrota.jrxml=UTF-8
 encoding//src/test/resources=UTF-8

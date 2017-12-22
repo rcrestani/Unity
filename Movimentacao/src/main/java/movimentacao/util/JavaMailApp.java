@@ -56,7 +56,7 @@ public class JavaMailApp
                     });
 
         /** Ativa Debug para sessão */
-        session.setDebug(true);
+        //session.setDebug(true);
 
         try {
 

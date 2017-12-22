@@ -74,7 +74,7 @@
 			<frame>
 				<reportElement mode="Opaque" x="0" y="94" width="802" height="12" backcolor="#006699" uuid="c21a33f4-597d-4764-acc3-43ed1f5920a5"/>
 			</frame>
-			<textField>
+			<textField pattern="dd/MM/yyyy">
 				<reportElement x="640" y="70" width="65" height="20" uuid="25b2d6d3-bb53-46a3-9060-4de2f5da0b16">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -84,7 +84,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{periodoInicial}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="dd/MM/yyyy">
 				<reportElement x="733" y="70" width="65" height="20" uuid="59132759-36ef-4991-a0f6-d0d0fd13cc37">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -199,7 +199,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{motorista}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="dd/MM/yyyy - H:mm">
 				<reportElement x="380" y="4" width="141" height="20" uuid="c9d9a3d2-b69d-491e-b4b7-ecf4e237672f">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
@@ -208,7 +208,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{saida}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="dd/MM/yyyy - H:mm">
 				<reportElement x="524" y="4" width="150" height="20" uuid="1f85a535-b986-4a8f-b4ef-629d9598b83c">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>

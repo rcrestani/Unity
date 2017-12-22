@@ -12,8 +12,8 @@
 	</ui:define>
 	
 	<ui:define name="corpo">
-	<f:event listener="#{logAcessoBean.registrarLog}" type="preRenderView" />
 
+	<sec:ifAnyGranted roles="ROLE_DGR">
 	<center>
 		<table>
 			<tr>
@@ -70,7 +70,7 @@
 	</table>
 	</center>		
 	
-	
+	</sec:ifAnyGranted>
 	</ui:define>
 </ui:composition>
 </html>

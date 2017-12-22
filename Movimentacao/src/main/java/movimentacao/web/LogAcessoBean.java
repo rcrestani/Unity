@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import movimentacao.controleAcesso.LogAcesso;
 import movimentacao.controleAcesso.LogAcessoRN;
+import movimentacao.usuario.UsuarioRN;
 
 @ManagedBean(name = "logAcessoBean")
 @RequestScoped
@@ -26,8 +27,9 @@ public class LogAcessoBean
 	private ExternalContext external = context.getExternalContext();
 	private String login = external.getRemoteUser();
 	
-	public void registrarLog()
+	public void registrarLog() throws IOException
 	{
+		UsuarioRN usuarioRN = new UsuarioRN();
 		FacesContext fCtx = FacesContext.getCurrentInstance();
 		HttpSession session = (HttpSession) fCtx.getExternalContext().getSession(false);
 		String sessionId = session.getId();
@@ -42,6 +44,9 @@ public class LogAcessoBean
 			logAcessoNew.setDataLogin(dataHora.getTime());
 			
 			logAcessoRN.salvar(logAcessoNew);
+			
+			
+			FacesContext.getCurrentInstance().getExternalContext().redirect("/restrito/" + usuarioRN.buscarPorLogin(login).getPaginaInicial());
 		}
 		else
 		{
@@ -54,7 +59,8 @@ public class LogAcessoBean
 				logAcessoNew.setSessionId(sessionId);
 				logAcessoNew.setDataLogin(dataHora.getTime());
 				
-				logAcessoRN.salvar(logAcessoNew);	
+				logAcessoRN.salvar(logAcessoNew);
+				FacesContext.getCurrentInstance().getExternalContext().redirect("/restrito/" + usuarioRN.buscarPorLogin(login).getPaginaInicial());
 			}
 		}
 		

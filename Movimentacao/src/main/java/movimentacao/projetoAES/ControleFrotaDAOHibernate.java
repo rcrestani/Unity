@@ -61,6 +61,42 @@ public class ControleFrotaDAOHibernate implements ControleFrotaDAO
 	}
 	
 	@SuppressWarnings("unchecked")
+	public List<ControleFrota> consultaLista(ControleFrotaFiltro filtro)
+	{
+		Criteria criteria = this.session.createCriteria(ControleFrota.class);
+		
+		if(filtro.getInicio() != null && filtro.getFim() == null)
+		{
+			criteria.add(Restrictions.ge("saida", filtro.getInicio()));
+		}
+		else if(filtro.getFim() != null && filtro.getInicio() == null)
+		{
+			criteria.add(Restrictions.le("saida", filtro.getFim()));
+		}
+		else if(filtro.getInicio() != null && filtro.getFim() != null)
+		{
+			criteria.add(Restrictions.between("saida", filtro.getInicio() , filtro.getFim()));
+		}
+		
+		if(StringUtils.isNotEmpty( filtro.getColetor()))
+		{
+			criteria.add(Restrictions.eq("coletor", filtro.getColetor()));
+		}
+		
+		if(StringUtils.isNotEmpty( filtro.getMotorista()))
+		{
+			criteria.add(Restrictions.eq("motorista", filtro.getMotorista()));
+		}
+		
+		if(StringUtils.isNotEmpty( filtro.getVtr()))
+		{
+			criteria.add(Restrictions.eq("vtr", filtro.getVtr()));
+		}
+		
+		return criteria.list();
+	}
+	
+	@SuppressWarnings("unchecked")
 	public List<String> completeColetor(String text)
 	{
 		String hql = "select coletor from controleFrota where coletor like :text group by coletor";

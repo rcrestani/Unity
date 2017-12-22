@@ -12,6 +12,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import movimentacao.usuario.UsuarioRN;
@@ -28,7 +31,8 @@ public class UsuarioBean implements Serializable
 	private String senhaAtual;
 	private String senhaNova;
 	private String confirmarSenha;
-	
+	private List<String> permissoesSource= new ArrayList<String>();
+	private List<String> permissoesTarget = new ArrayList<String>();
 	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	
 	private FacesContext context = FacesContext.getCurrentInstance();
@@ -44,7 +48,7 @@ public class UsuarioBean implements Serializable
 	@PostConstruct
 	public void init()
 	{
-		lazyUsuario = new LazyUsuarioDataModel(new UsuarioRN());
+		this.lazyUsuario = new LazyUsuarioDataModel(new UsuarioRN());
 	}
 	
 	
@@ -82,6 +86,14 @@ public class UsuarioBean implements Serializable
 			if(senhaAtual.equals(this.usuario.getSenha()))
 			{				
 				Usuario newUser = usuarioRN.carregar(this.usuario.getCodigo());
+				//Limpando a lista de permissoes para atualizar com os novos valores===========
+				newUser.getPermissao().clear();
+				newUser.getPermissao().add("ROLE_USUARIO");
+				for(int x = 0; x < this.permissoesTarget.size(); x++)
+				{
+					newUser.getPermissao().add(this.permissoesTarget.get(x));
+				}
+				//=============================================================================
 				this.usuario.setPermissao(newUser.getPermissao());
 				usuarioRN.atualizarEvict(newUser);
 				usuarioRN.atualizar(this.usuario);
@@ -97,6 +109,14 @@ public class UsuarioBean implements Serializable
 					this.usuario.setSenha(bCrypt);
 					
 					Usuario newUser = usuarioRN.carregar(this.usuario.getCodigo());
+					//Limpando a lista de permissoes para atualizar com os novos valores===========
+					newUser.getPermissao().clear();
+					newUser.getPermissao().add("ROLE_USUARIO");
+					for(int x = 0; x < this.permissoesTarget.size(); x++)
+					{
+						newUser.getPermissao().add(this.permissoesTarget.get(x));
+					}
+					//==============================================================================
 					this.usuario.setPermissao(newUser.getPermissao());
 					usuarioRN.atualizarEvict(newUser);
 					usuarioRN.atualizar(this.usuario);
@@ -129,6 +149,12 @@ public class UsuarioBean implements Serializable
 		this.usuario = new Usuario();
 		this.confirmarSenha = "";
 		
+		this.permissoesTarget.clear();
+		this.permissoesSource.clear();
+		this.permissoesSource.add("ROLE_ADM");
+		this.permissoesSource.add("ROLE_DGR");
+		this.permissoesSource.add("ROLE_CONTROLE_FROTA");
+		
 		return null;
 	}
 	
@@ -136,7 +162,26 @@ public class UsuarioBean implements Serializable
 	{
 		this.confirmarSenha = this.usuario.getSenha();
 		this.senhaAtual = this.confirmarSenha;
-				
+		
+		this.permissoesSource.clear();
+		this.permissoesSource.add("ROLE_ADM");
+		this.permissoesSource.add("ROLE_DGR");
+		this.permissoesSource.add("ROLE_CONTROLE_FROTA");
+		
+		
+		UsuarioRN usuarioRN = new UsuarioRN();
+	    Usuario usuario = usuarioRN.carregar(this.usuario.getCodigo());
+		
+	    this.permissoesTarget.addAll(usuario.getPermissao());
+		
+	    for(int x = 0; x < this.permissoesTarget.size(); x++)
+	    {
+	    	if(this.permissoesTarget.get(x).equals("ROLE_USUARIO"))
+	    	{
+	    		this.permissoesTarget.remove(x);
+	    	}
+	    }
+	    
 		return null;
 	}
 	
@@ -199,7 +244,6 @@ public class UsuarioBean implements Serializable
 		return "/restrito/trocaSenha.jsf";
 	}
 	
-
 	public Usuario getUsuario() {
 		return usuario;
 	}
@@ -231,7 +275,22 @@ public class UsuarioBean implements Serializable
 	public void setSenhaNova(String senhaNova) {
 		this.senhaNova = senhaNova;
 	}
-	
-	
+
+	public List<String> getPermissoesSource() {
+		return permissoesSource;
+	}
+
+	public void setPermissoesSource(List<String> permissoesSource) {
+		this.permissoesSource = permissoesSource;
+	}
+
+	public List<String> getPermissoesTarget() {
+		return permissoesTarget;
+	}
+
+	public void setPermissoesTarget(List<String> permissoesTarget) {
+		this.permissoesTarget = permissoesTarget;
+	}
+
 
 }

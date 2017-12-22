@@ -11,26 +11,36 @@
 			    <p:menubar class="menubar">
 			    		 <p:menuitem value=" #{request.remoteUser}" icon="ui-icon-person" url="/restrito/principal.jsf"/>
 			    		 
+			    		<sec:ifAnyGranted roles="ROLE_DGR">
 			            <p:submenu label="Cadastros" icon="ui-icon-folder-collapsed">
 			            	<sec:ifAnyGranted roles="ROLE_ADM">
 				             	<p:menuitem value="Usuários" url="/restrito/usuario.jsf" icon="ui-icon-contact" />
 				             </sec:ifAnyGranted>
-				             <p:menuitem value="Produtos" url="/restrito/produto.jsf" icon="ui-icon-document" />
-				             <p:menuitem value="Clientes" url="/restrito/cliente.jsf" icon="ui-icon-document" />
+				             
+					             <p:menuitem value="Produtos" url="/restrito/produto.jsf" icon="ui-icon-document" />
+					             <p:menuitem value="Clientes" url="/restrito/cliente.jsf" icon="ui-icon-document" />
 			            </p:submenu>
+			            </sec:ifAnyGranted>
 			            
-			            <p:submenu label="Movimentações" icon="ui-icon-folder-collapsed">
-			            	<p:menuitem value="Equipamentos" url="/restrito/mov.jsf" icon="ui-icon-wrench" />
-			            	<p:menuitem value="Negócios" url="/restrito/negocios.jsf" icon="ui-icon-tag" />
-			            	<p:menuitem value="Atividades" url="/restrito/atividades.jsf" icon="ui-icon-comment" />
-			            	<p:menuitem value="Cartões de Visita" url="/restrito/cartaovisita.jsf" icon="ui-icon-image" />
-			            </p:submenu>
+			            <sec:ifAnyGranted roles="ROLE_DGR">
+				            <p:submenu label="Movimentações" icon="ui-icon-folder-collapsed">
+				            	<p:menuitem value="Equipamentos" url="/restrito/mov.jsf" icon="ui-icon-wrench" />
+				            	<p:menuitem value="Negócios" url="/restrito/negocios.jsf" icon="ui-icon-tag" />
+				            	<p:menuitem value="Atividades" url="/restrito/atividades.jsf" icon="ui-icon-comment" />
+				            	<p:menuitem value="Cartões de Visita" url="/restrito/cartaovisita.jsf" icon="ui-icon-image" />
+				            </p:submenu>
+			            </sec:ifAnyGranted>
 			            
 			            <p:submenu label="Relatórios" icon="ui-icon-folder-collapsed">
-			            	<p:menuitem value="Fechamento Geral" url="/restrito/fechamento.jsf" icon="ui-icon-note" />
-			            	<p:menuitem value="Negócios s/ Atividades" url="/restrito/negociosSemAtividades.jsf" icon="ui-icon-note" />
-			            	<p:menuitem value="Mapa de Atividades" url="/restrito/mapaDeAtividades.jsf" icon="ui-icon-note" />
-			            	<p:menuitem value="Controle da Frota" url="/restrito/controleFrota.jsf" icon="ui-icon-note" />
+			            	<sec:ifAnyGranted roles="ROLE_DGR">
+				            	<p:menuitem value="Fechamento Geral" url="/restrito/fechamento.jsf" icon="ui-icon-note" />
+				            	<p:menuitem value="Negócios s/ Atividades" url="/restrito/negociosSemAtividades.jsf" icon="ui-icon-note" />
+				            	<p:menuitem value="Mapa de Atividades" url="/restrito/mapaDeAtividades.jsf" icon="ui-icon-note" />
+				            </sec:ifAnyGranted>
+				            
+				            <sec:ifAnyGranted roles="ROLE_DGR,ROLE_CONTROLE_FROTA">
+				            	<p:menuitem value="Controle da Frota" url="/restrito/controleFrota.jsf" icon="ui-icon-note" />
+				            </sec:ifAnyGranted>
 			            </p:submenu>
 			            
 			            <p:submenu label="Suporte" icon="ui-icon-gear">

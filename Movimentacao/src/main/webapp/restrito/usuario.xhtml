@@ -97,6 +97,27 @@
 			<p:row>
 	            <p:column style="padding: 0px;" colspan="6"></p:column>
 	        </p:row>
+	        <p:row>
+	        	<p:column style="border-width:0px;">
+	        		<h:outputLabel class="label-padrao" value="Página Inicial:" for="paginaInicial"/>
+	        	</p:column>
+	        	<p:column style="border-width:0px;">
+	        		<p:selectOneMenu id="paginaInicial" value="#{usuarioBean.usuario.paginaInicial}" style="width:125px">
+			            <f:selectItem id="paginaInicialSubItem" itemLabel="Selecione"/>
+			            <f:selectItem itemLabel="Dashboard" itemValue="principal.jsf" />
+			            <f:selectItem itemLabel="Relatório Controle Frota" itemValue="controleFrota.jsf" />
+			        </p:selectOneMenu>
+	        	</p:column>
+	        	<p:column style="border-width:0px;">
+	        		<h:outputLabel class="label-padrao" value="Permissões:" for="permissoes"/>
+	        	</p:column>
+	        	<p:column style="border-width:0px;">
+	        		<p:selectCheckboxMenu id="permissoes" value="#{usuarioBean.permissoesTarget}" label="Permissões"
+	                              filter="true" filterMatchMode="startsWith" panelStyle="width:300px">
+	            	<f:selectItems value="#{usuarioBean.permissoesSource}" />
+	        		</p:selectCheckboxMenu>
+	        	</p:column>
+	        </p:row>
 		</p:panelGrid>
 		
 			<h:commandButton class="btnPadrao" action="#{usuarioBean.salvar}" value="Salvar" update=":listagem"/>
@@ -108,7 +129,7 @@
 <!-- FILTROS/////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 	<h:form id="novo">
 			<h:panelGrid>
-				<p:commandButton class="btnPadrao" value="Novo Usuário" action="#{usuarioBean.novo}" onclick="PF('dlg1').show();"
+				<p:commandButton class="btnPadrao" value="Novo Usuário" action="#{usuarioBean.novo}" oncomplete="PF('dlg1').show();"
 									update=":edicao"/>
 			</h:panelGrid>
 	</h:form>
@@ -137,7 +158,7 @@
 			</p:column>
 			
 			<p:column style="text-align: center;" width="20" headerText="Editar">
-				<p:commandLink  action="#{usuarioBean.editar}" update=":edicao" onclick="PF('dlg1').show();">
+				<p:commandLink  action="#{usuarioBean.editar}" update=":edicao" oncomplete="PF('dlg1').show();">
 					<h:graphicImage library="imagens" name="editar16.png"/>
 					<f:setPropertyActionListener value="#{usuario}" target="#{usuarioBean.usuario}"/>
 				</p:commandLink>

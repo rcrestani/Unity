@@ -9,6 +9,7 @@ public interface ControleFrotaDAO
 	public ControleFrota consultaRegistroSaida(String vtr, Date data);
 	public ControleFrota ultimoRegistro();
 	public List<ControleFrota> listar();
+	public List<ControleFrota> consultaLista(ControleFrotaFiltro filtro);
 	public List<String> completeColetor(String text);
 	public List<String> completeVtr(String text);
 	public List<String> completeCondutor(String text);

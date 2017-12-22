@@ -21,6 +21,7 @@ public class Usuario implements Serializable
 	private String senha;
 	private String email;
 	private Integer telegramId;
+	private String paginaInicial;
 	private boolean ativo;
 	
 	@ElementCollection(targetClass = String.class)
@@ -86,6 +87,12 @@ public class Usuario implements Serializable
 		this.telegramId = telegramId;
 	}
 	
+	public String getPaginaInicial() {
+		return paginaInicial;
+	}
+	public void setPaginaInicial(String paginaInicial) {
+		this.paginaInicial = paginaInicial;
+	}
 	
 	
 	@Override
@@ -97,6 +104,7 @@ public class Usuario implements Serializable
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((login == null) ? 0 : login.hashCode());
 		result = prime * result + ((nome == null) ? 0 : nome.hashCode());
+		result = prime * result + ((paginaInicial == null) ? 0 : paginaInicial.hashCode());
 		result = prime * result + ((permissao == null) ? 0 : permissao.hashCode());
 		result = prime * result + ((senha == null) ? 0 : senha.hashCode());
 		result = prime * result + ((telegramId == null) ? 0 : telegramId.hashCode());
@@ -133,6 +141,11 @@ public class Usuario implements Serializable
 				return false;
 		} else if (!nome.equals(other.nome))
 			return false;
+		if (paginaInicial == null) {
+			if (other.paginaInicial != null)
+				return false;
+		} else if (!paginaInicial.equals(other.paginaInicial))
+			return false;
 		if (permissao == null) {
 			if (other.permissao != null)
 				return false;
@@ -150,6 +163,5 @@ public class Usuario implements Serializable
 			return false;
 		return true;
 	}
-	
 	
 }

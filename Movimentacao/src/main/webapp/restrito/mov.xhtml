@@ -3,14 +3,15 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags">
 <ui:composition template="/template/interna.xhtml">
 	<ui:define name="titulo">
 		<h:graphicImage library="imagens" name="logoUnity.png" style="height:40px;"/>
 		<h:outputLabel class="label-padrao" value="Movimentações" style="margin-left:420px; font-size:30px; font-family:Ubuntu;"/>
 	</ui:define>
 	<ui:define name="corpo">
-	
+	<sec:ifAnyGranted roles="ROLE_DGR">
 	
 <!-- DIALOG //////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 	<p:dialog id="dlg2" rendered="true" position="center" header="Gerenciar Movimentações"
@@ -345,7 +346,7 @@
 		
 	</h:form>
 
-	
+	</sec:ifAnyGranted>
 </ui:define>
 </ui:composition>
 </html>

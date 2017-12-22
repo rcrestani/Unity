@@ -3,14 +3,15 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags">
 <ui:composition template="/template/interna.xhtml">
 	<ui:define name="titulo">
 		<h:graphicImage library="imagens" name="logoUnity.png" style="height:40px;"/>
 		<h:outputLabel class="label-padrao" value="Cartões de Visita" style="margin-left:420px; font-size:30px; font-family:Ubuntu;"/>
 	</ui:define>
 	<ui:define name="corpo">
-
+	<sec:ifAnyGranted roles="ROLE_DGR">
 <!-- NOVOS ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 		<h:form id="novos">
 			<p:commandButton class="btnPadrao" value="Novo Cartão" action="#{cartaoVisitaBean.novo}" 
@@ -200,7 +201,7 @@
 		 </p:dataScroller>
 	</h:form>
 <!-- FIM DATA SCROLLER //////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-
+	</sec:ifAnyGranted>
 	</ui:define>
 </ui:composition>
 </html>

@@ -38,6 +38,12 @@ public class ControleFrotaRN
 		return this.controleFrotaDAO.listar();
 	}
 	
+	public List<ControleFrota> consultaLista(ControleFrotaFiltro filtro)
+	{
+		this.controleFrotaDAO = DAOFactory.criarControleFrotaDAO();
+		return this.controleFrotaDAO.consultaLista(filtro);
+	}
+	
 	public List<String> completeColetor(String text)
 	{
 		this.controleFrotaDAO = DAOFactory.criarControleFrotaDAO();

@@ -3,13 +3,15 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags">
 <ui:composition template="/template/interna.xhtml">
 	<ui:define name="titulo">
 		<h:graphicImage library="imagens" name="logoUnity.png" style="height:40px;"/>
 		<h:outputLabel class="label-padrao" value="Controle Frota" style="margin-left:400px; font-size:30px; font-family:Ubuntu;"/>
 	</ui:define>
 	<ui:define name="corpo">
+	<sec:ifAnyGranted roles="ROLE_DGR,ROLE_CONTROLE_FROTA">
 	<p:messages id="cfb" autoUpdate="true" closable="true"/>
 	<h:form id="filtro">
 	
@@ -119,7 +121,7 @@
 				</h:commandLink>
 			</h:panelGrid>
 	</h:form>
-	
+	</sec:ifAnyGranted>
 	</ui:define>
 </ui:composition>
 </html>

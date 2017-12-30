@@ -27,6 +27,15 @@
 		<mapping class="movimentacao.negocios.atividades.Atividades"/>
 		<mapping class="movimentacao.negocios.contatos.Contatos"/>
 		<mapping class="movimentacao.cartaoVisita.CartaoVisita"/>
+		
 		<mapping class="movimentacao.projetoAES.ControleFrota"/>
+		
+		<mapping class="movimentacao.projetoNCE.status.StatusRequisicao"/>
+		<mapping class="movimentacao.projetoNCE.empresa.Empresa"/>
+		<mapping class="movimentacao.projetoNCE.tecnico.Tecnico"/>
+		<mapping class="movimentacao.projetoNCE.coordenador.Coordenador"/>
+		<mapping class="movimentacao.projetoNCE.site.Site"/>
+		<mapping class="movimentacao.projetoNCE.chave.Chave"/>
+		<mapping class="movimentacao.projetoNCE.ControleChave"/>
 	</session-factory>
 </hibernate-configuration>

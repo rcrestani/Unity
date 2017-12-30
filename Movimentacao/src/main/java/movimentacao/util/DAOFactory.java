@@ -12,6 +12,13 @@ import movimentacao.negocios.contatos.ContatosDAOHibernate;
 import movimentacao.produto.ProdutoDAOHibernate;
 import movimentacao.produtoTask.ProdutoTaskDAOHibernate;
 import movimentacao.projetoAES.ControleFrotaDAOHibernate;
+import movimentacao.projetoNCE.ControleChaveDAOHibernate;
+import movimentacao.projetoNCE.chave.ChaveDAOHibernate;
+import movimentacao.projetoNCE.coordenador.CoordenadorDAOHibernate;
+import movimentacao.projetoNCE.empresa.EmpresaDAOHibernate;
+import movimentacao.projetoNCE.site.SiteDAOHibernate;
+import movimentacao.projetoNCE.status.StatusRequisicaoDAOHibernate;
+import movimentacao.projetoNCE.tecnico.TecnicoDAOHibernate;
 import movimentacao.usuario.*;
 
 public class DAOFactory 
@@ -110,5 +117,61 @@ public class DAOFactory
 		controleFrotaDAO.setSession(HibernateUtil.getSessionFactory().getCurrentSession());
 		
 		return controleFrotaDAO;
+	}
+	
+	public static StatusRequisicaoDAOHibernate criarStatusRequisicaoDAO()
+	{
+		StatusRequisicaoDAOHibernate statusRequisicaoDAO = new StatusRequisicaoDAOHibernate();
+		statusRequisicaoDAO.setSession(HibernateUtil.getSessionFactory().getCurrentSession());
+		
+		return statusRequisicaoDAO;
+	}
+	
+	public static EmpresaDAOHibernate criarEmpresaDAO()
+	{
+		EmpresaDAOHibernate empresaDAO = new EmpresaDAOHibernate();
+		empresaDAO.setSession(HibernateUtil.getSessionFactory().getCurrentSession());
+		
+		return empresaDAO;
+	}
+	
+	public static TecnicoDAOHibernate criarTecnicoDAO()
+	{
+		TecnicoDAOHibernate tecnicoDAO = new TecnicoDAOHibernate();
+		tecnicoDAO.setSession(HibernateUtil.getSessionFactory().getCurrentSession());
+		
+		return tecnicoDAO;
+	}
+	
+	public static CoordenadorDAOHibernate criarCoordenadorDAO()
+	{
+		CoordenadorDAOHibernate coordenadorDAO = new CoordenadorDAOHibernate();
+		coordenadorDAO.setSession(HibernateUtil.getSessionFactory().getCurrentSession());
+		
+		return coordenadorDAO;
+	}
+	
+	public static SiteDAOHibernate criarSiteDAO()
+	{
+		SiteDAOHibernate siteDAO = new SiteDAOHibernate();
+		siteDAO.setSession(HibernateUtil.getSessionFactory().getCurrentSession());
+		
+		return siteDAO;
+	}
+	
+	public static ChaveDAOHibernate criarChaveDAO()
+	{
+		ChaveDAOHibernate chaveDAO = new ChaveDAOHibernate();
+		chaveDAO.setSession(HibernateUtil.getSessionFactory().getCurrentSession());
+		
+		return chaveDAO;
+	}
+	
+	public static ControleChaveDAOHibernate criarControleChaveDAO()
+	{
+		ControleChaveDAOHibernate controleChaveDAO = new ControleChaveDAOHibernate();
+		controleChaveDAO.setSession(HibernateUtil.getSessionFactory().getCurrentSession());
+		
+		return controleChaveDAO;
 	}
 }

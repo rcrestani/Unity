@@ -58,10 +58,8 @@ public class ClienteDAOHibernate implements ClienteDAO
 		@SuppressWarnings("unchecked")
 		List<Cliente> cliente = criteria.list();
 		List<String> results = new ArrayList<String>();
-		
-        int n = cliente.size();
-        
-        for(int i=0; i < n; i++)
+		        
+        for(int i=0; i < cliente.size(); i++)
         {
             Cliente clt = cliente.get(i);
             results.add(clt.getNome());

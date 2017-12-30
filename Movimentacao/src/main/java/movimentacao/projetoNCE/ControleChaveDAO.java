@@ -1,0 +1,12 @@
+package movimentacao.projetoNCE;
+
+import java.util.List;
+
+public interface ControleChaveDAO
+{
+	public void salvar(ControleChave controleChave);
+	public void excluir(ControleChave controleChave);
+	public ControleChave carregar(Integer id);
+	public List<ControleChave> listar();
+
+}

@@ -22,12 +22,17 @@
 			            </p:submenu>
 			            </sec:ifAnyGranted>
 			            
-			            <sec:ifAnyGranted roles="ROLE_DGR">
+			            <sec:ifAnyGranted roles="ROLE_DGR,ROLE_CONTROLE_CHAVE">
 				            <p:submenu label="Movimentações" icon="ui-icon-folder-collapsed">
+				            <sec:ifAnyGranted roles="ROLE_DGR">
 				            	<p:menuitem value="Equipamentos" url="/restrito/mov.jsf" icon="ui-icon-wrench" />
 				            	<p:menuitem value="Negócios" url="/restrito/negocios.jsf" icon="ui-icon-tag" />
 				            	<p:menuitem value="Atividades" url="/restrito/atividades.jsf" icon="ui-icon-comment" />
 				            	<p:menuitem value="Cartões de Visita" url="/restrito/cartaovisita.jsf" icon="ui-icon-image" />
+				            </sec:ifAnyGranted>
+				            <sec:ifAnyGranted roles="ROLE_ADM,ROLE_CONTROLE_CHAVE">
+				            	<p:menuitem value="Controle de Chaves" url="/restrito/nce_controleChave.jsf" icon="ui-icon-key" />
+				            </sec:ifAnyGranted>
 				            </p:submenu>
 			            </sec:ifAnyGranted>
 			            

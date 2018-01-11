@@ -38,6 +38,18 @@ public class TecnicoRN
 		return this.tecnicoDAO.listar();
 	}
 	
+	public List<String> completeTecnico(String text)
+	{
+		this.tecnicoDAO = DAOFactory.criarTecnicoDAO();
+		return this.tecnicoDAO.completeTecnico(text);
+	}
+	
+	public Tecnico tecnicoPorNome(String nome)
+	{
+		this.tecnicoDAO = DAOFactory.criarTecnicoDAO();
+		return this.tecnicoDAO.tecnicoPorNome(nome);
+	}
+	
 	public TecnicoFiltro getFiltro() {
 		return filtro;
 	}
@@ -45,7 +57,5 @@ public class TecnicoRN
 	public void setFiltro(TecnicoFiltro filtro) {
 		this.filtro = filtro;
 	}
-	
-	
 
 }

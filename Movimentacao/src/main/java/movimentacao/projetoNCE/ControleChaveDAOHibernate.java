@@ -2,7 +2,9 @@ package movimentacao.projetoNCE;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 
 public class ControleChaveDAOHibernate implements ControleChaveDAO
 {
@@ -27,7 +29,17 @@ public class ControleChaveDAOHibernate implements ControleChaveDAO
 	{
 		return (ControleChave) this.session.get(ControleChave.class, id);
 	}
-
+	
+	public ControleChave ultimoRegistro()
+	{
+		Criteria criteria = this.session.createCriteria(ControleChave.class);
+		
+		criteria.addOrder(Order.desc("id"));
+		criteria.setMaxResults(1);
+		
+		return (ControleChave) criteria.uniqueResult();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public List<ControleChave> listar()
 	{

@@ -6,10 +6,12 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import movimentacao.usuario.Usuario;
 
-@Entity (name="statusRequisicao")
+@Entity (name="nce_statusRequisicao")
 public class StatusRequisicao implements Serializable
 {
 	private static final long serialVersionUID = 5498602027249782214L;
@@ -21,7 +23,11 @@ public class StatusRequisicao implements Serializable
 	private String nomeStatus;
 	private boolean funcao;
 	private Date dataHoraReg;
+	
+	@ManyToOne
+	@JoinColumn (name = "idUsuario")
 	private Usuario usuario;
+	
 	private String obs;
 	
 	

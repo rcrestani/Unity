@@ -2,6 +2,7 @@ package movimentacao.projetoNCE.empresa;
 
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 
 public class EmpresaDAOHibernate implements EmpresaDAO
@@ -33,5 +34,23 @@ public class EmpresaDAOHibernate implements EmpresaDAO
 	{
 		return this.session.createCriteria(Empresa.class).list();
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	public List<String> completeEmpresa(String text)
+	{
+		String hql = "select razaoSocial from nce_empresa where razaoSocial like :text";
+		Query consulta = this.session.createQuery(hql);
+		consulta.setString("text", "%"+text+"%");
+		
+		return (List<String>)consulta.list();
+	}
+	
+	public Empresa empresaPorNome(String nome)
+	{
+		String hql = "select e from nce_empresa e where e.razaoSocial = :nome";
+		Query consulta = this.session.createQuery(hql);
+		consulta.setString("nome", nome);
+		
+		return (Empresa) consulta.uniqueResult();
+	}
 }

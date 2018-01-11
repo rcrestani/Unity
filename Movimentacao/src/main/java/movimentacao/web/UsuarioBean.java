@@ -8,6 +8,7 @@ import movimentacao.usuario.Usuario;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -76,7 +77,17 @@ public class UsuarioBean implements Serializable
 				this.usuario.setSenha(bCrypt);
 				this.usuario.getPermissao().add("ROLE_USUARIO");
 				this.usuario.setAtivo(true);
-				userRN.salvar(this.usuario);
+				
+				try
+				{
+					userRN.salvar(this.usuario);
+				}
+				catch (Exception e)
+				{
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+				    		FacesMessage.SEVERITY_ERROR, "Erro! " + "Usuário inválido!" , ""));
+				}
+				
 				
 				return "/restrito/usuario.jsf";
 			}
@@ -95,8 +106,18 @@ public class UsuarioBean implements Serializable
 				}
 				//=============================================================================
 				this.usuario.setPermissao(newUser.getPermissao());
-				usuarioRN.atualizarEvict(newUser);
-				usuarioRN.atualizar(this.usuario);
+				
+				try
+				{
+					usuarioRN.atualizarEvict(newUser);
+					usuarioRN.atualizar(this.usuario);
+				}
+				catch (ConstraintViolationException e)
+				{
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+				    		FacesMessage.SEVERITY_ERROR, "Erro! " + "Usuário inválido!" , ""));
+				}
+				
 				this.usuario = new Usuario();
 				
 				return "/restrito/usuario.jsf";
@@ -118,8 +139,18 @@ public class UsuarioBean implements Serializable
 					}
 					//==============================================================================
 					this.usuario.setPermissao(newUser.getPermissao());
-					usuarioRN.atualizarEvict(newUser);
-					usuarioRN.atualizar(this.usuario);
+					
+					try
+					{
+						usuarioRN.atualizarEvict(newUser);
+						usuarioRN.atualizar(this.usuario);
+					}
+					catch (ConstraintViolationException e)
+					{
+						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+					    		FacesMessage.SEVERITY_ERROR, "Erro! " + "Usuário inválido!" , ""));
+					}
+					
 					this.usuario = new Usuario();
 					
 					return "/restrito/usuario.jsf";
@@ -154,6 +185,7 @@ public class UsuarioBean implements Serializable
 		this.permissoesSource.add("ROLE_ADM");
 		this.permissoesSource.add("ROLE_DGR");
 		this.permissoesSource.add("ROLE_CONTROLE_FROTA");
+		this.permissoesSource.add("ROLE_CONTROLE_CHAVE");
 		
 		return null;
 	}
@@ -167,7 +199,7 @@ public class UsuarioBean implements Serializable
 		this.permissoesSource.add("ROLE_ADM");
 		this.permissoesSource.add("ROLE_DGR");
 		this.permissoesSource.add("ROLE_CONTROLE_FROTA");
-		
+		this.permissoesSource.add("ROLE_CONTROLE_CHAVE");
 		
 		UsuarioRN usuarioRN = new UsuarioRN();
 	    Usuario usuario = usuarioRN.carregar(this.usuario.getCodigo());

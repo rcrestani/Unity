@@ -21,7 +21,7 @@ import movimentacao.projetoNCE.status.StatusRequisicao;
 import movimentacao.projetoNCE.tecnico.Tecnico;
 import movimentacao.usuario.Usuario;
 
-@Entity (name = "controleChave")
+@Entity (name = "nce_controleChave")
 public class ControleChave implements Serializable
 {
 	private static final long serialVersionUID = 6168579551301952418L;
@@ -44,16 +44,23 @@ public class ControleChave implements Serializable
 	
 	@ElementCollection(targetClass = Integer.class)
 	@JoinTable(
-			name="controleChave_site",
+			name="nce_controleChave_site",
 			uniqueConstraints = {@UniqueConstraint(columnNames = {"controleChave" , "controleSite"})},
 			joinColumns = @JoinColumn(name = "controleChave"))
-	@Column(name = "controleChave")
+	@Column(name = "controleSite")
 	private Set<Integer> idSite = new HashSet<Integer>();
 	
+	@OneToOne
+	@JoinColumn (name = "idStatus")
 	private StatusRequisicao status;
+	
 	@Column (length = 1000)
 	private String obs;
+	
 	private Date dataHoraReg;
+	
+	@OneToOne
+	@JoinColumn (name = "idUsuario")
 	private Usuario usuario;
 	
 	

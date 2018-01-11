@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 import movimentacao.projetoNCE.empresa.Empresa;
 import movimentacao.usuario.Usuario;
 
-@Entity (name = "tecnico")
+@Entity (name = "nce_tecnico")
 public class Tecnico implements Serializable
 {
 	private static final long serialVersionUID = -816774017028281701L;
@@ -27,10 +27,13 @@ public class Tecnico implements Serializable
 	private Empresa idEmpresa;
 	
 	private String foneFixo1;
-	private String foneFixo2;
+	private String celular;
 	private String rg;
 	private String re;
 	private Date dataHoraReg;
+	
+	@ManyToOne
+	@JoinColumn (name = "idUsuario")
 	private Usuario usuario;
 	
 	
@@ -58,11 +61,11 @@ public class Tecnico implements Serializable
 	public void setFoneFixo1(String foneFixo1) {
 		this.foneFixo1 = foneFixo1;
 	}
-	public String getFoneFixo2() {
-		return foneFixo2;
+	public String getCelular() {
+		return celular;
 	}
-	public void setFoneFixo2(String foneFixo2) {
-		this.foneFixo2 = foneFixo2;
+	public void setCelular(String celular) {
+		this.celular = celular;
 	}
 	public String getRg() {
 		return rg;
@@ -96,7 +99,7 @@ public class Tecnico implements Serializable
 		int result = 1;
 		result = prime * result + ((dataHoraReg == null) ? 0 : dataHoraReg.hashCode());
 		result = prime * result + ((foneFixo1 == null) ? 0 : foneFixo1.hashCode());
-		result = prime * result + ((foneFixo2 == null) ? 0 : foneFixo2.hashCode());
+		result = prime * result + ((celular == null) ? 0 : celular.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((idEmpresa == null) ? 0 : idEmpresa.hashCode());
 		result = prime * result + ((nome == null) ? 0 : nome.hashCode());
@@ -124,10 +127,10 @@ public class Tecnico implements Serializable
 				return false;
 		} else if (!foneFixo1.equals(other.foneFixo1))
 			return false;
-		if (foneFixo2 == null) {
-			if (other.foneFixo2 != null)
+		if (celular == null) {
+			if (other.celular != null)
 				return false;
-		} else if (!foneFixo2.equals(other.foneFixo2))
+		} else if (!celular.equals(other.celular))
 			return false;
 		if (id == null) {
 			if (other.id != null)

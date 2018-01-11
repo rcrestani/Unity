@@ -38,6 +38,18 @@ public class EmpresaRN
 		return this.empresaDAO.listar();
 	}
 	
+	public List<String> completeEmpresa(String text)
+	{
+		this.empresaDAO = DAOFactory.criarEmpresaDAO();
+		return this.empresaDAO.completeEmpresa(text);
+	}
+	
+	public Empresa empresaPorNome(String nome)
+	{
+		this.empresaDAO = DAOFactory.criarEmpresaDAO();
+		return this.empresaDAO.empresaPorNome(nome);
+	}
+	
 	public EmpresaFiltro getFiltro() {
 		return filtro;
 	}

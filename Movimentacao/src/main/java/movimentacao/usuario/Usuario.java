@@ -2,6 +2,9 @@ package movimentacao.usuario;
 
 import java.io.*;
 import javax.persistence.*;
+
+import org.hibernate.annotations.NaturalId;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,7 +19,7 @@ public class Usuario implements Serializable
 	@GeneratedValue
 	private Integer codigo;
 	private String nome;
-	@org.hibernate.annotations.NaturalId
+	@NaturalId (mutable = true)
 	private String login;
 	private String senha;
 	private String email;

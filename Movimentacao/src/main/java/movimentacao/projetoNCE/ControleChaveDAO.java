@@ -7,6 +7,7 @@ public interface ControleChaveDAO
 	public void salvar(ControleChave controleChave);
 	public void excluir(ControleChave controleChave);
 	public ControleChave carregar(Integer id);
+	public ControleChave ultimoRegistro();
 	public List<ControleChave> listar();
 
 }

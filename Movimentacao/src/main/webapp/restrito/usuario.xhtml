@@ -42,8 +42,8 @@
 				<p:inputText class="form-padrao form-usuarios" id="login" 
 							label="Login" 
 							value="#{usuarioBean.usuario.login}" 
-							size="15" maxlength="15" required="true"
-							validatorMessage="Login deve ter no mínimo 5 e no máximo 15 caracteres e só pode ter os símbolos '.' e '_'.">
+							size="15" maxlength="30" required="true"
+							validatorMessage="Login deve ter no mínimo 5 e no máximo 30 caracteres e só pode ter os símbolos '.' e '_'.">
 					<f:validateRegex pattern="([a-z]|[0-9]|[.]|[_]){5,15}"/>
 				</p:inputText>
 				</p:column>
@@ -102,10 +102,11 @@
 	        		<h:outputLabel class="label-padrao" value="Página Inicial:" for="paginaInicial"/>
 	        	</p:column>
 	        	<p:column style="border-width:0px;">
-	        		<p:selectOneMenu id="paginaInicial" value="#{usuarioBean.usuario.paginaInicial}" style="width:125px">
+	        		<p:selectOneMenu id="paginaInicial" value="#{usuarioBean.usuario.paginaInicial}" style="width:170px">
 			            <f:selectItem id="paginaInicialSubItem" itemLabel="Selecione"/>
 			            <f:selectItem itemLabel="Dashboard" itemValue="principal.jsf" />
 			            <f:selectItem itemLabel="Relatório Controle Frota" itemValue="controleFrota.jsf" />
+			            <f:selectItem itemLabel="NCE Controle Chave" itemValue="nce_controleChave.jsf" />
 			        </p:selectOneMenu>
 	        	</p:column>
 	        	<p:column style="border-width:0px;">

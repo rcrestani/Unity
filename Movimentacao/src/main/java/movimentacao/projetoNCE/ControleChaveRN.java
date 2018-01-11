@@ -31,6 +31,13 @@ public class ControleChaveRN
 		this.controleChaveDAO = DAOFactory.criarControleChaveDAO();
 		return this.controleChaveDAO.carregar(id);
 	}
+	
+	public ControleChave ultimoRegistro()
+	{
+		this.controleChaveDAO = DAOFactory.criarControleChaveDAO();
+		return this.controleChaveDAO.ultimoRegistro();
+	}
+	
 	public List<ControleChave> listar()
 	{
 		this.controleChaveDAO = DAOFactory.criarControleChaveDAO();

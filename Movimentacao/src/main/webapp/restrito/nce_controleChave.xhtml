@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags">
+<ui:composition template="/template/interna.xhtml">
+	<ui:define name="titulo">
+		<h:graphicImage library="imagens" name="logoUnity.png" style="height:40px;"/>
+		<h:outputLabel class="label-padrao" value="Controle de Chaves" style="margin-left:380px; font-size:30px; font-family:Ubuntu;"/>
+	</ui:define>
+	<ui:define name="corpo">
+	
+	<sec:ifAnyGranted roles="ROLE_DGR,ROLE_CONTROLE_CHAVE">
+	
+	<p:growl id="grow" autoUpdate="true" life="4000" widgetVar="grow" />
+<!-- FORM NOVOS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
+	<h:form id="novos">
+		<p:commandButton class="btnPadrao" value="Nova Requisição" action="#{nceControleChaveBean.novo}" update=":cadastro"/>
+	</h:form>
+<!-- FIM FORM NOVOS////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
+	<p:separator/>
+<!-- FORM CADASTRO/////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
+	<h:form id="cadastro">
+		<p:panelGrid style="border-collapse: unset;" class="teste" rendered="#{nceControleChaveBean.formControleChave}">
+			<p:row>
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" id="numeroRequisicao" value="Nº Requisição:"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<p:inputText class="form-padrao form-mov" style="font-size: 18px; color:red;" id="idAno"
+								value="#{nceControleChaveBean.controleChave.idAno}"	size="10" disabled="true"/>
+				</p:column>
+				
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" id="user" value="Usuário:"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<p:inputText class="form-padrao form-mov" style="font-size: 18px; color:red;" id="usuario"
+								value="#{nceControleChaveBean.usuario}" disabled="true"/>
+				</p:column>
+			</p:row>
+			
+			<p:row>
+	            <p:column style="padding: 0px;" colspan="6"></p:column>
+	        </p:row>
+			
+			<p:row>
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" id="abertura" value="Data Abertura:"/>
+				</p:column>
+				<p:column style="border-width:0px;">	
+	       			<p:calendar id="dataAbertura" value="#{nceControleChaveBean.controleChave.dataAbertura}" pattern="dd-MM-yyyy - HH:mm"
+							mask="true" size="14" locale="pt" placeholder="Início Atendimento"
+							required="true" requiredMessage="Data de abertura é obrigatória"/>
+				</p:column>
+				
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" id="crqEmail" value="CRQ:"/>
+				</p:column>
+				<p:column style="border-width:0px;">			
+					<p:inputText id="crq" class="form-padrao form-mov" value="#{nceControleChaveBean.controleChave.crq}"
+								placeholder="CRQ ou E-mail" required="true" requiredMessage="CRQ ou E-mail é obrigatório."/>
+				</p:column>
+				
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" id="projetoAtiv" value="Projeto/Atividade:"/>
+				</p:column>
+				<p:column style="border-width:0px;">			
+					<p:inputText id="projeto" class="form-padrao form-mov" value="#{nceControleChaveBean.controleChave.projeto}"
+								placeholder="Projeto ou Atividade" required="true" requiredMessage="Projeto ou Atividade são obrigatórios."/>
+				</p:column>
+			</p:row>
+			
+			<p:row>
+	            <p:column style="padding: 0px;" colspan="6"></p:column>
+	        </p:row>
+	        
+	        <p:row>
+	        	<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" id="lblTecnico" value="Técnico:"/>
+				</p:column>
+				<p:column style="border-width:0px;" colspan="2">			
+					<p:autoComplete id="buscaTecnico" dropdown="true" forceSelection="true" size="40" scrollHeight="250" minQueryLength="3"
+								value="#{nceControleChaveBean.nomeTecnico}" completeMethod="#{nceControleChaveBean.tecnicoRN.completeTecnico}"
+								effect="fade" placeholder="Selecionar Técnico" style="font-size: 10px;"
+								required="true" requiredMessage="Técnico é obrigatório."/>
+				</p:column>
+				
+				<p:column style="border-width:0px;" colspan="2">
+					<h:panelGrid columns="1" cellpadding="5">
+    					<p:commandButton class="btnPadrao" style="font-size: 18px;" value="Novo Técnico"
+    										type="button" onclick="PF('dlgTecnico').show();" />
+    				</h:panelGrid>
+				</p:column>
+	        </p:row>
+	        
+	        <p:row>
+	            <p:column style="padding: 0px;" colspan="6"></p:column>
+	        </p:row>
+			
+			<p:row>
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" id="observ" value="Observação:"/>
+				</p:column>
+				<p:column style="border-width:0px;" colspan="3">	
+					<p:inputTextarea id="obs" rows="5" cols="60" counter="display" maxlength="1000" counterTemplate="{0} caracteres restantes." 
+									value="#{nceControleChaveBean.controleChave.obs}" autoResize="false" />
+		    	</p:column>
+		    	<p:column style="border-width:0px;">
+		    		<h:outputText id="display"/>
+		    	</p:column>
+		    </p:row>
+		    
+		    <p:row>
+	            <p:column style="padding: 0px;" colspan="6"></p:column>
+	        </p:row>
+		    
+		    <p:row>
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" id="fechamento" value="Data Fechamento:"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<p:calendar id="dataFechamento" value="#{nceControleChaveBean.controleChave.dataFechamento}" pattern="dd-MM-yyyy - HH:mm"
+							mask="true" size="14" locale="pt" placeholder="Fim Atendimento"/>
+				</p:column>
+				
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" id="sts" value="Status:"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<p:inputText id="status" class="form-padrao form-mov" value="STATUS"/>
+				</p:column>	
+			</p:row>
+		    
+		    <p:row>
+	            <p:column style="padding: 0px;" colspan="6"></p:column>
+	        </p:row>
+	        
+		    <p:row>
+				<p:column style="border-width:0px;" colspan="2">	
+					<p:commandButton class="btnPadrao" style="font-size: 18px;" action="#{nceControleChaveBean.salvar}"
+									value="Salvar" update=":cadastro"/>
+				</p:column>
+			</p:row>					
+		</p:panelGrid>
+		
+	</h:form>
+<!-- FIM FORM CADASTRO///////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+<!-- DIALOG TECNICO//////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
+	<p:dialog id="dlgTecnico" rendered="true" position="center" header="Cadastro de novo Técnico"
+				widgetVar="dlgTecnico" minHeight="40" width="900px" showEffect="explode" hideEffect="explode" modal="true"
+				showCloseIcon="true">
+				
+    	<h:form id="formTecnico">
+    		<p:panelGrid style="border-collapse: unset;">
+				<p:row>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" id="lblNomeTecnico" value="Nome Completo:"/>
+					</p:column>
+					<p:column style="border-width:0px;" colspan="3">
+						<p:autoComplete id="nomeTecnico" dropdown="true" size="50" scrollHeight="150" minQueryLength="3"
+								value="#{nceControleChaveBean.tecnico.nome}" completeMethod="#{nceControleChaveBean.tecnicoRN.completeTecnico}"
+								effect="fade" placeholder="Verifique se este Técnico está cadastrado" style="font-size: 10px;"
+								required="true" requiredMessage="Nome do Técnico é obrigatório.">
+							<p:ajax event="itemSelect" listener="#{nceControleChaveBean.tecnicoSelecionado}" update=":formTecnico" />
+						</p:autoComplete>
+					</p:column>
+    			</p:row>
+    			
+    			<p:row>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" id="lblfoneFixo1" value="Telefone:"/>
+					</p:column>
+					<p:column style="border-width:0px;">
+						<p:inputMask class="form-padrao form-mov" style="font-size: 18px;" id="foneFixo1"
+										value="#{nceControleChaveBean.tecnico.foneFixo1}" mask="(99) 99999999" maxlength="10"/>
+					</p:column>
+					
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" id="lblCelular" value="Celular:"/>
+					</p:column>
+					<p:column style="border-width:0px;">
+						<p:inputMask class="form-padrao form-mov" style="font-size: 18px;" id="celular"
+										value="#{nceControleChaveBean.tecnico.celular}" mask="(99) 999999999" maxlength="11"
+										required="true" requiredMessage="Celular do Técnico é obrigatório."/>
+					</p:column>
+    			</p:row>
+    			
+    			<p:row>
+    				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" id="lblRg" value="RG:"/>
+					</p:column>
+					<p:column style="border-width:0px;">			
+						<p:inputText id="rg" class="form-padrao form-mov" value="#{nceControleChaveBean.tecnico.rg}"
+									placeholder="Informe o RG" required="true" requiredMessage="RG é obrigatório."/>
+					</p:column>
+					
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" id="lblRe" value="RE/Funcional:"/>
+					</p:column>
+					<p:column style="border-width:0px;">			
+						<p:inputText id="re" class="form-padrao form-mov" value="#{nceControleChaveBean.tecnico.re}"
+									placeholder="Informe o RE ou a Funcional"/>
+					</p:column>
+				</p:row>
+				
+				 <p:row>
+	        	<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" id="lblEmpresa" value="Empresa:"/>
+				</p:column>
+				<p:column style="border-width:0px;" colspan="2">			
+					<p:autoComplete id="buscaEmpresa" dropdown="true" forceSelection="true" size="40" scrollHeight="250" minQueryLength="3"
+								value="#{nceControleChaveBean.nomeEmpresa}" completeMethod="#{nceControleChaveBean.empresaRN.completeEmpresa}"
+								effect="fade" placeholder="Selecionar Empresa" style="font-size: 10px;"
+								required="true" requiredMessage="Empresa é obrigatória."/>
+				</p:column>
+				
+				<p:column style="border-width:0px;" colspan="2">
+					<h:panelGrid columns="1" cellpadding="5">
+    					<p:commandButton class="btnPadrao" style="font-size: 18px;" value="Nova Empresa"
+    									type="button" onclick="PF('dlgEmpresa').show();"/>
+    				</h:panelGrid>
+				</p:column>
+	        </p:row>
+				
+				<p:row>
+	            	<p:column style="padding: 0px;" colspan="6"></p:column>
+	        	</p:row>
+	        	
+	        	<p:row>
+	        		<p:column style="border-width:0px;" colspan="2">
+	        			<p:commandButton class="btnPadrao" style="font-size: 18px;" action="#{nceControleChaveBean.salvarTecnico}"
+									value="Salvar" update=":formTecnico"/>
+					</p:column>
+	        	</p:row>
+    		</p:panelGrid>
+    	</h:form>
+    </p:dialog>
+<!-- FIM DIALOG TECNICO///////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+<!-- DIALOG EMPRESA///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
+	<p:dialog id="dlgEmpresa" rendered="true" position="center" header="Cadastro de nova Empresa"
+				widgetVar="dlgEmpresa" minHeight="40" width="1000px" showEffect="explode" hideEffect="explode" modal="true"
+				showCloseIcon="true">
+				
+    	<h:form id="formEmpresa">
+    		<p:panelGrid style="border-collapse: unset;">
+    			<p:row>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" id="lblNomeEmpresa" value="Razão Social:"/>
+					</p:column>
+					<p:column style="border-width:0px;" colspan="3">
+						<p:autoComplete id="nomeEmpresa" dropdown="true" size="50" scrollHeight="150" minQueryLength="3"
+								value="#{nceControleChaveBean.empresa.razaoSocial}" completeMethod="#{nceControleChaveBean.empresaRN.completeEmpresa}"
+								effect="fade" placeholder="Verifique se esta Empresa está cadastrada" style="font-size: 10px;"
+								required="true" requiredMessage="Razão Social da Empresa é obrigatória.">
+							<p:ajax event="itemSelect" listener="#{nceControleChaveBean.empresaSelecionada}" update=":formEmpresa" />
+						</p:autoComplete>
+					</p:column>
+    			</p:row>
+    			
+	    		<p:row>
+		           	<p:column style="padding: 0px;" colspan="6"></p:column>
+		        </p:row>
+    	<!-- WEBSERVICE CORREIOS PARA PEGAR O ENDEREÇO //////////////////////////////////////////////////////////////////////// -->		
+				<p:row>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" value="CEP:" for="cep"/>
+					</p:column>
+					<p:column style="border-width:0px;">
+						<h:inputText style="width:138px; font-size: 18px;" class="form-padrao form-usuarios" id="cep" 
+									label="CEP" value="#{nceControleChaveBean.cep}" maxlength="250"> 
+						</h:inputText>
+						
+					</p:column>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" value="" for="cep"/>
+					</p:column>
+					<p:column style="border-width:0px;">
+					<h:panelGrid columns="1" cellpadding="5">
+						<p:commandButton id="buscaCep" class="btnPadrao" style="font-size: 18px; float:right;" value="Buscar CEP"
+										actionListener="#{nceControleChaveBean.buscarEndereco}"	onclick="trocaCursor('wait' , this)"
+										oncomplete="trocaCursor('default')" update=":formEmpresa" type="button"/>
+					</h:panelGrid>
+					</p:column>
+				</p:row>
+			
+				<p:row>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" value="Endereço:" for="endereco"/>
+					</p:column>
+					<p:column style="border-width:0px;">
+						<h:inputText style="width:338px; font-size: 18px;" class="form-padrao form-usuarios" id="endereco" 
+									label="Endereço" value="#{nceControleChaveBean.empresa.endereco}" maxlength="250"> 
+						</h:inputText>
+					</p:column>
+					
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" value="Número:" for="numero"/>
+					</p:column>
+					<p:column style="border-width:0px;">
+						<h:inputText style="width:80px; font-size: 18px;" class="form-padrao form-usuarios" id="numero" 
+									label="Número" value="#{nceControleChaveBean.empresa.numero}" maxlength="10"> 
+						</h:inputText>
+					</p:column>
+					
+				</p:row>
+			
+				<p:row>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" value="Bairro:" for="bairro"/>
+					</p:column>
+					<p:column style="border-width:0px;">
+						<h:inputText style="width:200px; font-size: 18px;" class="form-padrao form-usuarios" id="bairro" 
+									label="Bairro" value="#{nceControleChaveBean.empresa.bairro}" maxlength="150"> 
+						</h:inputText>
+					</p:column>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" value="Cidade:" for="cidade"/>
+					</p:column>
+					<p:column style="border-width:0px;">
+						<h:inputText style="width:238px; font-size: 18px;" class="form-padrao form-usuarios" id="cidade" 
+									label="Cidade" value="#{nceControleChaveBean.empresa.cidade}" maxlength="150"> 
+						</h:inputText>
+					</p:column>
+					
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" value="UF:" for="uf"/>
+					</p:column>
+					<p:column style="border-width:0px;">
+						<h:inputText style="width:50px; font-size: 18px;" class="form-padrao form-usuarios" id="uf" 
+									label="UF" value="#{nceControleChaveBean.empresa.uf}" maxlength="2"> 
+						</h:inputText>
+					</p:column>
+				
+				</p:row>
+		<!-- FIM WEBSERVICE CORREIOS PARA PEGAR O ENDEREÇO //////////////////////////////////////////////////////////////////////// -->	
+	    		<p:row>
+		            <p:column style="padding: 0px;" colspan="6"></p:column>
+		        </p:row>
+				
+				<p:row>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" id="observEmpresa" value="Observação:"/>
+					</p:column>
+					<p:column style="border-width:0px;" colspan="2">	
+						<p:inputTextarea id="obsEmpresa" rows="3" cols="40" counter="display" maxlength="255" counterTemplate="{0} caracteres restantes." 
+										value="#{nceControleChaveBean.empresa.obs}" autoResize="false" />
+			    	</p:column>
+			    	<p:column style="border-width:0px;">
+			    		<h:outputText id="display"/>
+			    	</p:column>
+			    </p:row>
+			    
+			    <p:row>
+		            <p:column style="padding: 0px;" colspan="6"></p:column>
+		        </p:row>
+	        
+    			<p:row>
+	        		<p:column style="border-width:0px;" colspan="2">
+	        			<p:commandButton id="salvaEmpresa" class="btnPadrao" style="font-size: 18px;" action="#{nceControleChaveBean.salvarEmpresa}"
+									value="Salvar" update=":formEmpresa"/>
+					</p:column>
+	        	</p:row>
+    		</p:panelGrid>
+    	</h:form>
+    </p:dialog>
+<!-- FIM DIALOG EMPRESA////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	</sec:ifAnyGranted>
+	</ui:define>
+</ui:composition>
+</html>

@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 import movimentacao.projetoNCE.empresa.Empresa;
 import movimentacao.usuario.Usuario;
 
-@Entity (name = "coordenador")
+@Entity (name = "nce_coordenador")
 public class Coordenador implements Serializable
 {
 	private static final long serialVersionUID = 230276263919520656L;
@@ -28,6 +28,9 @@ public class Coordenador implements Serializable
 	
 	private String obs;
 	private Date dataHoraReg;
+	
+	@ManyToOne
+	@JoinColumn (name = "idUsuario")
 	private Usuario usuario;
 	
 	

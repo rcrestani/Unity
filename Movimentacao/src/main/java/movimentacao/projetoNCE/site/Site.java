@@ -14,7 +14,7 @@ import org.hibernate.annotations.NaturalId;
 import movimentacao.projetoNCE.coordenador.Coordenador;
 import movimentacao.usuario.Usuario;
 
-@Entity (name = "site")
+@Entity (name = "nce_site")
 public class Site implements Serializable
 {
 	private static final long serialVersionUID = 1769657467889430141L;
@@ -35,6 +35,8 @@ public class Site implements Serializable
 	@JoinColumn (name = "idCoordenador")
 	private Coordenador idCoordenador;
 	
+	private Long lat;
+	private Long lng;
 	private String endereco;
 	private String bairro;
 	private String cidade;
@@ -42,6 +44,9 @@ public class Site implements Serializable
 	private String cep;
 	private String obs;
 	private Date dataHoraReg;
+	
+	@ManyToOne
+	@JoinColumn (name = "idUsuario")
 	private Usuario usuario;
 	
 	
@@ -74,6 +79,18 @@ public class Site implements Serializable
 	}
 	public void setIdCoordenador(Coordenador idCoordenador) {
 		this.idCoordenador = idCoordenador;
+	}
+	public Long getLat() {
+		return lat;
+	}
+	public void setLat(Long lat) {
+		this.lat = lat;
+	}
+	public Long getLng() {
+		return lng;
+	}
+	public void setLng(Long lng) {
+		this.lng = lng;
 	}
 	public String getEndereco() {
 		return endereco;
@@ -138,6 +155,8 @@ public class Site implements Serializable
 		result = prime * result + ((idCodAntigo == null) ? 0 : idCodAntigo.hashCode());
 		result = prime * result + ((idCodAtual == null) ? 0 : idCodAtual.hashCode());
 		result = prime * result + ((idCoordenador == null) ? 0 : idCoordenador.hashCode());
+		result = prime * result + ((lat == null) ? 0 : lat.hashCode());
+		result = prime * result + ((lng == null) ? 0 : lng.hashCode());
 		result = prime * result + ((obs == null) ? 0 : obs.hashCode());
 		result = prime * result + ((risco == null) ? 0 : risco.hashCode());
 		result = prime * result + ((uf == null) ? 0 : uf.hashCode());
@@ -198,6 +217,16 @@ public class Site implements Serializable
 				return false;
 		} else if (!idCoordenador.equals(other.idCoordenador))
 			return false;
+		if (lat == null) {
+			if (other.lat != null)
+				return false;
+		} else if (!lat.equals(other.lat))
+			return false;
+		if (lng == null) {
+			if (other.lng != null)
+				return false;
+		} else if (!lng.equals(other.lng))
+			return false;
 		if (obs == null) {
 			if (other.obs != null)
 				return false;
@@ -220,6 +249,5 @@ public class Site implements Serializable
 			return false;
 		return true;
 	}
-	
 	
 }

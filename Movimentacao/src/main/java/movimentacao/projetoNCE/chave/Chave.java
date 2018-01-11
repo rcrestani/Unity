@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 import movimentacao.projetoNCE.site.Site;
 import movimentacao.usuario.Usuario;
 
-@Entity (name = "chave")
+@Entity (name = "nce_chave")
 public class Chave implements Serializable
 {
 	private static final long serialVersionUID = 3835131282554243180L;
@@ -31,6 +31,9 @@ public class Chave implements Serializable
 	private String posicao;
 	private String obs;
 	private Date dataHoraReg;
+	
+	@ManyToOne
+	@JoinColumn (name = "idUsuario")
 	private Usuario usuario;
 	
 	

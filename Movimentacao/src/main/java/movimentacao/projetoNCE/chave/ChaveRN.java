@@ -2,6 +2,8 @@ package movimentacao.projetoNCE.chave;
 
 import java.util.List;
 
+import movimentacao.projetoNCE.ControleChave;
+import movimentacao.projetoNCE.site.Site;
 import movimentacao.util.DAOFactory;
 
 public class ChaveRN
@@ -38,6 +40,29 @@ public class ChaveRN
 		return this.chaveDAO.listar();
 	}
 
+	public List<String> completeChave(String text)
+	{
+		this.chaveDAO = DAOFactory.criarChaveDAO();
+		return this.chaveDAO.completeChave(text);
+	}
+	
+	public Chave chavePorId(Integer id)
+	{
+		this.chaveDAO = DAOFactory.criarChaveDAO();
+		return this.chaveDAO.chavePorId(id);
+	}
+	
+	public List<Chave> listaPorSiteStatusFalse(Site site)
+	{
+		this.chaveDAO = DAOFactory.criarChaveDAO();
+		return this.chaveDAO.listaPorSiteStatusFalse(site);
+	}
+	
+	public List<Chave> listaPorSiteStatusTrue(Site site , ControleChave controleChave)
+	{
+		this.chaveDAO = DAOFactory.criarChaveDAO();
+		return this.chaveDAO.listaPorSiteStatusTrue(site , controleChave);
+	}
 	public ChaveFiltro getFiltro() {
 		return filtro;
 	}

@@ -42,13 +42,13 @@ public class ControleChave implements Serializable
 	@JoinColumn (name = "idTecnico")
 	private Tecnico idTecnico;
 	
-	@ElementCollection(targetClass = Integer.class)
+	@ElementCollection(targetClass = String.class)
 	@JoinTable(
 			name="nce_controleChave_site",
 			uniqueConstraints = {@UniqueConstraint(columnNames = {"controleChave" , "controleSite"})},
 			joinColumns = @JoinColumn(name = "controleChave"))
 	@Column(name = "controleSite")
-	private Set<Integer> idSite = new HashSet<Integer>();
+	private Set<String> idSite = new HashSet<String>();
 	
 	@OneToOne
 	@JoinColumn (name = "idStatus")
@@ -62,82 +62,103 @@ public class ControleChave implements Serializable
 	@OneToOne
 	@JoinColumn (name = "idUsuario")
 	private Usuario usuario;
-	
-	
+
 	public Integer getId() {
 		return id;
 	}
+
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
 	public String getIdAno() {
 		return idAno;
 	}
+
 	public void setIdAno(String idAno) {
 		this.idAno = idAno;
 	}
+
 	public Date getDataAbertura() {
 		return dataAbertura;
 	}
+
 	public void setDataAbertura(Date dataAbertura) {
 		this.dataAbertura = dataAbertura;
 	}
+
 	public Date getDataFechamento() {
 		return dataFechamento;
 	}
+
 	public void setDataFechamento(Date dataFechamento) {
 		this.dataFechamento = dataFechamento;
 	}
+
 	public String getProjeto() {
 		return projeto;
 	}
+
 	public void setProjeto(String projeto) {
 		this.projeto = projeto;
 	}
+
 	public String getCrq() {
 		return crq;
 	}
+
 	public void setCrq(String crq) {
 		this.crq = crq;
 	}
+
 	public Tecnico getIdTecnico() {
 		return idTecnico;
 	}
+
 	public void setIdTecnico(Tecnico idTecnico) {
 		this.idTecnico = idTecnico;
 	}
-	public Set<Integer> getIdSite() {
+
+	public Set<String> getIdSite() {
 		return idSite;
 	}
-	public void setIdSite(Set<Integer> idSite) {
+
+	public void setIdSite(Set<String> idSite) {
 		this.idSite = idSite;
 	}
+
 	public StatusRequisicao getStatus() {
 		return status;
 	}
+
 	public void setStatus(StatusRequisicao status) {
 		this.status = status;
 	}
+
 	public String getObs() {
 		return obs;
 	}
+
 	public void setObs(String obs) {
 		this.obs = obs;
 	}
+
 	public Date getDataHoraReg() {
 		return dataHoraReg;
 	}
+
 	public void setDataHoraReg(Date dataHoraReg) {
 		this.dataHoraReg = dataHoraReg;
 	}
+
 	public Usuario getUsuario() {
 		return usuario;
 	}
+
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
-	
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -156,6 +177,7 @@ public class ControleChave implements Serializable
 		result = prime * result + ((usuario == null) ? 0 : usuario.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

@@ -9,5 +9,6 @@ public interface ControleChaveDAO
 	public ControleChave carregar(Integer id);
 	public ControleChave ultimoRegistro();
 	public List<ControleChave> listar();
-
+	public List<ControleChave> buscarTodosPaginado(ControleChaveFiltro filtro);
+	public int qtdeFiltrados(ControleChaveFiltro filtro);
 }

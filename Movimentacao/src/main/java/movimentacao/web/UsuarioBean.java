@@ -76,6 +76,10 @@ public class UsuarioBean implements Serializable
 				String bCrypt = passwordEncoder.encode(senha);
 				this.usuario.setSenha(bCrypt);
 				this.usuario.getPermissao().add("ROLE_USUARIO");
+				for(int x = 0; x < this.permissoesTarget.size(); x++)
+				{
+					this.usuario.getPermissao().add(this.permissoesTarget.get(x));
+				}
 				this.usuario.setAtivo(true);
 				
 				try

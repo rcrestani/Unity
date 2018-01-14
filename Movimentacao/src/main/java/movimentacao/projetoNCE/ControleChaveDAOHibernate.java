@@ -2,9 +2,14 @@ package movimentacao.projetoNCE;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+
+import movimentacao.projetoAES.ControleFrota;
 
 public class ControleChaveDAOHibernate implements ControleChaveDAO
 {
@@ -46,4 +51,64 @@ public class ControleChaveDAOHibernate implements ControleChaveDAO
 		return this.session.createCriteria(ControleChave.class).list();
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<ControleChave> buscarTodosPaginado(ControleChaveFiltro filtro)
+	{
+		Criteria criteria = criarCriteriaParaFiltro(filtro);
+		
+		criteria.setFirstResult(filtro.getPrimeiroRegistro());
+		criteria.setMaxResults(filtro.getQuantidadeRegistros());
+		
+		if (filtro.isAscendente() && filtro.getPropriedadeOrdenacao() != null) {
+			criteria.addOrder(Order.asc(filtro.getPropriedadeOrdenacao()));
+		} else if (filtro.getPropriedadeOrdenacao() != null) {
+			criteria.addOrder(Order.desc(filtro.getPropriedadeOrdenacao()));
+		}
+		
+		return criteria.list();
+	}
+	
+	public int qtdeFiltrados(ControleChaveFiltro filtro)
+	{
+		Criteria criteria = criarCriteriaParaFiltro(filtro);
+		
+		criteria.setProjection(Projections.rowCount());
+		
+		return ((Number) criteria.uniqueResult()).intValue();
+	}
+	
+	private Criteria criarCriteriaParaFiltro(ControleChaveFiltro filtro)
+	{
+		Criteria criteria = this.session.createCriteria(ControleChave.class);
+		
+		if(filtro.getDataAbertura() != null && filtro.getDataFechamento() == null)
+		{
+			criteria.add(Restrictions.ge("dataAbertura", filtro.getDataAbertura()));
+		}
+		else if(filtro.getDataFechamento() != null && filtro.getDataAbertura() == null)
+		{
+			criteria.add(Restrictions.le("dataAbertura", filtro.getDataFechamento()));
+		}
+		else if(filtro.getDataAbertura() != null && filtro.getDataFechamento() != null)
+		{
+			criteria.add(Restrictions.between("dataAbertura", filtro.getDataAbertura() , filtro.getDataFechamento()));
+		}
+		
+		if(StringUtils.isNotEmpty( filtro.getCrq()))
+		{
+			criteria.add(Restrictions.eq("crq", filtro.getCrq()));
+		}
+		
+		if(StringUtils.isNotEmpty( filtro.getProjeto()))
+		{
+			criteria.add(Restrictions.eq("projeto", filtro.getProjeto()));
+		}
+		
+		if(StringUtils.isNotEmpty( filtro.getIdAno()))
+		{
+			criteria.add(Restrictions.eq("idAno", filtro.getIdAno()));
+		}
+		
+		return criteria;
+	}
 }

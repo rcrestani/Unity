@@ -38,6 +38,18 @@ public class SiteRN
 		return this.siteDAO.listar();
 	}
 
+	public List<String> completeSite(String text)
+	{
+		this.siteDAO = DAOFactory.criarSiteDAO();
+		return this.siteDAO.completeSite(text);
+	}
+	
+	public Site sitePorIdCodAtual(String idCodAtual)
+	{
+		this.siteDAO = DAOFactory.criarSiteDAO();
+		return this.siteDAO.sitePorIdCodAtual(idCodAtual);
+	}
+	
 	public SiteFiltro getFiltro() {
 		return filtro;
 	}

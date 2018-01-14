@@ -23,10 +23,10 @@ public class Site implements Serializable
 	@GeneratedValue
 	private Integer id;
 	
-	@NaturalId
+	@NaturalId (mutable = true)
 	private String idCodAtual;
 	
-	@NaturalId
+	@NaturalId (mutable = true)
 	private String idCodAntigo;
 	
 	private String risco;
@@ -35,8 +35,8 @@ public class Site implements Serializable
 	@JoinColumn (name = "idCoordenador")
 	private Coordenador idCoordenador;
 	
-	private Long lat;
-	private Long lng;
+	private Float lat;
+	private Float lng;
 	private String endereco;
 	private String bairro;
 	private String cidade;
@@ -48,100 +48,127 @@ public class Site implements Serializable
 	@ManyToOne
 	@JoinColumn (name = "idUsuario")
 	private Usuario usuario;
-	
-	
+
 	public Integer getId() {
 		return id;
 	}
+
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
 	public String getIdCodAtual() {
 		return idCodAtual;
 	}
+
 	public void setIdCodAtual(String idCodAtual) {
 		this.idCodAtual = idCodAtual;
 	}
+
 	public String getIdCodAntigo() {
 		return idCodAntigo;
 	}
+
 	public void setIdCodAntigo(String idCodAntigo) {
 		this.idCodAntigo = idCodAntigo;
 	}
+
 	public String getRisco() {
 		return risco;
 	}
+
 	public void setRisco(String risco) {
 		this.risco = risco;
 	}
+
 	public Coordenador getIdCoordenador() {
 		return idCoordenador;
 	}
+
 	public void setIdCoordenador(Coordenador idCoordenador) {
 		this.idCoordenador = idCoordenador;
 	}
-	public Long getLat() {
+
+	public Float getLat() {
 		return lat;
 	}
-	public void setLat(Long lat) {
+
+	public void setLat(Float lat) {
 		this.lat = lat;
 	}
-	public Long getLng() {
+
+	public Float getLng() {
 		return lng;
 	}
-	public void setLng(Long lng) {
+
+	public void setLng(Float lng) {
 		this.lng = lng;
 	}
+
 	public String getEndereco() {
 		return endereco;
 	}
+
 	public void setEndereco(String endereco) {
 		this.endereco = endereco;
 	}
+
 	public String getBairro() {
 		return bairro;
 	}
+
 	public void setBairro(String bairro) {
 		this.bairro = bairro;
 	}
+
 	public String getCidade() {
 		return cidade;
 	}
+
 	public void setCidade(String cidade) {
 		this.cidade = cidade;
 	}
+
 	public String getUf() {
 		return uf;
 	}
+
 	public void setUf(String uf) {
 		this.uf = uf;
 	}
+
 	public String getCep() {
 		return cep;
 	}
+
 	public void setCep(String cep) {
 		this.cep = cep;
 	}
+
 	public String getObs() {
 		return obs;
 	}
+
 	public void setObs(String obs) {
 		this.obs = obs;
 	}
+
 	public Date getDataHoraReg() {
 		return dataHoraReg;
 	}
+
 	public void setDataHoraReg(Date dataHoraReg) {
 		this.dataHoraReg = dataHoraReg;
 	}
+
 	public Usuario getUsuario() {
 		return usuario;
 	}
+
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
-	
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -163,6 +190,7 @@ public class Site implements Serializable
 		result = prime * result + ((usuario == null) ? 0 : usuario.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -249,5 +277,6 @@ public class Site implements Serializable
 			return false;
 		return true;
 	}
+
 	
 }

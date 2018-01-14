@@ -44,6 +44,18 @@ public class ControleChaveRN
 		return this.controleChaveDAO.listar();
 	}
 	
+	public List<ControleChave> buscarTodosPaginado(ControleChaveFiltro filtro)
+	{
+		this.controleChaveDAO = DAOFactory.criarControleChaveDAO();
+		return this.controleChaveDAO.buscarTodosPaginado(filtro);
+	}
+	
+	public int qtdeFiltrados(ControleChaveFiltro filtro)
+	{
+		this.controleChaveDAO = DAOFactory.criarControleChaveDAO();
+		return this.controleChaveDAO.qtdeFiltrados(filtro);
+	}
+	
 	public ControleChaveFiltro getFiltro() {
 		return filtro;
 	}

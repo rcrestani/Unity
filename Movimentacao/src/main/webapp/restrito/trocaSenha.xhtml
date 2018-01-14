@@ -33,8 +33,8 @@
 					</p:column>
 					<p:column style="border-width:0px;" width="50px">
 						<p:password class="form-padrao form-mov" style="font-size: 18px;" id="senhaNova"
-									value="#{usuarioBean.senhaNova}" size="10" maxlength="10"
-									required="true" requiredMessage="Nova Senha é obrigatória."/>
+									value="#{usuarioBean.senhaNova}" size="10" minlength="4" maxlength="10"
+									required="true" requiredMessage="Nova Senha é obrigatória com mínimo de 4 dígitos alfanuméricos."/>
 					</p:column>
 				</p:row>
 				

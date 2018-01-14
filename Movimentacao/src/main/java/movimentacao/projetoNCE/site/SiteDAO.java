@@ -8,5 +8,6 @@ public interface SiteDAO
 	public void excluir(Site site);
 	public Site carregar(Integer id);
 	public List<Site> listar();
-
+	public List<String> completeSite(String text);
+	public Site sitePorIdCodAtual(String idCodAtual);
 }

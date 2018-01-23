@@ -11,7 +11,7 @@
 		<h:outputLabel class="label-padrao" value="Controle Frota" style="margin-left:400px; font-size:30px; font-family:Ubuntu;"/>
 	</ui:define>
 	<ui:define name="corpo">
-	<sec:ifAnyGranted roles="ROLE_DGR,ROLE_CONTROLE_FROTA">
+	<sec:ifAnyGranted roles="ROLE_CONTROLE_FROTA , ROLE_ADM">
 	<p:messages id="cfb" autoUpdate="true" closable="true"/>
 	<h:form id="filtro">
 	
@@ -23,15 +23,15 @@
 			<p:calendar id="dataFim" value="#{controleFrotaBean.filtro.fim}" pattern="dd-MM-yyyy"
 					mask="true" size="8" locale="pt" placeholder="Data Final"/>
 			
-			<p:autoComplete id="buscaColetor" dropdown="true" forceSelection="true" size="20" scrollHeight="250" value="#{controleFrotaBean.filtro.coletor}" 
+			<p:autoComplete id="buscaColetor" dropdown="true" forceSelection="true" size="15" scrollHeight="250" value="#{controleFrotaBean.filtro.coletor}" 
 								completeMethod="#{controleFrotaBean.controleFrotaRN.completeColetor}" effect="fade" placeholder="Selecionar Base"
 								style="font-size: 10px;"/>
 								
-			<p:autoComplete id="buscaVtr" dropdown="true" forceSelection="true" size="20" scrollHeight="250" value="#{controleFrotaBean.filtro.vtr}" 
+			<p:autoComplete id="buscaVtr" dropdown="true" forceSelection="true" size="10" scrollHeight="250" value="#{controleFrotaBean.filtro.vtr}" 
 								completeMethod="#{controleFrotaBean.controleFrotaRN.completeVtr}" effect="fade" placeholder="Selecionar Veículo"
 								style="font-size: 10px;"/>		
 			
-			<p:autoComplete id="buscaCondutor" dropdown="true" forceSelection="true" size="20" scrollHeight="250" value="#{controleFrotaBean.filtro.motorista}" 
+			<p:autoComplete id="buscaCondutor" dropdown="true" forceSelection="true" size="25" scrollHeight="250" value="#{controleFrotaBean.filtro.motorista}" 
 								completeMethod="#{controleFrotaBean.controleFrotaRN.completeCondutor}" effect="fade" placeholder="Selecionar Condutor"
 								style="font-size: 10px;"/>
 		

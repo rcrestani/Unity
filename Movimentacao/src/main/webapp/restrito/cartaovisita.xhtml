@@ -11,7 +11,7 @@
 		<h:outputLabel class="label-padrao" value="Cartões de Visita" style="margin-left:420px; font-size:30px; font-family:Ubuntu;"/>
 	</ui:define>
 	<ui:define name="corpo">
-	<sec:ifAnyGranted roles="ROLE_DGR">
+	<sec:ifAnyGranted roles="ROLE_DGR , ROLE_ADM">
 <!-- NOVOS ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 		<h:form id="novos">
 			<p:commandButton class="btnPadrao" value="Novo Cartão" action="#{cartaoVisitaBean.novo}" 

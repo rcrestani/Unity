@@ -52,16 +52,16 @@ public class ChaveRN
 		return this.chaveDAO.chavePorId(id);
 	}
 	
-	public List<Chave> listaPorSiteStatusFalse(Site site)
+	public List<Chave> listaPorSiteStatusTrue(Site site)
 	{
 		this.chaveDAO = DAOFactory.criarChaveDAO();
-		return this.chaveDAO.listaPorSiteStatusFalse(site);
+		return this.chaveDAO.listaPorSiteStatusTrue(site);
 	}
 	
-	public List<Chave> listaPorSiteStatusTrue(Site site , ControleChave controleChave)
+	public List<Chave> listaPorSiteSelecaoTrue(Site site , ControleChave controleChave)
 	{
 		this.chaveDAO = DAOFactory.criarChaveDAO();
-		return this.chaveDAO.listaPorSiteStatusTrue(site , controleChave);
+		return this.chaveDAO.listaPorSiteSelecaoTrue(site , controleChave);
 	}
 	public ChaveFiltro getFiltro() {
 		return filtro;

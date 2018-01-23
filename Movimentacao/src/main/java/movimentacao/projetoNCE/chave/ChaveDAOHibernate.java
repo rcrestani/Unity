@@ -60,24 +60,24 @@ public class ChaveDAOHibernate implements ChaveDAO
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Chave> listaPorSiteStatusFalse(Site site)
+	public List<Chave> listaPorSiteStatusTrue(Site site)
 	{
 		Criteria criteria = this.session.createCriteria(Chave.class);
 		
 		criteria.add(Restrictions.eq("idSite", site));
-		//criteria.add(Restrictions.eq("status", false));
+		criteria.add(Restrictions.eq("status", true));
 		
 		return criteria.list();
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Chave> listaPorSiteStatusTrue(Site site , ControleChave controleChave)
+	public List<Chave> listaPorSiteSelecaoTrue(Site site , ControleChave controleChave)
 	{
 		Criteria criteria = this.session.createCriteria(Chave.class);
 		
 		criteria.add(Restrictions.eq("idSite", site));
 		criteria.add(Restrictions.eq("idControleChave", controleChave));
-		criteria.add(Restrictions.eq("status", true));
+		criteria.add(Restrictions.eq("selecao", true));
 		
 		return criteria.list();
 	}

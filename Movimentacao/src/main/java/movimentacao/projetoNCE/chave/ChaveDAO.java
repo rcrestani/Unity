@@ -13,6 +13,6 @@ public interface ChaveDAO
 	public List<Chave> listar();
 	public List<String> completeChave(String text);
 	public Chave chavePorId(Integer id);
-	public List<Chave> listaPorSiteStatusFalse(Site site);
-	public List<Chave> listaPorSiteStatusTrue(Site site , ControleChave controleChave);
+	public List<Chave> listaPorSiteStatusTrue(Site site);
+	public List<Chave> listaPorSiteSelecaoTrue(Site site , ControleChave controleChave);
 }

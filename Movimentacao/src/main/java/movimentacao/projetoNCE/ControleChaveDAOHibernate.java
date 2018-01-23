@@ -9,8 +9,6 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
-import movimentacao.projetoAES.ControleFrota;
-
 public class ControleChaveDAOHibernate implements ControleChaveDAO
 {
 	private Session session;
@@ -51,6 +49,16 @@ public class ControleChaveDAOHibernate implements ControleChaveDAO
 		return this.session.createCriteria(ControleChave.class).list();
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<ControleChave> listarAberto()
+	{
+		Criteria criteria = this.session.createCriteria(ControleChave.class);
+		
+		criteria.add(Restrictions.isNull("dataFechamento"));
+		
+		return criteria.list();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public List<ControleChave> buscarTodosPaginado(ControleChaveFiltro filtro)
 	{

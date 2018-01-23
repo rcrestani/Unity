@@ -12,7 +12,7 @@
 	</ui:define>
 	<ui:define name="corpo">
 	
-	<sec:ifAnyGranted roles="ROLE_DGR,ROLE_CONTROLE_CHAVE">
+	<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE , ROLE_ADM">
 	
 	<p:growl id="grow" autoUpdate="true" life="4000" widgetVar="grow" />
 <!-- FORM NOVOS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
@@ -85,7 +85,7 @@
 	        	<p:column style="border-width:0px;">
 					<h:outputLabel class="label-padrao" id="lblTecnico" value="Técnico:"/>
 				</p:column>
-				<p:column style="border-width:0px;" colspan="2">			
+				<p:column style="border-width:0px;" colspan="3">			
 					<p:autoComplete id="buscaTecnico" dropdown="true" forceSelection="true" size="40" scrollHeight="250" minQueryLength="3"
 								value="#{nceControleChaveBean.nomeTecnico}" completeMethod="#{nceControleChaveBean.tecnicoRN.completeTecnico}"
 								effect="fade" placeholder="Selecionar Técnico" style="font-size: 10px;"
@@ -123,11 +123,11 @@
 				</p:column>
 				
 				<p:column style="border-width:0px;">
-					<h:outputLabel class="label-padrao" id="projetoAtiv" value="Projeto/Atividade:"/>
+					<h:outputLabel class="label-padrao" id="ativ" value="Atividade:"/>
 				</p:column>
 				<p:column style="border-width:0px;">			
-					<p:inputText id="projeto" class="form-padrao form-mov" value="#{nceControleChaveBean.controleChave.projeto}"
-								placeholder="Projeto ou Atividade" required="true" requiredMessage="Projeto ou Atividade são obrigatórios."/>
+					<p:inputText id="atividade" class="form-padrao form-mov" value="#{nceControleChaveBean.controleChave.atividade}"
+								placeholder="Informar a Atividade" required="true" requiredMessage="Atividade é obrigatória."/>
 				</p:column>
 			</p:row>
 
@@ -176,7 +176,7 @@
 		    <p:row>
 				<p:column style="border-width:0px;" colspan="2">	
 					<p:commandButton class="btnPadrao" style="font-size: 18px;" action="#{nceControleChaveBean.salvar}"
-									value="Salvar" update=":cadastro"/>
+									value="Salvar" update=":cadastro :listaControleChave"/>
 				</p:column>
 			</p:row>					
 		</p:panelGrid>
@@ -186,7 +186,7 @@
 
 <!-- DATATABLE CONTROLECHAVE//////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <h:form id="listaControleChave">
-	
+	<p:poll interval="60" listener="#{nceControleChaveBean.calcTempoAberto}" update=":listaControleChave"/>
 		<p:dataTable width="400"  value="#{nceControleChaveBean.lazyControleChave}" lazy="true" widgetVar="tableControleChave"
 						var="controleChave" border="1" cellpadding="2" cellspacing="0" rowIndexVar="index"
 						paginator="true" paginatorPosition="bottom" rows="10" id="tbl"
@@ -212,8 +212,8 @@
 				<h:outputText value="#{controleChave.crq}"/>
 			</p:column>
 			
-			<p:column style="text-align: center;" width="200" headerText="Projeto" sortBy="#{controleChave.projeto}">
-				<h:outputText value="#{controleChave.projeto}"/>
+			<p:column style="text-align: center;" width="200" headerText="Atividade" sortBy="#{controleChave.atividade}">
+				<h:outputText value="#{controleChave.atividade}"/>
 			</p:column>
 			
 			<p:column style="text-align: center;" width="200" headerText="Operador">
@@ -225,6 +225,11 @@
 					<f:convertDateTime pattern="dd/MM/yyyy - H:mm" locale="pt_BR" />
 				</h:outputText>
 			</p:column>
+			
+			<p:column style="text-align: center;" width="60" headerText="Tempo Aberta">
+				<h:outputText value="#{controleChave.tempoAberto}" style="color:#{nceControleChaveBean.prazoVencido(controleChave)}"/>
+			</p:column>
+			
 		</p:dataTable>
 </h:form>
 <!-- FIM DATATABLE CONTROLECHAVE/////////////////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -452,9 +457,11 @@
 
 <!-- DIALOG SITE E CHAVE///////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
 	<p:dialog id="dlgSiteChave" rendered="true" position="top" header="Cadastro e seleção de novos Sites e Chaves"
-				widgetVar="dlgSiteChave" minHeight="40" width="1000px" showEffect="explode" hideEffect="explode" modal="true"
+				widgetVar="dlgSiteChave" minHeight="40" width="1250px" showEffect="explode" hideEffect="explode" modal="true"
 				showCloseIcon="true">
-		<p:ajax event="close" listener="#{nceControleChaveBean.atribuirSite}" update=":cadastro"/>
+		<p:ajax event="close" listener="#{nceControleChaveBean.fecharDialogSiteChave}"
+				update=":cadastro :listaChaves :adicionarChave :formSiteChave"/>
+				
     	<h:form id="formSiteChave">
     		<p:panelGrid style="border-collapse: unset;">
     			<p:row>
@@ -500,9 +507,17 @@
 			</p:column>
 			
 			<p:column style="border-width:0px;">
-				<p:inputText class="form-padrao form-mov" style="font-size: 18px; text-align:center;" id="tipoChave"
-							value="#{nceControleChaveBean.chave.tipo}" size="7" maxlength="7" placeholder="Tipo Chave" 
-							required="true" requiredMessage="Tipo da Chave é obrigatória."/>
+				<p:selectOneMenu style="font-size: 18px; text-align:center; margin-left:0px;" id="tipoChave"
+							value="#{nceControleChaveBean.chave.tipo}" size="7" maxlength="7"
+							required="true" requiredMessage="Tipo da chave é obrigatório.">
+					<f:selectItem id="subItem" itemLabel="Tipo Chave" />
+					<f:selectItem itemLabel="Portão" itemValue="Portão" />
+		            <f:selectItem itemLabel="Gradil do Container" itemValue="Gradil do Container" />
+		            <f:selectItem itemLabel="Container" itemValue="Container" />
+		            <f:selectItem itemLabel="Gradil do Armário" itemValue="Gradil do Armário" />
+		            <f:selectItem itemLabel="Gerador de Energia" itemValue="Gerador de Energia" />
+		            <f:selectItem itemLabel="Gradil do RRU" itemValue="Gradil do RRU" />
+				</p:selectOneMenu>
 			</p:column>
 			
 			<p:column style="border-width:0px;">
@@ -518,6 +533,12 @@
 			</p:column>
 			
 			<p:column style="border-width:0px;">
+				<p:selectBooleanButton id="stsChave" value="#{nceControleChaveBean.chave.status}"
+									offIcon="ui-icon-locked" onIcon="ui-icon-unlocked"
+									onLabel="Operante" offLabel="Inoperante" />
+			</p:column>
+			
+			<p:column style="border-width:0px;">
 				<p:commandButton id="adicionar" value="Adicionar" action="#{nceControleChaveBean.salvarChave}"
 									style="width:125px; margin-left:0px;" update=":listaChaves:itensChave @form"/>
 			</p:column>
@@ -529,25 +550,26 @@
 
 <h:form id="listaChaves">
 <p:separator/>
+<center>
  <p:outputPanel id="itensChave">
 	<p:dataTable value="#{nceControleChaveBean.listaChaves}" var="chave" scrollable="true" scrollHeight="160">
-		<p:column headerText="Id" style="font-size: 14px; text-align:center; width:30px;">
+		<p:column headerText="Id" style="font-size: 14px; text-align:center; width:10px;">
              <h:outputText value="#{chave.id}" />
         </p:column>
         
-        <p:column headerText="Site" style="font-size: 14px; text-align:center; width:30px;">
+        <p:column headerText="Site" style="font-size: 14px; text-align:center; width:20px;">
              <h:outputText value="#{chave.idSite.idCodAtual}" />
         </p:column>
         
-        <p:column headerText="Nome Chave" style="font-size: 14px; text-align:center; width:200px;">
+        <p:column headerText="Nome Chave" style="font-size: 14px; text-align:center; width:70px;">
              <h:outputText value="#{chave.nome}" />
         </p:column>
         
-        <p:column headerText="Tipo" style="font-size: 14px; text-align:center; width:60px;">
+        <p:column headerText="Tipo" style="font-size: 14px; text-align:center; width:100px;">
              <h:outputText value="#{chave.tipo}" />
         </p:column>
         
-        <p:column headerText="Claviculário" style="font-size: 14px; text-align:center; width:80px;">
+        <p:column headerText="Claviculário" style="font-size: 14px; text-align:center; width:70px;">
              <h:outputText value="#{chave.claviculario}" />
         </p:column>
         
@@ -555,15 +577,17 @@
              <h:outputText value="#{chave.posicao}" />
         </p:column>
         
-       <p:column style="text-align: center;" width="20" headerText="Selecionar">
-				<p:commandLink action="#{nceControleChaveBean.statusChave}" update=":listaChaves">
-					<h:graphicImage library="imagens" name="status_#{chave.status}.png" style="border:0"/>
+       <p:column style="text-align: center;" width="30" headerText="Selecionar">
+				<p:commandLink action="#{nceControleChaveBean.selecionarChave}" update=":listaChaves" disabled="#{chave.transito}">
+					<h:graphicImage library="imagens" name="status_#{chave.selecao}.png" style="border:0"/>
 					<f:setPropertyActionListener value="#{chave}" target="#{nceControleChaveBean.chave}"/>
 				</p:commandLink>	
 		</p:column>
 		
-		 <p:column headerText="ID Requisição" style="font-size: 14px; text-align:center; width:40px;">
-             <h:outputText value="#{chave.idControleChave.id}" />
+		 <p:column headerText="Em Trânsito" style="font-size: 14px; text-align:center; width:70px;">
+		 	<h:graphicImage library="imagens" name="status_#{chave.transito}.png" style="border:0"/>
+		 	<h:outputText value=" Req: " rendered="#{chave.transito}"/>
+            <h:outputText value="#{chave.idControleChave.id}" rendered="#{chave.transito}"/>
         </p:column>
 		
 		
@@ -573,8 +597,13 @@
 		</f:facet>
 	</p:dataTable>
 </p:outputPanel>
-
+<p:separator />
+	<p:commandButton class="btnPadrao" value="Salvar" action="#{nceControleChaveBean.atribuirSite}" 
+					update=":cadastro :listaChaves :adicionarChave :formSiteChave"
+					oncomplete="PF('dlgSiteChave').hide();"/>
+</center>
 </h:form>
+
 	</p:dialog>
 <!-- FIM DIALOG SITE E CHAVE////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
 

@@ -46,5 +46,17 @@ public class DateCalculator
 		return (Date) dataFinal.getTime();
 		
 	}
+	
+	public Date data48HorasAtras(Date data)
+	{
+		Calendar dataFinal = Calendar.getInstance();
+		dataFinal.setTime(data);
+		
+		long resultado = dataFinal.getTimeInMillis() - 172800000;
+		dataFinal.setTimeInMillis(resultado);
+		
+		return (Date) dataFinal.getTime();
+		
+	}
 
 }

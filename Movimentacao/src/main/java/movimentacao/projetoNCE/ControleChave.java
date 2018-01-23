@@ -35,7 +35,8 @@ public class ControleChave implements Serializable
 	
 	private Date dataAbertura;
 	private Date dataFechamento;
-	private String projeto;
+	private String tempoAberto;
+	private String atividade;
 	private String crq;
 	
 	@OneToOne
@@ -95,12 +96,20 @@ public class ControleChave implements Serializable
 		this.dataFechamento = dataFechamento;
 	}
 
-	public String getProjeto() {
-		return projeto;
+	public String getTempoAberto() {
+		return tempoAberto;
 	}
 
-	public void setProjeto(String projeto) {
-		this.projeto = projeto;
+	public void setTempoAberto(String tempoAberto) {
+		this.tempoAberto = tempoAberto;
+	}
+
+	public String getAtividade() {
+		return atividade;
+	}
+
+	public void setAtividade(String atividade) {
+		this.atividade = atividade;
 	}
 
 	public String getCrq() {
@@ -172,8 +181,9 @@ public class ControleChave implements Serializable
 		result = prime * result + ((idSite == null) ? 0 : idSite.hashCode());
 		result = prime * result + ((idTecnico == null) ? 0 : idTecnico.hashCode());
 		result = prime * result + ((obs == null) ? 0 : obs.hashCode());
-		result = prime * result + ((projeto == null) ? 0 : projeto.hashCode());
+		result = prime * result + ((atividade == null) ? 0 : atividade.hashCode());
 		result = prime * result + ((status == null) ? 0 : status.hashCode());
+		result = prime * result + ((tempoAberto == null) ? 0 : tempoAberto.hashCode());
 		result = prime * result + ((usuario == null) ? 0 : usuario.hashCode());
 		return result;
 	}
@@ -232,15 +242,20 @@ public class ControleChave implements Serializable
 				return false;
 		} else if (!obs.equals(other.obs))
 			return false;
-		if (projeto == null) {
-			if (other.projeto != null)
+		if (atividade == null) {
+			if (other.atividade != null)
 				return false;
-		} else if (!projeto.equals(other.projeto))
+		} else if (!atividade.equals(other.atividade))
 			return false;
 		if (status == null) {
 			if (other.status != null)
 				return false;
 		} else if (!status.equals(other.status))
+			return false;
+		if (tempoAberto == null) {
+			if (other.tempoAberto != null)
+				return false;
+		} else if (!tempoAberto.equals(other.tempoAberto))
 			return false;
 		if (usuario == null) {
 			if (other.usuario != null)
@@ -249,6 +264,7 @@ public class ControleChave implements Serializable
 			return false;
 		return true;
 	}
+
 	
 	
 }

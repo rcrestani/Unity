@@ -96,7 +96,7 @@
 		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
-			<version>6.1.RC1</version>
+			<version>6.2.RC1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -191,6 +191,12 @@
 		  <groupId>com.github.pengrad</groupId>
 		  <artifactId>java-telegram-bot-api</artifactId>
 		  <version>3.2.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.sun.org.apache.xml.internal/resolver -->
+		<dependency>
+		    <groupId>com.sun.org.apache.xml.internal</groupId>
+		    <artifactId>resolver</artifactId>
+		    <version>20050927</version>
 		</dependency>
 	</dependencies>
 	

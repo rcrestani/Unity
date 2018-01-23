@@ -34,6 +34,8 @@ public class Chave implements Serializable
 	private String tipo;
 	private String claviculario;
 	private String posicao;
+	private boolean selecao;
+	private boolean transito;
 	private boolean status;
 	private String obs;
 	private Date dataHoraReg;
@@ -98,6 +100,22 @@ public class Chave implements Serializable
 		this.posicao = posicao;
 	}
 
+	public boolean isSelecao() {
+		return selecao;
+	}
+
+	public void setSelecao(boolean selecao) {
+		this.selecao = selecao;
+	}
+
+	public boolean isTransito() {
+		return transito;
+	}
+
+	public void setTransito(boolean transito) {
+		this.transito = transito;
+	}
+
 	public boolean isStatus() {
 		return status;
 	}
@@ -142,8 +160,10 @@ public class Chave implements Serializable
 		result = prime * result + ((nome == null) ? 0 : nome.hashCode());
 		result = prime * result + ((obs == null) ? 0 : obs.hashCode());
 		result = prime * result + ((posicao == null) ? 0 : posicao.hashCode());
+		result = prime * result + (selecao ? 1231 : 1237);
 		result = prime * result + (status ? 1231 : 1237);
 		result = prime * result + ((tipo == null) ? 0 : tipo.hashCode());
+		result = prime * result + (transito ? 1231 : 1237);
 		result = prime * result + ((usuario == null) ? 0 : usuario.hashCode());
 		return result;
 	}
@@ -197,12 +217,16 @@ public class Chave implements Serializable
 				return false;
 		} else if (!posicao.equals(other.posicao))
 			return false;
+		if (selecao != other.selecao)
+			return false;
 		if (status != other.status)
 			return false;
 		if (tipo == null) {
 			if (other.tipo != null)
 				return false;
 		} else if (!tipo.equals(other.tipo))
+			return false;
+		if (transito != other.transito)
 			return false;
 		if (usuario == null) {
 			if (other.usuario != null)
@@ -212,5 +236,5 @@ public class Chave implements Serializable
 		return true;
 	}
 
-	
+
 }

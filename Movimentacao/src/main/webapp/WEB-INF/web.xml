@@ -77,4 +77,22 @@
 		<servlet-name>UnityWS</servlet-name>
 		<url-pattern>/webservice/unityWS</url-pattern>
 	</servlet-mapping>
+	
+	<!-- Páginas de Erro -->
+	<error-page>
+		<exception-type>java.lang.Exception</exception-type>
+		<location>/restrito/errorPage.jsf</location>
+	</error-page>
+	<error-page>
+		<exception-type>javax.faces.application.ViewExpiredException</exception-type>
+		<location>/index.jsf</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/restrito/errorPage.jsf</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/restrito/error404.jsf</location>
+	</error-page>
 </web-app>

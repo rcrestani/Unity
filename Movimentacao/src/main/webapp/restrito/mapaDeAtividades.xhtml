@@ -11,7 +11,7 @@
 		<h:outputLabel class="label-padrao" value="Mapa de Atividades" style="margin-left:390px; font-size:30px; font-family:Ubuntu;"/>
 	</ui:define>
 	<ui:define name="corpo">
-	<sec:ifAnyGranted roles="ROLE_DGR">
+	<sec:ifAnyGranted roles="ROLE_DGR , ROLE_ADM">
 	<p:messages id="dlg" autoUpdate="true" closable="true"/>
 <!-- FILTROS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 		<h:form id="filtros">

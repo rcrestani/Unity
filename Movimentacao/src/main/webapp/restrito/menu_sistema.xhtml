@@ -43,13 +43,17 @@
 				            	<p:menuitem value="Mapa de Atividades" url="/restrito/mapaDeAtividades.jsf" icon="ui-icon-note" />
 				            </sec:ifAnyGranted>
 				            
-				            <sec:ifAnyGranted roles="ROLE_DGR,ROLE_CONTROLE_FROTA , ROLE_ADM">
+				            <sec:ifAnyGranted roles="ROLE_CONTROLE_FROTA , ROLE_ADM">
 				            	<p:menuitem value="Controle da Frota" url="/restrito/controleFrota.jsf" icon="ui-icon-note" />
 				            </sec:ifAnyGranted>
 			            </p:submenu>
 			            
 			            <p:submenu label="Suporte" icon="ui-icon-gear">
 			            	<p:menuitem value="Trocar Senha" url="/restrito/trocaSenha.jsf" icon="ui-icon-key" />
+			            	
+			            	<sec:ifAnyGranted roles="ROLE_ADM">
+				            	<p:menuitem value="Registro de Acessos" url="/restrito/logAcesso.jsf" icon="ui-icon-contact" />
+				            </sec:ifAnyGranted>
 			            </p:submenu>
 			            
 			            <p:menuitem style="margin-left:650px;">

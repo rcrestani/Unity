@@ -18,15 +18,10 @@ public class LogAcesso implements Serializable
 	private String usuario;
 	private Date dataLogin;
 	private Date dataLogout;
+	private String tempoSessao;
 	private String sessionId;
 	
 	
-	public String getSessionId() {
-		return sessionId;
-	}
-	public void setSessionId(String sessionId) {
-		this.sessionId = sessionId;
-	}
 	public Integer getCodigo() {
 		return codigo;
 	}
@@ -51,6 +46,18 @@ public class LogAcesso implements Serializable
 	public void setDataLogout(Date dataLogout) {
 		this.dataLogout = dataLogout;
 	}
+	public String getTempoSessao() {
+		return tempoSessao;
+	}
+	public void setTempoSessao(String tempoSessao) {
+		this.tempoSessao = tempoSessao;
+	}
+	public String getSessionId() {
+		return sessionId;
+	}
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
+	}
 	
 	
 	@Override
@@ -61,6 +68,7 @@ public class LogAcesso implements Serializable
 		result = prime * result + ((dataLogin == null) ? 0 : dataLogin.hashCode());
 		result = prime * result + ((dataLogout == null) ? 0 : dataLogout.hashCode());
 		result = prime * result + ((sessionId == null) ? 0 : sessionId.hashCode());
+		result = prime * result + ((tempoSessao == null) ? 0 : tempoSessao.hashCode());
 		result = prime * result + ((usuario == null) ? 0 : usuario.hashCode());
 		return result;
 	}
@@ -93,6 +101,11 @@ public class LogAcesso implements Serializable
 				return false;
 		} else if (!sessionId.equals(other.sessionId))
 			return false;
+		if (tempoSessao == null) {
+			if (other.tempoSessao != null)
+				return false;
+		} else if (!tempoSessao.equals(other.tempoSessao))
+			return false;
 		if (usuario == null) {
 			if (other.usuario != null)
 				return false;
@@ -100,7 +113,4 @@ public class LogAcesso implements Serializable
 			return false;
 		return true;
 	}
-	
-	
-
 }

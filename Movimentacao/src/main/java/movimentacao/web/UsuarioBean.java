@@ -2,8 +2,11 @@ package movimentacao.web;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+
+import movimentacao.cliente.ClienteRN;
 import movimentacao.usuario.LazyUsuarioDataModel;
 import movimentacao.usuario.Usuario;
+import movimentacao.usuario.UsuarioFiltro;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -29,6 +32,7 @@ public class UsuarioBean implements Serializable
 	private static final long serialVersionUID = 6679679633405104457L;
 	private Usuario usuario = new Usuario();
 	private UsuarioRN usuarioRN = new UsuarioRN();
+	private ClienteRN clienteRN  = new ClienteRN();
 	private String senhaAtual;
 	private String senhaNova;
 	private String confirmarSenha;
@@ -41,6 +45,7 @@ public class UsuarioBean implements Serializable
 	private String login = external.getRemoteUser();
 	
 	private LazyUsuarioDataModel lazyUsuario;
+	private UsuarioFiltro filtro = new UsuarioFiltro();
 	
 	public LazyUsuarioDataModel getLazyUsuario() {
 		return lazyUsuario;
@@ -49,16 +54,9 @@ public class UsuarioBean implements Serializable
 	@PostConstruct
 	public void init()
 	{
-		this.lazyUsuario = new LazyUsuarioDataModel(new UsuarioRN());
+		this.lazyUsuario = new LazyUsuarioDataModel(usuarioRN , filtro);
 	}
 	
-	
-	/*public String novo() { 
-		this.usuario = new Usuario();
-		return "/publico/usuario.jsf"; 
-	}*/
-	
-
 	public String salvar() 
 	{ 
 		UsuarioRN userRN = new UsuarioRN();
@@ -85,6 +83,7 @@ public class UsuarioBean implements Serializable
 				try
 				{
 					userRN.salvar(this.usuario);
+					this.usuario = new Usuario();
 				}
 				catch (Exception e)
 				{
@@ -205,10 +204,10 @@ public class UsuarioBean implements Serializable
 		this.permissoesSource.add("ROLE_CONTROLE_FROTA");
 		this.permissoesSource.add("ROLE_CONTROLE_CHAVE");
 		
-		UsuarioRN usuarioRN = new UsuarioRN();
-	    Usuario usuario = usuarioRN.carregar(this.usuario.getCodigo());
-		
-	    this.permissoesTarget.addAll(usuario.getPermissao());
+		//UsuarioRN usuarioRN = new UsuarioRN();
+	    this.usuario = this.usuarioRN.carregar(this.usuario.getCodigo());
+		System.out.println("USUARIO: " + this.usuario.getNome());
+	    this.permissoesTarget.addAll(this.usuario.getPermissao());
 		
 	    for(int x = 0; x < this.permissoesTarget.size(); x++)
 	    {
@@ -232,11 +231,8 @@ public class UsuarioBean implements Serializable
 			this.usuario.setAtivo(true);
 		}
 		
-		Usuario newUser = usuarioRN.carregar(this.usuario.getCodigo());
-		this.usuario.setPermissao(newUser.getPermissao());
-		usuarioRN.atualizarEvict(newUser);
 		usuarioRN.atualizar(this.usuario);
-		this.usuario = new Usuario();
+		//this.usuario = new Usuario();
 		
 		return null;
 	}
@@ -328,5 +324,28 @@ public class UsuarioBean implements Serializable
 		this.permissoesTarget = permissoesTarget;
 	}
 
+	public UsuarioFiltro getFiltro() {
+		return filtro;
+	}
+
+	public void setFiltro(UsuarioFiltro filtro) {
+		this.filtro = filtro;
+	}
+
+	public UsuarioRN getUsuarioRN() {
+		return usuarioRN;
+	}
+
+	public void setUsuarioRN(UsuarioRN usuarioRN) {
+		this.usuarioRN = usuarioRN;
+	}
+
+	public ClienteRN getClienteRN() {
+		return clienteRN;
+	}
+
+	public void setClienteRN(ClienteRN clienteRN) {
+		this.clienteRN = clienteRN;
+	}
 
 }

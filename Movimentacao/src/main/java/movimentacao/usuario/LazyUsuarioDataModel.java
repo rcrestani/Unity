@@ -13,21 +13,27 @@ public class LazyUsuarioDataModel extends LazyDataModel<Usuario> implements Seri
 	private static final long serialVersionUID = -2124799407851421301L;
 	
 	private UsuarioRN usuarioRN;
+	private UsuarioFiltro filtro;
 	
-	public LazyUsuarioDataModel(UsuarioRN usuarioRN)
+	public LazyUsuarioDataModel(UsuarioRN usuarioRN , UsuarioFiltro filtro)
 	{
 		this.usuarioRN = usuarioRN;
+		this.filtro = filtro;
 	}
 	
 	@Override
     public List<Usuario> load(int first, int pageSize,
                 String sortField, SortOrder sortOrder, Map<String, Object> filters) 
 	{
-		List<Usuario> usuario = usuarioRN.buscarTodosPaginado(first, pageSize, sortField, sortOrder);
+		filtro.setPrimeiroRegistro(first);
+		filtro.setQuantidadeRegistros(pageSize);
+		filtro.setAscendente(SortOrder.ASCENDING.equals(sortOrder));
+		filtro.setPropriedadeOrdenacao(sortField);
 		
-		this.setRowCount(usuarioRN.pegarQuantidadeDeUsuarios());
+		setRowCount(usuarioRN.quantidadeFiltrados(filtro));
+		
+		return usuarioRN.buscarTodosPaginado(filtro);
 
-		return usuario;
     }
 
 	

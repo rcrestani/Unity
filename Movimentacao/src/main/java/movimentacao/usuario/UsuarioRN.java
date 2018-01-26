@@ -2,12 +2,12 @@ package movimentacao.usuario;
 
 import java.util.List;
 
-import org.primefaces.model.SortOrder;
-
 import movimentacao.util.DAOFactory;
 
-public class UsuarioRN{
+public class UsuarioRN
+{
 	private UsuarioDAO usuarioDAO;
+	private UsuarioFiltro filtro;
 
 	public UsuarioRN() 
 	{
@@ -64,20 +64,53 @@ public class UsuarioRN{
 	
 	public List<Usuario> listar()
 	{
+		this.usuarioDAO = DAOFactory.criarUsuarioDAO();
 		return this.usuarioDAO.listar();
 	}
 	
-	public int pegarQuantidadeDeUsuarios()
+	public List<String> completeNome(String text)
 	{
 		this.usuarioDAO = DAOFactory.criarUsuarioDAO();
-		return this.usuarioDAO.pegarQuantidadeDeUsuarios();
+		return this.usuarioDAO.completeNome(text);
 	}
 	
-	public List<Usuario> buscarTodosPaginado(int first, int pageSize, String sortField, SortOrder sortOrder)
+	public List<String> completeLogin(String text)
 	{
 		this.usuarioDAO = DAOFactory.criarUsuarioDAO();
-		return this.usuarioDAO.buscarTodosPaginado(first , pageSize, sortField, sortOrder);
+		return this.usuarioDAO.completeLogin(text);
 	}
 	
+	public List<String> completeEmail(String text)
+	{
+		this.usuarioDAO = DAOFactory.criarUsuarioDAO();
+		return this.usuarioDAO.completeEmail(text);
+	}
+	
+	public List<String> completeCliente(String text)
+	{
+		this.usuarioDAO = DAOFactory.criarUsuarioDAO();
+		return this.usuarioDAO.completeCliente(text);
+	}
+	
+	public List<Usuario> buscarTodosPaginado(UsuarioFiltro filtro)
+	{
+		this.usuarioDAO = DAOFactory.criarUsuarioDAO();
+		return this.usuarioDAO.buscarTodosPaginado(filtro);
+	}
+	
+	public int quantidadeFiltrados(UsuarioFiltro filtro)
+	{
+		this.usuarioDAO = DAOFactory.criarUsuarioDAO();
+		return this.usuarioDAO.quantidadeFiltrados(filtro);
+	}
 
+	public UsuarioFiltro getFiltro() {
+		return filtro;
+	}
+
+	public void setFiltro(UsuarioFiltro filtro) {
+		this.filtro = filtro;
+	}
+
+	
 }

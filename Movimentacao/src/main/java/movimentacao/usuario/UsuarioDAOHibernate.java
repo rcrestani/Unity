@@ -1,15 +1,14 @@
 package movimentacao.usuario;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.primefaces.model.SortOrder;
 
 public class UsuarioDAOHibernate implements UsuarioDAO{
 
@@ -45,25 +44,14 @@ public class UsuarioDAOHibernate implements UsuarioDAO{
 		return (Usuario) this.session.get(Usuario.class, codigo);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<String> completeText(String query)
 	{
-        Criteria criteria = session.createCriteria(Usuario.class);
-        criteria.add(Restrictions.ilike("nome", query, MatchMode.ANYWHERE));
-		criteria.addOrder(Order.asc("nome"));
+		String hql = "select nome from usuario where nome like :text and ativo = true and cliente = 'DGR SISTEMAS' order by nome asc";
+		Query consulta = this.session.createQuery(hql);
+		consulta.setString("text", "%"+query+"%");
 		
-		@SuppressWarnings("unchecked")
-		List<Usuario> usuario = criteria.list();
-		List<String> results = new ArrayList<String>();
-		
-        int n = usuario.size();
-        
-        for(int i=0; i < n; i++)
-        {
-            Usuario usr = usuario.get(i);
-            results.add(usr.getNome());
-        }
-         
-        return results;
+		return (List<String>)consulta.list();
     }
 	
 	@SuppressWarnings("unchecked")
@@ -90,49 +78,104 @@ public class UsuarioDAOHibernate implements UsuarioDAO{
 		return (Usuario) consulta.uniqueResult();
 	}
 	
-	 @SuppressWarnings("unchecked")
-	public List<Usuario> buscarTodosPaginado(int first, int pageSize, String sortField, SortOrder sortOrder)
-	 {
-		 List<Usuario> data = new ArrayList<Usuario>();
-		 Criteria criteria = this.session.createCriteria(Usuario.class);
-
-		 if (sortField != null)
-		 {
-			 boolean sort = SortOrder.ASCENDING.equals(sortOrder);
-			 
-			 if(sort == true)
-			 {
-				 criteria.addOrder(Order.asc(sortField));
-			 }
-			 else
-			 {
-				 criteria.addOrder(Order.desc(sortField));
-			 }
-				 
-		 }
-		 
-		 data = criteria.list();
-
-		 if (pegarQuantidadeDeUsuarios() > pageSize)
-		 {
-			 try
-			 {
-				 return data.subList(first, first + pageSize);
-			 }
-			 catch(IndexOutOfBoundsException e) 
-			 {
-	                return data.subList(first, first + (pegarQuantidadeDeUsuarios() % pageSize));
-	         }
-		 }
-		 
-		 return data;
-	}
-
-	public int pegarQuantidadeDeUsuarios()
+	@SuppressWarnings("unchecked")
+	public List<String> completeNome(String text)
 	{
-		int rows =  this.session.createCriteria(Usuario.class).list().size();
+		String hql = "select nome from usuario where nome like :text";
+		Query consulta = this.session.createQuery(hql);
+		consulta.setString("text", "%"+text+"%");
 		
-		return rows;  
+		return (List<String>)consulta.list();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> completeLogin(String text)
+	{
+		String hql = "select login from usuario where login like :text";
+		Query consulta = this.session.createQuery(hql);
+		consulta.setString("text", "%"+text+"%");
+		
+		return (List<String>)consulta.list();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> completeEmail(String text)
+	{
+		String hql = "select email from usuario where email like :text";
+		Query consulta = this.session.createQuery(hql);
+		consulta.setString("text", "%"+text+"%");
+		
+		return (List<String>)consulta.list();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> completeCliente(String text)
+	{
+		String hql = "select cliente from usuario where cliente like :text group by cliente";
+		Query consulta = this.session.createQuery(hql);
+		consulta.setString("text", "%"+text+"%");
+		
+		return (List<String>)consulta.list();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Usuario> buscarTodosPaginado(UsuarioFiltro filtro)
+	{
+		Criteria criteria = criarCriteriaParaFiltro(filtro);
+		
+		criteria.setFirstResult(filtro.getPrimeiroRegistro());
+		criteria.setMaxResults(filtro.getQuantidadeRegistros());
+		
+		if (filtro.isAscendente() && filtro.getPropriedadeOrdenacao() != null) {
+			criteria.addOrder(Order.asc(filtro.getPropriedadeOrdenacao()));
+		} else if (filtro.getPropriedadeOrdenacao() != null) {
+			criteria.addOrder(Order.desc(filtro.getPropriedadeOrdenacao()));
+		}
+		
+		return criteria.list();
+	}
+	
+	public int quantidadeFiltrados(UsuarioFiltro filtro)
+	{
+		Criteria criteria = criarCriteriaParaFiltro(filtro);
+		
+		criteria.setProjection(Projections.rowCount());
+		
+		return ((Number) criteria.uniqueResult()).intValue();
+	}
+	
+	private Criteria criarCriteriaParaFiltro(UsuarioFiltro filtro)
+	{
+		Criteria criteria = this.session.createCriteria(Usuario.class);
+		boolean status = Boolean.parseBoolean(filtro.getStatus());
+		
+		if(StringUtils.isNotEmpty(filtro.getStatus()))
+		{
+			
+			criteria.add(Restrictions.eq("ativo", status));
+		}
+		
+		if(StringUtils.isNotEmpty( filtro.getNome()))
+		{
+			criteria.add(Restrictions.eq("nome", filtro.getNome()));
+		}
+		
+		if(StringUtils.isNotEmpty( filtro.getLogin()))
+		{
+			criteria.add(Restrictions.eq("login", filtro.getLogin()));
+		}
+		
+		if(StringUtils.isNotEmpty( filtro.getEmail()))
+		{
+			criteria.add(Restrictions.eq("email", filtro.getEmail()));
+		}
+		
+		if(StringUtils.isNotEmpty( filtro.getCliente()))
+		{
+			criteria.add(Restrictions.eq("cliente", filtro.getCliente()));
+		}
+		
+		return criteria;
 	}
 
 }

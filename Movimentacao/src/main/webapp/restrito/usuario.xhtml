@@ -13,14 +13,12 @@
 	<ui:define name="corpo">
 	
 	<sec:ifAnyGranted roles="ROLE_ADM">
-	<p:messages id="dlg" autoUpdate="true" closable="true"/>
-	<!-- DIOLOG USUÁRIO//////////////////////////////////////////////////////////////////////////////////////////////// -->
+		<p:growl id="dlg" life="4000" autoUpdate="true" closable="true"/>
+<!-- DIOLOG USUÁRIO//////////////////////////////////////////////////////////////////////////////////////////////// -->
 	<p:dialog id="dlg1" rendered="true" position="center" header="Gerenciar Usuários"
 				widgetVar="dlg1" minHeight="40" showEffect="explode" hideEffect="explode" modal="true">
 				
 		<h:form id="edicao">
-	        <p:messages id="dlg" autoUpdate="true" closable="true"/>
-			<h:inputHidden value="#{usuarioBean.usuario.codigo}"/>
 								
 			<p:panelGrid style="border-collapse: unset;">
 			<p:row>
@@ -29,7 +27,7 @@
 				</p:column>
 				<p:column style="border-width:0px;">
 					<p:inputText class="form-padrao form-usuarios" id="nome" label="Nome" value="#{usuarioBean.usuario.nome}" size="30" 
-						maxlength="30" required="true" requiredMessage="Você não tem nome?"> 
+						maxlength="30" required="true" requiredMessage="Campo nome obrigatório?"> 
 						<f:validateLength minimum="10" maximum="30"/> 
 					</p:inputText>
 				</p:column>
@@ -99,6 +97,16 @@
 	        </p:row>
 	        <p:row>
 	        	<p:column style="border-width:0px;">
+	        		<h:outputLabel class="label-padrao" value="Cliente:" for="cliente"/>
+	        	</p:column>
+	        	<p:column style="border-width:0px;">
+	        		<p:autoComplete id="cliente" forceSelection="true" size="15" scrollHeight="250" minQueryLength="3"
+							value="#{usuarioBean.usuario.cliente}" completeMethod="#{usuarioBean.clienteRN.completeText}"
+							effect="fade" placeholder="Selecione o Cliente" style="font-size: 10px;"
+							required="true" requiredMessage="Cliente é obrigatório"/>
+	        	</p:column>
+	        		
+	        	<p:column style="border-width:0px;">
 	        		<h:outputLabel class="label-padrao" value="Página Inicial:" for="paginaInicial"/>
 	        	</p:column>
 	        	<p:column style="border-width:0px;">
@@ -121,7 +129,8 @@
 	        </p:row>
 		</p:panelGrid>
 		
-			<h:commandButton class="btnPadrao" action="#{usuarioBean.salvar}" value="Salvar" update=":listagem"/>
+			<p:commandButton class="btnPadrao" action="#{usuarioBean.salvar}" value="Salvar"
+							oncomplete="PF('dlg1').hide()"	update=":listagem"/>
 	
 		</h:form>
 	</p:dialog>
@@ -134,19 +143,53 @@
 									update=":edicao"/>
 			</h:panelGrid>
 	</h:form>
+	
+	<p:separator />
+	
+	<h:form id="filtros">
+		<h:panelGrid columns="6">
+			<p:autoComplete id="buscaNome" forceSelection="true" size="15" scrollHeight="250" minQueryLength="3"
+							value="#{usuarioBean.filtro.nome}" completeMethod="#{usuarioBean.usuarioRN.completeNome}"
+							effect="fade" placeholder="Busca por Nome" style="font-size: 10px;"/>
+			
+			<p:autoComplete id="buscaLogin" forceSelection="true" size="15" scrollHeight="250" minQueryLength="3"
+							value="#{usuarioBean.filtro.login}" completeMethod="#{usuarioBean.usuarioRN.completeLogin}"
+							effect="fade" placeholder="Busca por Login" style="font-size: 10px;"/>
+			
+			<p:autoComplete id="buscaEmail" forceSelection="true" size="15" scrollHeight="250" minQueryLength="3"
+							value="#{usuarioBean.filtro.email}" completeMethod="#{usuarioBean.usuarioRN.completeEmail}"
+							effect="fade" placeholder="Busca por E-mail" style="font-size: 10px;"/>
+			
+			<p:autoComplete id="buscaCliente" forceSelection="true" size="15" scrollHeight="250" minQueryLength="3"
+							value="#{usuarioBean.filtro.cliente}" completeMethod="#{usuarioBean.usuarioRN.completeCliente}"
+							effect="fade" placeholder="Busca por Cliente" style="font-size: 10px;"/>
+			
+			<p:selectOneMenu id="status" value="#{usuarioBean.filtro.status}" style="width:125px">
+			            <f:selectItem id="statusSubItem" itemLabel="Status"/>
+			            <f:selectItem itemLabel="Ativos" itemValue="true" />
+			            <f:selectItem itemLabel="Inativos" itemValue="false" />
+	        </p:selectOneMenu>
+			
+			<p:commandButton class="btnPadrao" value="Consultar" update=":listagem" />
+						
+		</h:panelGrid>
+	</h:form>
 <!-- FIM FILTROS/////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
 <!-- DATATABLE///////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 	<h:form id="listagem">
-		<p:dataTable width="400"  value="#{usuarioBean.lazyUsuario}" lazy="true"
+		<p:dataTable width="400"  value="#{usuarioBean.lazyUsuario}" lazy="true" widgetVar="tableUsuarios"
 						var="usuario" border="1" cellpadding="2" cellspacing="0" rowIndexVar="index"
-						paginator="true" paginatorPosition="bottom" rows="10" id="tbl">
+						paginator="true" paginatorPosition="bottom" rows="10" id="tbl"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						paginatorAlwaysVisible="true"
+						currentPageReportTemplate="{totalRecords} Usuários">
 		
 			<p:column headerText="Nome" width="70" sortBy="#{usuario.nome}">
 				<h:outputText value="#{usuario.nome}"/>
 			</p:column>
 			
-			<p:column style="text-align: center;" headerText="Login" width="70" sortBy="#{usuario.login}">
+			<p:column style="text-align: center;" headerText="Login" width="50" sortBy="#{usuario.login}">
 				<h:outputText value="#{usuario.login}"/>
 			</p:column>
 			
@@ -154,11 +197,15 @@
 				<h:outputText value="#{usuario.email}"/>
 			</p:column>
 			
-			<p:column style="text-align: center;" headerText="Telegram ID" width="50">
+			<p:column headerText="Cliente" width="110" sortBy="#{usuario.cliente}">
+				<h:outputText value="#{usuario.cliente}"/>
+			</p:column>
+			
+			<p:column style="text-align: center;" headerText="Telegram ID" width="30">
 				<h:outputText value="#{usuario.telegramId}"/>
 			</p:column>
 			
-			<p:column style="text-align: center;" width="20" headerText="Editar">
+			<p:column style="text-align: center;" width="10" headerText="Editar">
 				<p:commandLink  action="#{usuarioBean.editar}" update=":edicao" oncomplete="PF('dlg1').show();">
 					<h:graphicImage library="imagens" name="editar16.png"/>
 					<f:setPropertyActionListener value="#{usuario}" target="#{usuarioBean.usuario}"/>
@@ -166,7 +213,7 @@
 			
 			</p:column>
 			
-			<p:column style="text-align: center;" width="20" headerText="Status">
+			<p:column style="text-align: center;" width="10" headerText="Status">
 				<p:commandLink action="#{usuarioBean.status}" update=":listagem">
 					<h:graphicImage library="imagens" name="status_#{usuario.ativo}.png" style="border:0"/>
 					<f:setPropertyActionListener value="#{usuario}" target="#{usuarioBean.usuario}"/>
@@ -177,7 +224,6 @@
 		</p:dataTable>
 	</h:form>
 <!-- FIM DATATABLE/////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-
 </sec:ifAnyGranted>
 </ui:define>
 </ui:composition>

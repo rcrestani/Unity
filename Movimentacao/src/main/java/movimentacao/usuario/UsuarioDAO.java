@@ -2,8 +2,6 @@ package movimentacao.usuario;
 
 import java.util.List;
 
-import org.primefaces.model.SortOrder;
-
 public interface UsuarioDAO 
 {
 	public void salvar(Usuario usuario);
@@ -14,8 +12,12 @@ public interface UsuarioDAO
 	public List<String> completeText(String query);
 	public Usuario buscarPorLogin(String login);
 	public Usuario buscarPorNome(String nome);
+	public List<String> completeNome(String text);
+	public List<String> completeLogin(String text);
+	public List<String> completeEmail(String text);
+	public List<String> completeCliente(String text);
 	public List<Usuario> listar();
-	public List<Usuario> buscarTodosPaginado(int first, int pageSize, String sortField, SortOrder sortOrder);
-	public int pegarQuantidadeDeUsuarios();
+	public List<Usuario> buscarTodosPaginado(UsuarioFiltro filtro);
+	public int quantidadeFiltrados(UsuarioFiltro filtro);
 
 }

@@ -1,6 +1,5 @@
 package movimentacao.cliente;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -48,24 +47,14 @@ public class ClienteDAOHibernate implements ClienteDAO
 		return (Cliente) consulta.uniqueResult();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<String> completeText(String query) 
 	{
-        Criteria criteria = session.createCriteria(Cliente.class);
-		criteria.add(Restrictions.ilike("nome", query, MatchMode.ANYWHERE));
-		criteria.addOrder(Order.asc("nome"));
-		criteria.add(Restrictions.eq("status", true));
+		String hql = "select nome from cliente where nome like :text and status = true order by nome asc";
+		Query consulta = this.session.createQuery(hql);
+		consulta.setString("text", "%"+query+"%");
 		
-		@SuppressWarnings("unchecked")
-		List<Cliente> cliente = criteria.list();
-		List<String> results = new ArrayList<String>();
-		        
-        for(int i=0; i < cliente.size(); i++)
-        {
-            Cliente clt = cliente.get(i);
-            results.add(clt.getNome());
-        }
-         
-        return results;
+		return (List<String>)consulta.list();
     }
 	
 	@SuppressWarnings({ "null", "unchecked" })

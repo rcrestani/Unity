@@ -25,6 +25,7 @@ public class Usuario implements Serializable
 	private String email;
 	private Integer telegramId;
 	private String paginaInicial;
+	private String cliente;
 	private boolean ativo;
 	
 	@ElementCollection(targetClass = String.class)
@@ -34,75 +35,93 @@ public class Usuario implements Serializable
 			joinColumns = @JoinColumn(name = "usuario"))
 	@Column(name = "permissao" , length=50)
 	private Set<String> permissao = new HashSet<String>();
-	
-	
+
 	public Integer getCodigo() {
 		return codigo;
 	}
+
 	public void setCodigo(Integer codigo) {
 		this.codigo = codigo;
 	}
+
 	public String getNome() {
 		return nome;
 	}
+
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
+
 	public String getLogin() {
 		return login;
 	}
+
 	public void setLogin(String login) {
 		this.login = login;
 	}
+
 	public String getSenha() {
 		return senha;
 	}
+
 	public void setSenha(String senha) {
 		this.senha = senha;
-	}
-	
-	public Set<String> getPermissao() {
-		return permissao;
-	}
-	public void setPermissao(Set<String> permissao) {
-		this.permissao = permissao;
 	}
 
 	public String getEmail() {
 		return email;
 	}
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
-	public boolean isAtivo() {
-		return ativo;
-	}
-	
-	public void setAtivo(boolean ativo) {
-		this.ativo = ativo;
-	}
-	
+
 	public Integer getTelegramId() {
 		return telegramId;
 	}
+
 	public void setTelegramId(Integer telegramId) {
 		this.telegramId = telegramId;
 	}
-	
+
 	public String getPaginaInicial() {
 		return paginaInicial;
 	}
+
 	public void setPaginaInicial(String paginaInicial) {
 		this.paginaInicial = paginaInicial;
 	}
-	
-	
+
+	public String getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(String cliente) {
+		this.cliente = cliente;
+	}
+
+	public boolean isAtivo() {
+		return ativo;
+	}
+
+	public void setAtivo(boolean ativo) {
+		this.ativo = ativo;
+	}
+
+	public Set<String> getPermissao() {
+		return permissao;
+	}
+
+	public void setPermissao(Set<String> permissao) {
+		this.permissao = permissao;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (ativo ? 1231 : 1237);
+		result = prime * result + ((cliente == null) ? 0 : cliente.hashCode());
 		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((login == null) ? 0 : login.hashCode());
@@ -113,6 +132,7 @@ public class Usuario implements Serializable
 		result = prime * result + ((telegramId == null) ? 0 : telegramId.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -123,6 +143,11 @@ public class Usuario implements Serializable
 			return false;
 		Usuario other = (Usuario) obj;
 		if (ativo != other.ativo)
+			return false;
+		if (cliente == null) {
+			if (other.cliente != null)
+				return false;
+		} else if (!cliente.equals(other.cliente))
 			return false;
 		if (codigo == null) {
 			if (other.codigo != null)
@@ -166,5 +191,4 @@ public class Usuario implements Serializable
 			return false;
 		return true;
 	}
-	
 }

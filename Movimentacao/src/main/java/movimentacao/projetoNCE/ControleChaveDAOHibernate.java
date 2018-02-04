@@ -101,6 +101,10 @@ public class ControleChaveDAOHibernate implements ControleChaveDAO
 		{
 			criteria.add(Restrictions.between("dataAbertura", filtro.getDataAbertura() , filtro.getDataFechamento()));
 		}
+		else if(filtro.getDataAbertura() == null && filtro.getDataFechamento() == null)
+		{
+			criteria.addOrder(Order.desc("dataAbertura"));
+		}
 		
 		if(StringUtils.isNotEmpty( filtro.getCrq()))
 		{

@@ -47,10 +47,10 @@
 				</p:column>
 				
 				<p:column style="border-width:0px;">
-					<h:outputLabel class="label-padrao" value="E-mail:" for="email"/>
+					<h:outputLabel class="label-padrao" value="E-mail:"/>
 				</p:column>
 				<p:column style="border-width:0px;">
-					<p:inputText class="form-padrao form-usuarios" id="email" label="email" value="#{usuarioBean.usuario.email}" size="50" 
+					<p:inputText class="form-padrao form-usuarios" id="email" value="#{usuarioBean.usuario.email}" size="50" 
 						maxlength="50" required="true" requiredMessage="E-mail é obrigatório"> 
 						<f:validateLength minimum="10" maximum="50"/> 
 					</p:inputText>
@@ -92,31 +92,34 @@
 					size="10" maxlength="10" redisplay="true"/>
 				</p:column>
 			</p:row>
+			
 			<p:row>
 	            <p:column style="padding: 0px;" colspan="6"></p:column>
 	        </p:row>
+	        
 	        <p:row>
 	        	<p:column style="border-width:0px;">
-	        		<h:outputLabel class="label-padrao" value="Cliente:" for="cliente"/>
+	        		<h:outputLabel class="label-padrao" value="Cliente:" for="clienteUser"/>
 	        	</p:column>
 	        	<p:column style="border-width:0px;">
-	        		<p:autoComplete id="cliente" forceSelection="true" size="15" scrollHeight="250" minQueryLength="3"
+	        		<p:autoComplete id="clienteUser" forceSelection="true" size="15" scrollHeight="250" minQueryLength="3"
 							value="#{usuarioBean.usuario.cliente}" completeMethod="#{usuarioBean.clienteRN.completeText}"
 							effect="fade" placeholder="Selecione o Cliente" style="font-size: 10px;"
 							required="true" requiredMessage="Cliente é obrigatório"/>
 	        	</p:column>
 	        		
 	        	<p:column style="border-width:0px;">
-	        		<h:outputLabel class="label-padrao" value="Página Inicial:" for="paginaInicial"/>
+	        		<h:outputLabel class="label-padrao" value="Página Inicial:"/>
 	        	</p:column>
 	        	<p:column style="border-width:0px;">
 	        		<p:selectOneMenu id="paginaInicial" value="#{usuarioBean.usuario.paginaInicial}" style="width:170px">
-			            <f:selectItem id="paginaInicialSubItem" itemLabel="Selecione"/>
+			            <f:selectItem itemLabel="Selecione" itemValue=""/>
 			            <f:selectItem itemLabel="Dashboard" itemValue="principal.jsf" />
 			            <f:selectItem itemLabel="Relatório Controle Frota" itemValue="controleFrota.jsf" />
 			            <f:selectItem itemLabel="NCE Controle Chave" itemValue="nce_controleChave.jsf" />
 			        </p:selectOneMenu>
 	        	</p:column>
+	        	
 	        	<p:column style="border-width:0px;">
 	        		<h:outputLabel class="label-padrao" value="Permissões:" for="permissoes"/>
 	        	</p:column>

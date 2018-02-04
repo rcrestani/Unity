@@ -2,8 +2,10 @@ package movimentacao.projetoNCE.tecnico;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 public class TecnicoDAOHibernate implements TecnicoDAO
 {
@@ -28,7 +30,16 @@ public class TecnicoDAOHibernate implements TecnicoDAO
 	{
 		return (Tecnico) this.session.get(Tecnico.class, id);
 	}
-
+	
+	public Tecnico tecnicoPorCPF(String cpf)
+	{
+		Criteria criteria = this.session.createCriteria(Tecnico.class);
+		
+		criteria.add(Restrictions.eq("cpf", cpf));
+		
+		return (Tecnico) criteria.uniqueResult();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public List<Tecnico> listar()
 	{

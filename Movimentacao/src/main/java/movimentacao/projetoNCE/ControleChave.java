@@ -33,7 +33,7 @@ public class ControleChave implements Serializable
 	@NaturalId
 	private String idAno;
 	
-	private Date dataAbertura;
+	private Date dataAtendimento;
 	private Date dataFechamento;
 	private String tempoAberto;
 	private String atividade;
@@ -58,11 +58,19 @@ public class ControleChave implements Serializable
 	@Column (length = 1000)
 	private String obs;
 	
-	private Date dataHoraReg;
+	private Date dataAbertura;
 	
 	@OneToOne
-	@JoinColumn (name = "idUsuario")
-	private Usuario usuario;
+	@JoinColumn (name = "idUsuarioAbertura")
+	private Usuario usuarioAbertura;
+	
+	@OneToOne
+	@JoinColumn (name = "idUsuarioAtendimento")
+	private Usuario usuarioAtendimento;
+	
+	@OneToOne
+	@JoinColumn (name = "idUsuarioFechamento")
+	private Usuario usuarioFechamento;
 
 	public Integer getId() {
 		return id;
@@ -80,12 +88,12 @@ public class ControleChave implements Serializable
 		this.idAno = idAno;
 	}
 
-	public Date getDataAbertura() {
-		return dataAbertura;
+	public Date getDataAtendimento() {
+		return dataAtendimento;
 	}
 
-	public void setDataAbertura(Date dataAbertura) {
-		this.dataAbertura = dataAbertura;
+	public void setDataAtendimento(Date dataAtendimento) {
+		this.dataAtendimento = dataAtendimento;
 	}
 
 	public Date getDataFechamento() {
@@ -152,39 +160,57 @@ public class ControleChave implements Serializable
 		this.obs = obs;
 	}
 
-	public Date getDataHoraReg() {
-		return dataHoraReg;
+	public Date getDataAbertura() {
+		return dataAbertura;
 	}
 
-	public void setDataHoraReg(Date dataHoraReg) {
-		this.dataHoraReg = dataHoraReg;
+	public void setDataAbertura(Date dataAbertura) {
+		this.dataAbertura = dataAbertura;
 	}
 
-	public Usuario getUsuario() {
-		return usuario;
+	public Usuario getUsuarioAbertura() {
+		return usuarioAbertura;
 	}
 
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
+	public void setUsuarioAbertura(Usuario usuarioAbertura) {
+		this.usuarioAbertura = usuarioAbertura;
+	}
+
+	public Usuario getUsuarioAtendimento() {
+		return usuarioAtendimento;
+	}
+
+	public void setUsuarioAtendimento(Usuario usuarioAtendimento) {
+		this.usuarioAtendimento = usuarioAtendimento;
+	}
+
+	public Usuario getUsuarioFechamento() {
+		return usuarioFechamento;
+	}
+
+	public void setUsuarioFechamento(Usuario usuarioFechamento) {
+		this.usuarioFechamento = usuarioFechamento;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((atividade == null) ? 0 : atividade.hashCode());
 		result = prime * result + ((crq == null) ? 0 : crq.hashCode());
 		result = prime * result + ((dataAbertura == null) ? 0 : dataAbertura.hashCode());
+		result = prime * result + ((dataAtendimento == null) ? 0 : dataAtendimento.hashCode());
 		result = prime * result + ((dataFechamento == null) ? 0 : dataFechamento.hashCode());
-		result = prime * result + ((dataHoraReg == null) ? 0 : dataHoraReg.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((idAno == null) ? 0 : idAno.hashCode());
 		result = prime * result + ((idSite == null) ? 0 : idSite.hashCode());
 		result = prime * result + ((idTecnico == null) ? 0 : idTecnico.hashCode());
 		result = prime * result + ((obs == null) ? 0 : obs.hashCode());
-		result = prime * result + ((atividade == null) ? 0 : atividade.hashCode());
 		result = prime * result + ((status == null) ? 0 : status.hashCode());
 		result = prime * result + ((tempoAberto == null) ? 0 : tempoAberto.hashCode());
-		result = prime * result + ((usuario == null) ? 0 : usuario.hashCode());
+		result = prime * result + ((usuarioAbertura == null) ? 0 : usuarioAbertura.hashCode());
+		result = prime * result + ((usuarioAtendimento == null) ? 0 : usuarioAtendimento.hashCode());
+		result = prime * result + ((usuarioFechamento == null) ? 0 : usuarioFechamento.hashCode());
 		return result;
 	}
 
@@ -197,6 +223,11 @@ public class ControleChave implements Serializable
 		if (getClass() != obj.getClass())
 			return false;
 		ControleChave other = (ControleChave) obj;
+		if (atividade == null) {
+			if (other.atividade != null)
+				return false;
+		} else if (!atividade.equals(other.atividade))
+			return false;
 		if (crq == null) {
 			if (other.crq != null)
 				return false;
@@ -207,15 +238,15 @@ public class ControleChave implements Serializable
 				return false;
 		} else if (!dataAbertura.equals(other.dataAbertura))
 			return false;
+		if (dataAtendimento == null) {
+			if (other.dataAtendimento != null)
+				return false;
+		} else if (!dataAtendimento.equals(other.dataAtendimento))
+			return false;
 		if (dataFechamento == null) {
 			if (other.dataFechamento != null)
 				return false;
 		} else if (!dataFechamento.equals(other.dataFechamento))
-			return false;
-		if (dataHoraReg == null) {
-			if (other.dataHoraReg != null)
-				return false;
-		} else if (!dataHoraReg.equals(other.dataHoraReg))
 			return false;
 		if (id == null) {
 			if (other.id != null)
@@ -242,11 +273,6 @@ public class ControleChave implements Serializable
 				return false;
 		} else if (!obs.equals(other.obs))
 			return false;
-		if (atividade == null) {
-			if (other.atividade != null)
-				return false;
-		} else if (!atividade.equals(other.atividade))
-			return false;
 		if (status == null) {
 			if (other.status != null)
 				return false;
@@ -257,14 +283,23 @@ public class ControleChave implements Serializable
 				return false;
 		} else if (!tempoAberto.equals(other.tempoAberto))
 			return false;
-		if (usuario == null) {
-			if (other.usuario != null)
+		if (usuarioAbertura == null) {
+			if (other.usuarioAbertura != null)
 				return false;
-		} else if (!usuario.equals(other.usuario))
+		} else if (!usuarioAbertura.equals(other.usuarioAbertura))
+			return false;
+		if (usuarioAtendimento == null) {
+			if (other.usuarioAtendimento != null)
+				return false;
+		} else if (!usuarioAtendimento.equals(other.usuarioAtendimento))
+			return false;
+		if (usuarioFechamento == null) {
+			if (other.usuarioFechamento != null)
+				return false;
+		} else if (!usuarioFechamento.equals(other.usuarioFechamento))
 			return false;
 		return true;
 	}
 
-	
 	
 }

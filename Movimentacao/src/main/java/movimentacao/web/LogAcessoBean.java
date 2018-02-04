@@ -1,6 +1,7 @@
 package movimentacao.web;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -21,8 +22,10 @@ import movimentacao.util.DateCalculator;
 
 @ManagedBean(name = "logAcessoBean")
 @ViewScoped
-public class LogAcessoBean 
+public class LogAcessoBean implements Serializable
 {
+	private static final long serialVersionUID = -1620154308025450255L;
+	
 	private LogAcesso logAcesso = new LogAcesso();
 	private LogAcessoRN logAcessoRN = new LogAcessoRN();
 	private LogAcessoFiltro filtro = new LogAcessoFiltro();

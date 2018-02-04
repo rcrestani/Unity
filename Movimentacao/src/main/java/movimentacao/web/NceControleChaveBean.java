@@ -40,6 +40,7 @@ import movimentacao.projetoNCE.site.Site;
 import movimentacao.projetoNCE.site.SiteRN;
 import movimentacao.projetoNCE.tecnico.Tecnico;
 import movimentacao.projetoNCE.tecnico.TecnicoRN;
+import movimentacao.usuario.Usuario;
 import movimentacao.usuario.UsuarioRN;
 import movimentacao.util.DateCalculator;
 
@@ -97,43 +98,68 @@ public class NceControleChaveBean implements Serializable
 	public String recuperarId()
 	{
 		if(this.controleChave.getId() == null)
-		{
-			int ultimoId = this.controleChaveRN.ultimoRegistro().getId() + 1;
-			this.controleChave.setIdAno(String.format("%d",  ultimoId) + "/" + formatYear(new Date()));
-			
-			this.controleChave.setUsuario(this.usuarioRN.buscarPorLogin(this.login));
+		{	
+			this.controleChave.setUsuarioAbertura(this.usuarioRN.buscarPorLogin(this.login));
 			this.controleChaveRN.salvar(this.controleChave);
 		}
-		
 		
 		return null;
 	}
 	
-	public String salvar()
+	public String salvarAtendimento()
 	{
 		this.tecnico = this.tecnicoRN.tecnicoPorNome(this.nomeTecnico);
 		
 		this.controleChave.setIdTecnico(this.tecnico);
-		this.controleChave.setDataHoraReg(new Date());
 		
-		this.controleChaveRN.salvar(this.controleChave);
-		
-		for(int x = 0;x < this.listaChaves.size();x++)
+		Usuario user = new Usuario();
+		user = this.usuarioRN.buscarPorLogin(this.login);
+		//Controle da data e usuario de atendimento pela verificacao da permissao==========================================
+		if(user.getPermissao().contains("ROLE_CONTROLE_CHAVE_OPER"))
 		{
-			this.listaChaves.get(x).setIdControleChave(this.controleChave);
+			this.controleChave.setUsuarioAtendimento(this.usuarioRN.buscarPorLogin(this.login));
 			
-			this.chaveRN.salvar(this.listaChaves.get(x));
+			if(this.controleChave.getDataAtendimento() == null) {this.controleChave.setDataAtendimento(new Date());}
+		}
+		else if(user.getPermissao().contains("ROLE_CONTROLE_CHAVE_ADM"))
+		{
+			this.controleChave.setUsuarioAtendimento(this.usuarioRN.buscarPorLogin(this.login));
+			
+			if(this.controleChave.getDataAtendimento() == null) {this.controleChave.setDataAtendimento(new Date());}
 		}
 		
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
-	    		FacesMessage.SEVERITY_INFO , "Requisição Registrada com sucesso!", ""));
-		
-		this.formControleChave = false;
-		this.listaSiteChave.clear();
-		this.listaChaves.clear();
-		this.site = new Site();
-		this.chave = new Chave();
-		this.tecnico = new Tecnico();
+		if(this.controleChave.getIdSite().size() > 0)
+		{
+			//controle do numero da requisicao é gerado pela requisicao já gerada na atribuição dos sites==========
+			int ultimoId = this.controleChaveRN.carregar(this.controleChave.getId()).getId();
+			this.controleChave.setIdAno(String.format("%d",  ultimoId + "/" + formatYear(new Date()) ));
+			
+			this.controleChaveRN.salvar(this.controleChave);
+			
+			for(int x = 0;x < this.listaChaves.size();x++)
+			{
+				this.listaChaves.get(x).setIdControleChave(this.controleChave);
+				
+				this.chaveRN.salvar(this.listaChaves.get(x));
+			}
+			
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+		    		FacesMessage.SEVERITY_INFO , "Requisição Registrada com sucesso!", ""));
+			
+			this.formControleChave = false;
+			this.listaSiteChave.clear();
+			this.listaChaves.clear();
+			this.site = new Site();
+			this.chave = new Chave();
+			this.tecnico = new Tecnico();
+			
+			return null;
+		}
+		else
+		{
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+		    		FacesMessage.SEVERITY_ERROR , "Obrigatório informar qual o site e as chaves requisitadas", ""));
+		}
 		
 		return null;
 	}
@@ -141,10 +167,10 @@ public class NceControleChaveBean implements Serializable
 	public String novo()
 	{
 		this.controleChave = new ControleChave();
-		this.controleChave.setDataAbertura(new Date());
 		this.formControleChave = true;
 		this.formSiteChave = false;
 		this.siteChaveRequisitado = false;
+		this.controleChave.setDataAbertura(new Date());
 		this.usuario = this.usuarioRN.buscarPorLogin(this.login).getNome();
 		this.tecnico = new Tecnico();
 		this.empresa = new Empresa();
@@ -196,13 +222,28 @@ public class NceControleChaveBean implements Serializable
 		this.tecnico.setIdEmpresa(this.empresaRN.empresaPorNome(this.nomeEmpresa));
 		this.tecnico.setDataHoraReg(new Date());
 		this.tecnico.setUsuario(this.usuarioRN.buscarPorLogin(this.login));
-		this.tecnicoRN.salvar(this.tecnico);
 		
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
-	    		FacesMessage.SEVERITY_INFO , "Técnico Registrado com sucesso!", ""));
+		boolean controle = true;
+		try
+		{
+			this.tecnicoRN.salvar(this.tecnico);
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+		    		FacesMessage.SEVERITY_INFO , "Técnico Registrado com sucesso!", ""));
+		}
+		catch (Exception e)
+		{
+			controle = false;
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+		    		FacesMessage.SEVERITY_FATAL ,
+		    		"Técnico não registrado!", "Dados inválidos. Verifique se o técnico já possui cadastro."));
+		}
 		
-		this.nomeEmpresa = "";
-		this.tecnico = new Tecnico();
+		if(controle)
+		{
+			this.nomeEmpresa = "";
+			this.tecnico = new Tecnico();
+		}
+		
 		return null;
 	}
 	
@@ -219,9 +260,29 @@ public class NceControleChaveBean implements Serializable
 		catch (Exception e)
 		{
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
-		    		FacesMessage.SEVERITY_ERROR , "Erro ao Localizar dados completos!", ""));
+		    		FacesMessage.SEVERITY_ERROR , "Erro ao Localizar dados do Técnico!", ""));
 		}
-		
+	}
+	
+	public void tecnicoPorCPF() 
+	{
+		String cpf = this.tecnico.getCpf();
+		//executar apenas se o cpf com a mascará conter 14 caracteres====================================
+		 if (cpf.length() == 14)
+		 {
+			 //teste da busca, se retornar null, instancia novo tecnico============
+			 if(this.tecnicoRN.tecnicoPorCPF(cpf) != null)
+			 {
+				 this.tecnico = this.tecnicoRN.tecnicoPorCPF(cpf);
+			 }
+			 else
+			 {
+				 this.tecnico = new Tecnico();
+				 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+				    		FacesMessage.SEVERITY_ERROR , "Técnico não encontrado", ""));
+			 }
+		 } 
+		 
 	}
 	//==========================================================================================
 	

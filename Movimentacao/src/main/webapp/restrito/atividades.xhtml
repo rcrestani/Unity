@@ -155,8 +155,8 @@
 				
 			</p:panelGrid>
 			<p:separator/>
-			<h:commandButton class="btnPadrao" style="font-size: 18px; margin-left: 300px;" action="#{atividadesBean.salvar}"
-								value="Salvar" update=":listaAtividades"/>
+			<p:commandButton class="btnPadrao" style="font-size: 18px; margin-left: 300px;" action="#{atividadesBean.salvar}"
+								value="Salvar" oncomplete="PF('dlg1').hide();" update=":listaAtividades"/>
 		</h:form>
 	</p:dialog>
 <!-- FIM DIALOG ATIVIDADES///////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->

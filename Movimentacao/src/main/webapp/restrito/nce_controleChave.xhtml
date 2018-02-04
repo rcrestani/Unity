@@ -12,9 +12,9 @@
 	</ui:define>
 	<ui:define name="corpo">
 	
-	<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE , ROLE_ADM">
+	<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_CONTROLE_CHAVE_RECEP , ROLE_CONTROLE_CHAVE_OPER , ROLE_ADM">
 	
-	<p:growl id="grow" autoUpdate="true" life="4000" widgetVar="grow" />
+	<p:growl id="grow" autoUpdate="true" life="4000" showDetail="true" widgetVar="grow" />
 <!-- FORM NOVOS //////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
 	<h:form id="novos">
 		<p:commandButton class="btnPadrao" value="Nova Requisição" action="#{nceControleChaveBean.novo}"
@@ -53,12 +53,14 @@
 					<h:outputLabel class="label-padrao" id="lblSite" value="Sites:"/>
 				</p:column>
 				
-				<p:column style="border-width:0px;" colspan="2">
-					<h:panelGrid columns="1" cellpadding="5">
-    					<p:commandButton class="btnPadrao" style="font-size: 18px;" value="Selecionar Sites"
-    										type="button" onclick="PF('dlgSiteChave').show();"/>
-    				</h:panelGrid>
-				</p:column>
+				<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_CONTROLE_CHAVE_OPER , ROLE_ADM">
+					<p:column style="border-width:0px;" colspan="2">
+						<h:panelGrid columns="1" cellpadding="5">
+	    					<p:commandButton class="btnPadrao" style="font-size: 18px;" value="Selecionar Sites"
+	    										type="button" onclick="PF('dlgSiteChave').show();"/>
+	    				</h:panelGrid>
+					</p:column>
+				</sec:ifAnyGranted>
 	        </p:row>
 	        
 	        <p:row rendered="#{nceControleChaveBean.siteChaveRequisitado}">
@@ -85,19 +87,27 @@
 	        	<p:column style="border-width:0px;">
 					<h:outputLabel class="label-padrao" id="lblTecnico" value="Técnico:"/>
 				</p:column>
-				<p:column style="border-width:0px;" colspan="3">			
-					<p:autoComplete id="buscaTecnico" dropdown="true" forceSelection="true" size="40" scrollHeight="250" minQueryLength="3"
-								value="#{nceControleChaveBean.nomeTecnico}" completeMethod="#{nceControleChaveBean.tecnicoRN.completeTecnico}"
-								effect="fade" placeholder="Selecionar Técnico" style="font-size: 10px;"
-								required="true" requiredMessage="Técnico é obrigatório."/>
+				<p:column style="border-width:0px;" colspan="1">
+					<p:inputMask id="cpf" class="form-padrao form-mov" size="15" value="#{nceControleChaveBean.tecnico.cpf}"
+									placeholder="Informe um CPF Válido" mask="999.999.999-99" maxlength="11"
+									required="true" requiredMessage="CPF é obrigatório.">
+						<p:ajax event="blur" listener="#{nceControleChaveBean.tecnicoPorCPF}" update="tecnicoEncontrado"/>
+					</p:inputMask>
 				</p:column>
 				
 				<p:column style="border-width:0px;" colspan="2">
-					<h:panelGrid columns="1" cellpadding="5">
-    					<p:commandButton class="btnPadrao" style="font-size: 18px;" value="Novo Técnico"
-    										type="button" onclick="PF('dlgTecnico').show();" />
-    				</h:panelGrid>
+					<p:inputText id="tecnicoEncontrado" class="form-padrao form-mov" size="35" value="#{nceControleChaveBean.tecnico.nome}"
+								disabled="true"/>
 				</p:column>
+				
+				<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_CONTROLE_CHAVE_OPER , ROLE_ADM">
+					<p:column style="border-width:0px;" colspan="2">
+						<h:panelGrid columns="1" cellpadding="5">
+	    					<p:commandButton class="btnPadrao" style="font-size: 18px;" value="Novo Técnico"
+	    										type="button" onclick="PF('dlgTecnico').show();" />
+	    				</h:panelGrid>
+					</p:column>
+				</sec:ifAnyGranted>
 	        </p:row>
 	        
 			<p:row>
@@ -110,8 +120,7 @@
 				</p:column>
 				<p:column style="border-width:0px;">	
 	       			<p:calendar id="dataAbertura" value="#{nceControleChaveBean.controleChave.dataAbertura}" pattern="dd-MM-yyyy - HH:mm"
-							mask="true" size="14" locale="pt" placeholder="Início Atendimento"
-							required="true" requiredMessage="Data de abertura é obrigatória"/>
+							mask="true" size="14" locale="pt" disabled="true"/>
 				</p:column>
 				
 				<p:column style="border-width:0px;">
@@ -119,7 +128,8 @@
 				</p:column>
 				<p:column style="border-width:0px;">			
 					<p:inputText id="crq" class="form-padrao form-mov" value="#{nceControleChaveBean.controleChave.crq}"
-								placeholder="CRQ ou E-mail" required="true" requiredMessage="CRQ ou E-mail é obrigatório."/>
+								placeholder="CRQ ou E-mail" required="true" requiredMessage="CRQ ou E-mail é obrigatório."
+								onkeyup="value=value.toUpperCase()"/>
 				</p:column>
 				
 				<p:column style="border-width:0px;">
@@ -127,7 +137,8 @@
 				</p:column>
 				<p:column style="border-width:0px;">			
 					<p:inputText id="atividade" class="form-padrao form-mov" value="#{nceControleChaveBean.controleChave.atividade}"
-								placeholder="Informar a Atividade" required="true" requiredMessage="Atividade é obrigatória."/>
+								placeholder="Informar a Atividade" required="true" requiredMessage="Atividade é obrigatória."
+								onkeyup="value=value.toUpperCase()"/>
 				</p:column>
 			</p:row>
 
@@ -141,7 +152,8 @@
 				</p:column>
 				<p:column style="border-width:0px;" colspan="3">	
 					<p:inputTextarea id="obs" rows="5" cols="60" counter="display" maxlength="1000" counterTemplate="{0} caracteres restantes." 
-									value="#{nceControleChaveBean.controleChave.obs}" autoResize="false" />
+									value="#{nceControleChaveBean.controleChave.obs}" autoResize="false"
+									onkeyup="value=value.toUpperCase()"/>
 		    	</p:column>
 		    	<p:column style="border-width:0px;">
 		    		<h:outputText id="display"/>
@@ -175,7 +187,7 @@
 	        
 		    <p:row>
 				<p:column style="border-width:0px;" colspan="2">	
-					<p:commandButton class="btnPadrao" style="font-size: 18px;" action="#{nceControleChaveBean.salvar}"
+					<p:commandButton class="btnPadrao" style="font-size: 18px;" action="#{nceControleChaveBean.salvarAtendimento}"
 									value="Salvar" update=":cadastro :listaControleChave"/>
 				</p:column>
 			</p:row>					
@@ -216,8 +228,8 @@
 				<h:outputText value="#{controleChave.atividade}"/>
 			</p:column>
 			
-			<p:column style="text-align: center;" width="200" headerText="Operador">
-				<h:outputText value="#{controleChave.usuario.nome}"/>
+			<p:column style="text-align: center;" width="200" headerText="Operador Abertura">
+				<h:outputText value="#{controleChave.usuarioAbertura.nome}"/>
 			</p:column>
 			
 			<p:column style="text-align: center;" width="120" headerText="Fechamento" sortBy="#{controleChave.dataFechamento}">
@@ -247,9 +259,11 @@
 					</p:column>
 					<p:column style="border-width:0px;" colspan="3">
 						<p:autoComplete id="nomeTecnico" dropdown="true" size="50" scrollHeight="150" minQueryLength="3"
-								value="#{nceControleChaveBean.tecnico.nome}" completeMethod="#{nceControleChaveBean.tecnicoRN.completeTecnico}"
+								value="#{nceControleChaveBean.tecnico.nome}"
+								completeMethod="#{nceControleChaveBean.tecnicoRN.completeTecnico}"
 								effect="fade" placeholder="Verifique se este Técnico está cadastrado" style="font-size: 10px;"
-								required="true" requiredMessage="Nome do Técnico é obrigatório.">
+								required="true" requiredMessage="Nome do Técnico é obrigatório."
+								onkeyup="value=value.toUpperCase()">
 							<p:ajax event="itemSelect" listener="#{nceControleChaveBean.tecnicoSelecionado}" update=":formTecnico" />
 						</p:autoComplete>
 					</p:column>
@@ -280,15 +294,29 @@
 					</p:column>
 					<p:column style="border-width:0px;">			
 						<p:inputText id="rg" class="form-padrao form-mov" value="#{nceControleChaveBean.tecnico.rg}"
-									placeholder="Informe o RG" required="true" requiredMessage="RG é obrigatório."/>
+									placeholder="Informe o RG" required="true" requiredMessage="RG é obrigatório."
+									onkeyup="value=value.toUpperCase()"/>
 					</p:column>
 					
 					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" id="lblCpf" value="CPF:"/>
+					</p:column>
+					<p:column style="border-width:0px;">			
+						<p:inputMask id="cpf" class="form-padrao form-mov" value="#{nceControleChaveBean.tecnico.cpf}"
+									placeholder="Informe um CPF Válido" mask="999.999.999-99" maxlength="11"
+									required="true" requiredMessage="CPF é obrigatório."
+									validator="cpf"/>
+					</p:column>
+				</p:row>
+				
+				<p:row>
+				<p:column style="border-width:0px;">
 						<h:outputLabel class="label-padrao" id="lblRe" value="RE/Funcional:"/>
 					</p:column>
 					<p:column style="border-width:0px;">			
 						<p:inputText id="re" class="form-padrao form-mov" value="#{nceControleChaveBean.tecnico.re}"
-									placeholder="Informe o RE ou a Funcional"/>
+									placeholder="Informe o RE ou a Funcional"
+									onkeyup="value=value.toUpperCase()"/>
 					</p:column>
 				</p:row>
 				
@@ -297,10 +325,12 @@
 					<h:outputLabel class="label-padrao" id="lblEmpresa" value="Empresa:"/>
 				</p:column>
 				<p:column style="border-width:0px;" colspan="2">			
-					<p:autoComplete id="buscaEmpresa" dropdown="true" forceSelection="true" size="40" scrollHeight="250" minQueryLength="3"
-								value="#{nceControleChaveBean.nomeEmpresa}" completeMethod="#{nceControleChaveBean.empresaRN.completeEmpresa}"
+					<p:autoComplete id="buscaEmpresa" forceSelection="true" size="40" scrollHeight="250"
+								minQueryLength="3" value="#{nceControleChaveBean.nomeEmpresa}"
+								completeMethod="#{nceControleChaveBean.empresaRN.completeEmpresa}"
 								effect="fade" placeholder="Selecionar Empresa" style="font-size: 10px;"
-								required="true" requiredMessage="Empresa é obrigatória."/>
+								required="true" requiredMessage="Empresa é obrigatória."
+								onkeyup="value=value.toUpperCase()"/>
 				</p:column>
 				
 				<p:column style="border-width:0px;" colspan="2">
@@ -338,10 +368,11 @@
 						<h:outputLabel class="label-padrao" id="lblNomeEmpresa" value="Razão Social:"/>
 					</p:column>
 					<p:column style="border-width:0px;" colspan="3">
-						<p:autoComplete id="nomeEmpresa" dropdown="true" size="50" scrollHeight="150" minQueryLength="3"
+						<p:autoComplete id="nomeEmpresa" size="50" scrollHeight="150" minQueryLength="3"
 								value="#{nceControleChaveBean.empresa.razaoSocial}" completeMethod="#{nceControleChaveBean.empresaRN.completeEmpresa}"
 								effect="fade" placeholder="Verifique se esta Empresa está cadastrada" style="font-size: 10px;"
-								required="true" requiredMessage="Razão Social da Empresa é obrigatória.">
+								required="true" requiredMessage="Razão Social da Empresa é obrigatória."
+								onkeyup="value=value.toUpperCase()">
 							<p:ajax event="itemSelect" listener="#{nceControleChaveBean.empresaSelecionada}" update=":formEmpresa" />
 						</p:autoComplete>
 					</p:column>
@@ -379,8 +410,8 @@
 					</p:column>
 					<p:column style="border-width:0px;">
 						<h:inputText style="width:338px; font-size: 18px;" class="form-padrao form-usuarios" id="endereco" 
-									label="Endereço" value="#{nceControleChaveBean.empresa.endereco}" maxlength="250"> 
-						</h:inputText>
+									label="Endereço" value="#{nceControleChaveBean.empresa.endereco}" maxlength="250"
+									onkeyup="value=value.toUpperCase()"/> 
 					</p:column>
 					
 					<p:column style="border-width:0px;">
@@ -388,8 +419,8 @@
 					</p:column>
 					<p:column style="border-width:0px;">
 						<h:inputText style="width:80px; font-size: 18px;" class="form-padrao form-usuarios" id="numero" 
-									label="Número" value="#{nceControleChaveBean.empresa.numero}" maxlength="10"> 
-						</h:inputText>
+									label="Número" value="#{nceControleChaveBean.empresa.numero}" maxlength="10"
+									onkeyup="value=value.toUpperCase()"/> 
 					</p:column>
 					
 				</p:row>
@@ -400,16 +431,16 @@
 					</p:column>
 					<p:column style="border-width:0px;">
 						<h:inputText style="width:200px; font-size: 18px;" class="form-padrao form-usuarios" id="bairro" 
-									label="Bairro" value="#{nceControleChaveBean.empresa.bairro}" maxlength="150"> 
-						</h:inputText>
+									label="Bairro" value="#{nceControleChaveBean.empresa.bairro}" maxlength="150"
+									onkeyup="value=value.toUpperCase()"/> 
 					</p:column>
 					<p:column style="border-width:0px;">
 						<h:outputLabel class="label-padrao" value="Cidade:" for="cidade"/>
 					</p:column>
 					<p:column style="border-width:0px;">
 						<h:inputText style="width:238px; font-size: 18px;" class="form-padrao form-usuarios" id="cidade" 
-									label="Cidade" value="#{nceControleChaveBean.empresa.cidade}" maxlength="150"> 
-						</h:inputText>
+									label="Cidade" value="#{nceControleChaveBean.empresa.cidade}" maxlength="150"
+									onkeyup="value=value.toUpperCase()"/> 
 					</p:column>
 					
 					<p:column style="border-width:0px;">
@@ -417,8 +448,8 @@
 					</p:column>
 					<p:column style="border-width:0px;">
 						<h:inputText style="width:50px; font-size: 18px;" class="form-padrao form-usuarios" id="uf" 
-									label="UF" value="#{nceControleChaveBean.empresa.uf}" maxlength="2"> 
-						</h:inputText>
+									label="UF" value="#{nceControleChaveBean.empresa.uf}" maxlength="2"
+									onkeyup="value=value.toUpperCase()"/> 
 					</p:column>
 				
 				</p:row>
@@ -433,7 +464,8 @@
 					</p:column>
 					<p:column style="border-width:0px;" colspan="2">	
 						<p:inputTextarea id="obsEmpresa" rows="3" cols="40" counter="display" maxlength="255" counterTemplate="{0} caracteres restantes." 
-										value="#{nceControleChaveBean.empresa.obs}" autoResize="false" />
+										value="#{nceControleChaveBean.empresa.obs}" autoResize="false" 
+										onkeyup="value=value.toUpperCase()"/>
 			    	</p:column>
 			    	<p:column style="border-width:0px;">
 			    		<h:outputText id="display"/>
@@ -470,20 +502,23 @@
 					</p:column>
 					
 					<p:column style="border-width:0px;" colspan="3">
-						<p:autoComplete id="siteSelecionado" dropdown="true" size="30" scrollHeight="150" minQueryLength="3"
+						<p:autoComplete id="siteSelecionado" size="30" scrollHeight="150" minQueryLength="3"
 								value="#{nceControleChaveBean.site.idCodAtual}" completeMethod="#{nceControleChaveBean.siteRN.completeSite}"
 								effect="fade" placeholder="Selecione o Site requisitado" style="font-size: 10px;"
-								required="true" requiredMessage="ID Atual do Site é obrigatório." forceSelection="true">
+								required="true" requiredMessage="ID Atual do Site é obrigatório." forceSelection="true"
+								onkeyup="value=value.toUpperCase()">
 							<p:ajax event="itemSelect" listener="#{nceControleChaveBean.siteRequisitado}" update=":adicionarChave :listaChaves"/>
 						</p:autoComplete>
 					</p:column>
 					
-					<p:column style="border-width:0px;" colspan="2">
-					<h:panelGrid columns="1" cellpadding="5">
-    					<p:commandButton class="btnPadrao" style="font-size: 18px;" value="Cadastrar Novo Site"
-    									type="button" onclick="PF('dlgSite').show();"/>
-    				</h:panelGrid>
-				</p:column>
+					<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_CONTROLE_CHAVE_OPER , ROLE_ADM">
+						<p:column style="border-width:0px;" colspan="2">
+							<h:panelGrid columns="1" cellpadding="5">
+		    					<p:commandButton class="btnPadrao" style="font-size: 18px;" value="Cadastrar Novo Site"
+		    									type="button" onclick="PF('dlgSite').show();"/>
+		    				</h:panelGrid>
+						</p:column>
+					</sec:ifAnyGranted>
 				</p:row>
 			</p:panelGrid>
 		</h:form>
@@ -492,7 +527,7 @@
 		
 <h:form id="adicionarChave">
 	<center>
-	
+	<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_CONTROLE_CHAVE_OPER , ROLE_ADM">
 	<p:panelGrid style="border-collapse: unset;" rendered="#{nceControleChaveBean.formSiteChave}">
 		<p:row>
 			<p:column style="border-width:0px;">
@@ -501,9 +536,10 @@
 			</p:column>
 			
 			<p:column style="border-width:0px;">
-				<p:autoComplete id="nomeChave" minQueryLength="2" size="20" scrollHeight="250" value="#{nceControleChaveBean.chave.nome}"
+				<p:autoComplete id="nomeChave" minQueryLength="3" size="20" scrollHeight="250" value="#{nceControleChaveBean.chave.nome}"
 								completeMethod="#{nceControleChaveBean.chaveRN.completeChave}" effect="fade"
-								required="true" requiredMessage="Nome Chave é obrigatório." placeholder="Nome Chave"/>
+								required="true" requiredMessage="Nome Chave é obrigatório." placeholder="Nome Chave"
+								onkeyup="value=value.toUpperCase()"/>
 			</p:column>
 			
 			<p:column style="border-width:0px;">
@@ -511,25 +547,27 @@
 							value="#{nceControleChaveBean.chave.tipo}" size="7" maxlength="7"
 							required="true" requiredMessage="Tipo da chave é obrigatório.">
 					<f:selectItem id="subItem" itemLabel="Tipo Chave" />
-					<f:selectItem itemLabel="Portão" itemValue="Portão" />
-		            <f:selectItem itemLabel="Gradil do Container" itemValue="Gradil do Container" />
-		            <f:selectItem itemLabel="Container" itemValue="Container" />
-		            <f:selectItem itemLabel="Gradil do Armário" itemValue="Gradil do Armário" />
-		            <f:selectItem itemLabel="Gerador de Energia" itemValue="Gerador de Energia" />
-		            <f:selectItem itemLabel="Gradil do RRU" itemValue="Gradil do RRU" />
+					<f:selectItem itemLabel="PORTÃO" itemValue="PORTÃO" />
+		            <f:selectItem itemLabel="GRADIL DO CONTAINER" itemValue="GRADIL DO CONTAINER" />
+		            <f:selectItem itemLabel="CONTAINER" itemValue="CONTAINER" />
+		            <f:selectItem itemLabel="GRADIL DO ARMÁRIO" itemValue="GRADIL DO ARMÁRIO" />
+		            <f:selectItem itemLabel="GERADOR DE ENERGIA" itemValue="GERADOR DE ENERGIA" />
+		            <f:selectItem itemLabel="GRADIL DO RRU" itemValue="GRADIL DO RRU" />
 				</p:selectOneMenu>
 			</p:column>
 			
 			<p:column style="border-width:0px;">
 				<p:inputText class="form-padrao form-mov" style="font-size: 18px; text-align:center;" id="claviculario"
 							value="#{nceControleChaveBean.chave.claviculario}" size="7" maxlength="7" placeholder="Claviculário" 
-							required="true" requiredMessage="Obrigatório informar o Claviculário."/>
+							required="true" requiredMessage="Obrigatório informar o Claviculário."
+							onkeyup="value=value.toUpperCase()"/>
 			</p:column>
 			
 			<p:column style="border-width:0px;">
 				<p:inputText class="form-padrao form-mov" style="font-size: 18px; text-align:center;" id="posicao"
 							value="#{nceControleChaveBean.chave.posicao}" size="7" maxlength="7" placeholder="Posição" 
-							required="true" requiredMessage="Obrigatório informar a Posição."/>
+							required="true" requiredMessage="Obrigatório informar a Posição."
+							onkeyup="value=value.toUpperCase()"/>
 			</p:column>
 			
 			<p:column style="border-width:0px;">
@@ -545,6 +583,7 @@
 			
 		</p:row>
 	</p:panelGrid>
+	</sec:ifAnyGranted>
 </center>
 </h:form>
 
@@ -579,13 +618,13 @@
         
        <p:column style="text-align: center;" width="30" headerText="Selecionar">
 				<p:commandLink action="#{nceControleChaveBean.selecionarChave}" update=":listaChaves" disabled="#{chave.transito}">
-					<h:graphicImage library="imagens" name="status_#{chave.selecao}.png" style="border:0"/>
+					<h:graphicImage library="imagens" name="hand_#{chave.selecao}.png" style="border:0"/>
 					<f:setPropertyActionListener value="#{chave}" target="#{nceControleChaveBean.chave}"/>
 				</p:commandLink>	
 		</p:column>
 		
 		 <p:column headerText="Em Trânsito" style="font-size: 14px; text-align:center; width:70px;">
-		 	<h:graphicImage library="imagens" name="status_#{chave.transito}.png" style="border:0"/>
+		 	<h:graphicImage library="imagens" name="hand_#{chave.transito}.png" style="border:0"/>
 		 	<h:outputText value=" Req: " rendered="#{chave.transito}"/>
             <h:outputText value="#{chave.idControleChave.id}" rendered="#{chave.transito}"/>
         </p:column>
@@ -620,10 +659,13 @@
 					</p:column>
 					
 					<p:column style="border-width:0px;" colspan="3">
-						<p:autoComplete id="siteIdCodAtual" dropdown="true" size="30" scrollHeight="150" minQueryLength="3"
+						<p:autoComplete id="siteIdCodAtual" size="30" scrollHeight="150" minQueryLength="3"
 								value="#{nceControleChaveBean.site.idCodAtual}" completeMethod="#{nceControleChaveBean.siteRN.completeSite}"
 								effect="fade" placeholder="Verifique se este Site está cadastrado" style="font-size: 10px;"
-								required="true" requiredMessage="Código do Site é obrigatória." onkeyup="value=value.toUpperCase()">
+								required="true" requiredMessage="Código do Site é obrigatório."
+								onkeyup="value=value.toUpperCase().trim()"
+								validatorMessage="O Site deve conter entre 5 a 15 caracteres maiúsculos sem espaços.">
+							<f:validateRegex pattern="([A-Z]|[0-9]){5,15}"/>
 							<p:ajax event="itemSelect" listener="#{nceControleChaveBean.siteSelecionado}" update=":formSite" />
 						</p:autoComplete>
 					</p:column>
@@ -661,7 +703,8 @@
 					</p:column>
 					<p:column style="border-width:0px;" colspan="2">
 						<h:inputText style="width:338px; font-size: 18px;" class="form-padrao form-usuarios" id="enderecoSite" 
-									label="Endereço" value="#{nceControleChaveBean.site.endereco}" maxlength="250"> 
+									label="Endereço" value="#{nceControleChaveBean.site.endereco}" maxlength="250"
+									onkeyup="value=value.toUpperCase()"> 
 						</h:inputText>
 					</p:column>
 				</p:row>
@@ -672,7 +715,8 @@
 					</p:column>
 					<p:column style="border-width:0px;">
 						<h:inputText style="width:200px; font-size: 18px;" class="form-padrao form-usuarios" id="bairroSite" 
-									label="Bairro" value="#{nceControleChaveBean.site.bairro}" maxlength="150"> 
+									label="Bairro" value="#{nceControleChaveBean.site.bairro}" maxlength="150"
+									onkeyup="value=value.toUpperCase()"> 
 						</h:inputText>
 					</p:column>
 					<p:column style="border-width:0px;">
@@ -680,7 +724,8 @@
 					</p:column>
 					<p:column style="border-width:0px;">
 						<h:inputText style="width:238px; font-size: 18px;" class="form-padrao form-usuarios" id="cidadeSite" 
-									label="Cidade" value="#{nceControleChaveBean.site.cidade}" maxlength="150"> 
+									label="Cidade" value="#{nceControleChaveBean.site.cidade}" maxlength="150"
+									onkeyup="value=value.toUpperCase()"> 
 						</h:inputText>
 					</p:column>
 					
@@ -689,7 +734,8 @@
 					</p:column>
 					<p:column style="border-width:0px;">
 						<h:inputText style="width:50px; font-size: 18px;" class="form-padrao form-usuarios" id="ufSite" 
-									label="UF" value="#{nceControleChaveBean.site.uf}" maxlength="2"> 
+									label="UF" value="#{nceControleChaveBean.site.uf}" maxlength="2"
+									onkeyup="value=value.toUpperCase()"> 
 						</h:inputText>
 					</p:column>
 				
@@ -726,8 +772,9 @@
 						<h:outputLabel class="label-padrao" id="observSite" value="Observação:"/>
 					</p:column>
 					<p:column style="border-width:0px;" colspan="2">	
-						<p:inputTextarea id="obsSite" rows="3" cols="40" counter="displaySite" maxlength="255" counterTemplate="{0} caracteres restantes." 
-										value="#{nceControleChaveBean.site.obs}" autoResize="false" />
+						<p:inputTextarea id="obsSite" rows="3" cols="40" counter="displaySite" maxlength="255"
+										counterTemplate="{0} caracteres restantes."	value="#{nceControleChaveBean.site.obs}"
+										autoResize="false" onkeyup="value=value.toUpperCase()"/>
 			    	</p:column>
 			    	<p:column style="border-width:0px;">
 			    		<h:outputText id="displaySite"/>

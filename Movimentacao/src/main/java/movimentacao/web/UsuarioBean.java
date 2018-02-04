@@ -188,7 +188,9 @@ public class UsuarioBean implements Serializable
 		this.permissoesSource.add("ROLE_ADM");
 		this.permissoesSource.add("ROLE_DGR");
 		this.permissoesSource.add("ROLE_CONTROLE_FROTA");
-		this.permissoesSource.add("ROLE_CONTROLE_CHAVE");
+		this.permissoesSource.add("ROLE_CONTROLE_CHAVE_ADM");
+		this.permissoesSource.add("ROLE_CONTROLE_CHAVE_OPER");
+		this.permissoesSource.add("ROLE_CONTROLE_CHAVE_RECEP");
 		
 		return null;
 	}
@@ -202,7 +204,9 @@ public class UsuarioBean implements Serializable
 		this.permissoesSource.add("ROLE_ADM");
 		this.permissoesSource.add("ROLE_DGR");
 		this.permissoesSource.add("ROLE_CONTROLE_FROTA");
-		this.permissoesSource.add("ROLE_CONTROLE_CHAVE");
+		this.permissoesSource.add("ROLE_CONTROLE_CHAVE_ADM");
+		this.permissoesSource.add("ROLE_CONTROLE_CHAVE_OPER");
+		this.permissoesSource.add("ROLE_CONTROLE_CHAVE_RECEP");
 		
 		//UsuarioRN usuarioRN = new UsuarioRN();
 	    this.usuario = this.usuarioRN.carregar(this.usuario.getCodigo());

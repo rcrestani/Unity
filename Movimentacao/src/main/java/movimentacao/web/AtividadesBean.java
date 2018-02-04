@@ -99,9 +99,7 @@ public class AtividadesBean implements Serializable
 		
 		this.negocios.setQtdeAtividades(qtdeAtividades);
 		this.negociosRN.salvar(this.negocios);
-		
-		AtividadesBean.filtro.setCliente("");
-		
+				
 		if(email == true)
 		{
 			JavaMailApp javaMail = new JavaMailApp();

@@ -32,6 +32,12 @@ public class TecnicoRN
 		return this.tecnicoDAO.carregar(id);
 	}
 	
+	public Tecnico tecnicoPorCPF(String cpf)
+	{
+		this.tecnicoDAO = DAOFactory.criarTecnicoDAO();
+		return this.tecnicoDAO.tecnicoPorCPF(cpf);
+	}
+	
 	public List<Tecnico> listar()
 	{
 		this.tecnicoDAO = DAOFactory.criarTecnicoDAO();

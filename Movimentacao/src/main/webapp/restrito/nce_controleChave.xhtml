@@ -24,6 +24,7 @@
 	<p:separator/>
 <!-- FORM CADASTRO/////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
 	<h:form id="cadastro">
+		<h:inputHidden id="idControleChave" value="#{nceControleChaveBean.controleChave.id}"/>
 		<p:panelGrid style="border-collapse: unset;" class="teste" rendered="#{nceControleChaveBean.formControleChave}">
 			<p:row>
 				<p:column style="border-width:0px;">
@@ -63,17 +64,17 @@
 				</sec:ifAnyGranted>
 	        </p:row>
 	        
-	        <p:row rendered="#{nceControleChaveBean.siteChaveRequisitado}">
+	       <p:row rendered="#{nceControleChaveBean.siteChaveRequisitado}">
 		        <p:column style="border-width:0px;" colspan="3">
-					 <p:outputLabel id="lblItensSiteChave">
+						<p:outputLabel id="lblItensSiteChave">
 						<p:dataTable value="#{nceControleChaveBean.listaSiteChave}" var="listaChaveSite" scrollable="true" scrollHeight="100">
-							<p:column headerText="Site" style="font-size: 14px; text-align:center; width:40px;">
-					             <h:outputText value="#{listaChaveSite.siteIdCodAtual}" />
-					        </p:column>
-					        
-					        <p:column headerText="Chaves" style="font-size: 14px; text-align:center; width:180px;">
-					             <h:outputText value="#{listaChaveSite.listaChaves}" />
-					        </p:column>
+								<p:column headerText="Site" style="font-size: 14px; text-align:center; width:40px;">
+						             <h:outputText value="#{listaChaveSite.siteIdCodAtual}" />
+						        </p:column>
+						        
+						        <p:column headerText="Chaves" style="font-size: 14px; text-align:center; width:180px;">
+						             <h:outputText value="#{listaChaveSite.listaChaves}" />
+						        </p:column>
 					    </p:dataTable>
 					 </p:outputLabel>
 				</p:column>
@@ -153,6 +154,7 @@
 				<p:column style="border-width:0px;" colspan="3">	
 					<p:inputTextarea id="obs" rows="5" cols="60" counter="display" maxlength="1000" counterTemplate="{0} caracteres restantes." 
 									value="#{nceControleChaveBean.controleChave.obs}" autoResize="false"
+									required="true" requiredMessage="Obrigatorio preencher o campo observacao"
 									onkeyup="value=value.toUpperCase()"/>
 		    	</p:column>
 		    	<p:column style="border-width:0px;">
@@ -210,8 +212,8 @@
 				<h:outputText value="#{controleChave.idAno}"/>
 			</p:column>
 			
-			<p:column style="text-align: center;" width="120" headerText="Abertura" sortBy="#{controleChave.dataAbertura}">
-				<h:outputText value="#{controleChave.dataAbertura}">
+			<p:column style="text-align: center;" width="120" headerText="Atendimento" sortBy="#{controleChave.dataAtendimento}">
+				<h:outputText value="#{controleChave.dataAtendimento}">
 					<f:convertDateTime pattern="dd/MM/yyyy - H:mm" locale="pt_BR" />
 				</h:outputText>
 			</p:column>
@@ -228,8 +230,8 @@
 				<h:outputText value="#{controleChave.atividade}"/>
 			</p:column>
 			
-			<p:column style="text-align: center;" width="200" headerText="Operador Abertura">
-				<h:outputText value="#{controleChave.usuarioAbertura.nome}"/>
+			<p:column style="text-align: center;" width="200" headerText="Operador Atendimento">
+				<h:outputText value="#{controleChave.usuarioAtendimento.nome}"/>
 			</p:column>
 			
 			<p:column style="text-align: center;" width="120" headerText="Fechamento" sortBy="#{controleChave.dataFechamento}">
@@ -666,7 +668,7 @@
 								onkeyup="value=value.toUpperCase().trim()"
 								validatorMessage="O Site deve conter entre 5 a 15 caracteres maiúsculos sem espaços.">
 							<f:validateRegex pattern="([A-Z]|[0-9]){5,15}"/>
-							<p:ajax event="itemSelect" listener="#{nceControleChaveBean.siteSelecionado}" update=":formSite" />
+							<p:ajax event="blur" listener="#{nceControleChaveBean.siteSelecionado}" update=":formSite" />
 						</p:autoComplete>
 					</p:column>
 				</p:row>

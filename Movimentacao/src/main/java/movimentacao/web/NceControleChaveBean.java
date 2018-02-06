@@ -69,7 +69,6 @@ public class NceControleChaveBean implements Serializable
 	private ExternalContext external = context.getExternalContext();
 	private String login = external.getRemoteUser();
 	private String usuario = "";
-	private String nomeTecnico = "";
 	private String nomeEmpresa = "";
 	private String cep = "";
 	private Date data48hsAtras;
@@ -99,17 +98,23 @@ public class NceControleChaveBean implements Serializable
 	{
 		if(this.controleChave.getId() == null)
 		{	
+			//controle do numero da requisicao é gerado pela requisicao já gerada na atribuição dos sites==========
+			int ultimoId = this.controleChaveRN.ultimoRegistro().getId() + 1;
+			this.controleChave.setIdAno(String.format("%d",  ultimoId) + "/" + formatYear(new Date()) );
+			
 			this.controleChave.setUsuarioAbertura(this.usuarioRN.buscarPorLogin(this.login));
 			this.controleChaveRN.salvar(this.controleChave);
+			
+			int id = this.controleChave.getId();
+			this.controleChave = new ControleChave();
+			this.controleChave = this.controleChaveRN.carregar(id);
 		}
 		
 		return null;
 	}
 	
 	public String salvarAtendimento()
-	{
-		this.tecnico = this.tecnicoRN.tecnicoPorNome(this.nomeTecnico);
-		
+	{		
 		this.controleChave.setIdTecnico(this.tecnico);
 		
 		Usuario user = new Usuario();
@@ -130,9 +135,12 @@ public class NceControleChaveBean implements Serializable
 		
 		if(this.controleChave.getIdSite().size() > 0)
 		{
-			//controle do numero da requisicao é gerado pela requisicao já gerada na atribuição dos sites==========
-			int ultimoId = this.controleChaveRN.carregar(this.controleChave.getId()).getId();
-			this.controleChave.setIdAno(String.format("%d",  ultimoId + "/" + formatYear(new Date()) ));
+			if(this.controleChave.getIdAno() == null)
+			{	
+				//controle do numero da requisicao é gerado pela requisicao já gerada na atribuição dos sites==========
+				int ultimoId = this.controleChaveRN.ultimoRegistro().getId() + 1;
+				this.controleChave.setIdAno(String.format("%d",  ultimoId) + "/" + formatYear(new Date()) );
+			}
 			
 			this.controleChaveRN.salvar(this.controleChave);
 			
@@ -155,6 +163,28 @@ public class NceControleChaveBean implements Serializable
 			
 			return null;
 		}
+		else if(user.getPermissao().contains("ROLE_CONTROLE_CHAVE_RECEP"))//Se for usuario da recepcao, permitir salvar requisicao sem os sites.
+		{
+			if(this.controleChave.getIdAno() == null)
+			{	
+				//controle do numero da requisicao é gerado pela requisicao já gerada na atribuição dos sites==========
+				int ultimoId = this.controleChaveRN.ultimoRegistro().getId() + 1;
+				this.controleChave.setIdAno(String.format("%d",  ultimoId) + "/" + formatYear(new Date()) );
+			}
+			
+			this.controleChave.setUsuarioAbertura(user);
+			this.controleChaveRN.salvar(this.controleChave);
+			
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+		    		FacesMessage.SEVERITY_INFO , "Requisição Registrada com sucesso!", ""));
+			
+			this.formControleChave = false;
+			this.listaSiteChave.clear();
+			this.listaChaves.clear();
+			this.site = new Site();
+			this.chave = new Chave();
+			this.tecnico = new Tecnico();
+		}
 		else
 		{
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
@@ -176,7 +206,6 @@ public class NceControleChaveBean implements Serializable
 		this.empresa = new Empresa();
 		this.site = new Site();
 		this.chave = new Chave();
-		this.nomeTecnico = "";
 		this.nomeEmpresa = "";
 		this.cep = "";
 		
@@ -191,9 +220,17 @@ public class NceControleChaveBean implements Serializable
 		
 		for(ControleChave controlChave:listControle)
 		{
-			controlChave.setTempoAberto(calcDate.calculaHoras(controlChave.getDataAbertura(), new Date()));
+			try
+			{
+				controlChave.setTempoAberto(calcDate.calculaHoras(controlChave.getDataAbertura(), new Date()));
+				
+				this.controleChaveRN.salvar(controlChave);
+			}
+			catch (Exception e)
+			{
+				// TODO: handle exception
+			}
 			
-			this.controleChaveRN.salvar(controlChave);
 		}
 		
 	}
@@ -203,14 +240,22 @@ public class NceControleChaveBean implements Serializable
 		DateCalculator calcDate = new DateCalculator();
 		this.data48hsAtras = calcDate.data48HorasAtras(new Date());
 		
-		if(controleChave.getDataAbertura().before(this.data48hsAtras) && controleChave.getDataFechamento() == null)
+		try
 		{
-			this.rowColor = "#CD3333;font-weight: bold;";
+			if(controleChave.getDataAbertura().before(this.data48hsAtras) && controleChave.getDataFechamento() == null)
+			{
+				this.rowColor = "#CD3333;font-weight: bold;";
+			}
+			else
+			{
+				this.rowColor = "";
+			}
 		}
-		else
+		catch (Exception e)
 		{
-			this.rowColor = "";
+			// TODO: handle exception
 		}
+		
 		
 		
 		return this.rowColor;
@@ -371,33 +416,33 @@ public class NceControleChaveBean implements Serializable
 		
 	}
 	
-	public void siteSelecionado(SelectEvent event) 
+	public void siteSelecionado()
 	{
 		String siteIdAtual = this.site.getIdCodAtual();
-		this.site = new Site();
 		
-		try
+		if(this.siteRN.sitePorIdCodAtual(siteIdAtual) == null)
 		{
-			this.site = this.siteRN.sitePorIdCodAtual(siteIdAtual);
-			this.cep = this.site.getCep();
+			this.site = new Site();
+			this.site.setIdCodAtual(siteIdAtual);
 		}
-		catch (Exception e)
+		else
 		{
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
-		    		FacesMessage.SEVERITY_ERROR , "Erro ao Localizar dados completos!", ""));
+			try
+			{
+				this.site = this.siteRN.sitePorIdCodAtual(siteIdAtual);
+				this.cep = this.site.getCep();
+			}
+			catch (Exception e)
+			{
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+			    		FacesMessage.SEVERITY_ERROR , "Erro ao Localizar dados completos!", ""));
+			}
 		}
 		
 	}
 	//FIM MÉTODOS SITE=============================================================================================
 	
 	//MÉTODOS PARA O FORM SITECHAVE================================================================================
-	public String inserirSite()
-	{
-		
-		
-		return null;
-	}
-	
 	public void fecharDialogSiteChave(CloseEvent event)
 	{
 		//Pegando as chaves selecionadas e setando false na selecao, caso o usuario fechar o Dialog sem salvar=====
@@ -440,9 +485,7 @@ public class NceControleChaveBean implements Serializable
 		List<Chave> chaveSite  = new ArrayList<Chave>();
 		//Pegando as chaves atribuidas neste controle de saida para os tratamentos abaixo
 		chaveSite = this.chaveRN.listaPorSiteSelecaoTrue(this.site , this.controleChave);
-		
-		System.out.println("Chaves Size: " + chaveSite.size() + "\nID Requisicao: " + this.controleChave.getId());
-		
+				
 		//Concatenando as chaves para exibição no form cadastro=============================
 		String chavesConcatenadas = "";
 		for(int x = 0; x < chaveSite.size(); x++)
@@ -460,9 +503,11 @@ public class NceControleChaveBean implements Serializable
 				chavesConcatenadas = chavesConcatenadas + ", ";
 			}
 			
-			siteChave.setListaChaves(chavesConcatenadas);
 		}
 		
+		siteChave.setListaChaves(chavesConcatenadas);
+		
+		//Pegando o site em processamento para inserir no set<String> da tabela controleChave=================
 		this.site = this.siteRN.sitePorIdCodAtual(this.site.getIdCodAtual());
 		this.controleChave.getIdSite().add(this.site.getIdCodAtual());
 		
@@ -594,14 +639,6 @@ public class NceControleChaveBean implements Serializable
 
 	public void setTecnicoRN(TecnicoRN tecnicoRN) {
 		this.tecnicoRN = tecnicoRN;
-	}
-
-	public String getNomeTecnico() {
-		return nomeTecnico;
-	}
-
-	public void setNomeTecnico(String nomeTecnico) {
-		this.nomeTecnico = nomeTecnico;
 	}
 
 	public Tecnico getTecnico() {

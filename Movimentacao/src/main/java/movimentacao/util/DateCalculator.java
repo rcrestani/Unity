@@ -35,6 +35,7 @@ public class DateCalculator
 	    return tempoMissao;
 	}
 	
+	//Método utilizado no controle de frota da AES=============================
 	public Date data14HorasAtras(Date data)
 	{
 		Calendar dataFinal = Calendar.getInstance();
@@ -47,6 +48,20 @@ public class DateCalculator
 		
 	}
 	
+	//Método utilizado no controle de chave do projeto NCE========================
+	public Date data15MinAtras(Date data)
+	{
+		Calendar dataFinal = Calendar.getInstance();
+		dataFinal.setTime(data);
+		
+		long resultado = dataFinal.getTimeInMillis() - 900000;
+		dataFinal.setTimeInMillis(resultado);
+		
+		return (Date) dataFinal.getTime();
+		
+	}
+	
+	//Método utilizado no controle de chave do projeto NCE========================
 	public Date data48HorasAtras(Date data)
 	{
 		Calendar dataFinal = Calendar.getInstance();

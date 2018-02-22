@@ -7,8 +7,8 @@
 	xmlns:sec="http://www.springframework.org/security/facelets/tags">
 <ui:composition template="/template/interna.xhtml">
 	<ui:define name="titulo">
-		<h:graphicImage library="imagens" name="logoUnity.png" style="height:40px;"/>
-		<h:outputLabel class="label-padrao" value="Controle de Chaves" style="margin-left:380px; font-size:30px; font-family:Ubuntu;"/>
+		<h:graphicImage library="imagens" name="performancelab.png" style="height:40px;"/>
+		<h:outputLabel class="label-padrao" value="Controle de Chaves" style="margin-left:250px; font-size:30px; font-family:Ubuntu;"/>
 	</ui:define>
 	<ui:define name="corpo">
 	
@@ -64,16 +64,17 @@
 				</sec:ifAnyGranted>
 	        </p:row>
 	        
-	       <p:row rendered="#{nceControleChaveBean.siteChaveRequisitado}">
+	       <p:row>
 		        <p:column style="border-width:0px;" colspan="3">
 						<p:outputLabel id="lblItensSiteChave">
-						<p:dataTable value="#{nceControleChaveBean.listaSiteChave}" var="listaChaveSite" scrollable="true" scrollHeight="100">
+						<p:dataTable value="#{nceControleChaveBean.listaSiteChave}" var="controleSiteChave" scrollable="true" scrollHeight="100"
+										emptyMessage="Nenhum site/chave selecionado">
 								<p:column headerText="Site" style="font-size: 14px; text-align:center; width:40px;">
-						             <h:outputText value="#{listaChaveSite.siteIdCodAtual}" />
+						             <h:outputText value="#{controleSiteChave.siteIdCodAtual}" />
 						        </p:column>
 						        
 						        <p:column headerText="Chaves" style="font-size: 14px; text-align:center; width:180px;">
-						             <h:outputText value="#{listaChaveSite.listaChaves}" />
+						             <h:outputText value="#{controleSiteChave.listaChaves}" />
 						        </p:column>
 					    </p:dataTable>
 					 </p:outputLabel>
@@ -89,16 +90,16 @@
 					<h:outputLabel class="label-padrao" id="lblTecnico" value="Técnico:"/>
 				</p:column>
 				<p:column style="border-width:0px;" colspan="1">
-					<p:inputMask id="cpf" class="form-padrao form-mov" size="15" value="#{nceControleChaveBean.tecnico.cpf}"
-									placeholder="Informe um CPF Válido" mask="999.999.999-99" maxlength="11"
-									required="true" requiredMessage="CPF é obrigatório.">
+					<p:inputMask id="cpf" class="form-padrao form-mov" size="15" value="#{nceControleChaveBean.cpfTecnico}"
+									placeholder="Informe um CPF Válido" mask="999.999.999-99" maxlength="11">
 						<p:ajax event="blur" listener="#{nceControleChaveBean.tecnicoPorCPF}" update="tecnicoEncontrado"/>
 					</p:inputMask>
 				</p:column>
 				
 				<p:column style="border-width:0px;" colspan="2">
-					<p:inputText id="tecnicoEncontrado" class="form-padrao form-mov" size="35" value="#{nceControleChaveBean.tecnico.nome}"
-								disabled="true"/>
+					<p:inputText id="tecnicoEncontrado" class="form-padrao form-mov" size="35"
+								 value="#{nceControleChaveBean.controleChave.idTecnico.nome}"
+								 required="true" requiredMessage="Técnico é obrigatório." disabled="true"/>
 				</p:column>
 				
 				<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_CONTROLE_CHAVE_OPER , ROLE_ADM">
@@ -154,6 +155,7 @@
 				<p:column style="border-width:0px;" colspan="3">	
 					<p:inputTextarea id="obs" rows="5" cols="60" counter="display" maxlength="1000" counterTemplate="{0} caracteres restantes." 
 									value="#{nceControleChaveBean.controleChave.obs}" autoResize="false"
+									placeholder="#{nceControleChaveBean.placeHolderObs}"
 									required="true" requiredMessage="Obrigatorio preencher o campo observacao"
 									onkeyup="value=value.toUpperCase()"/>
 		    	</p:column>
@@ -167,14 +169,6 @@
 	        </p:row>
 		    
 		    <p:row>
-				<p:column style="border-width:0px;">
-					<h:outputLabel class="label-padrao" id="fechamento" value="Data Fechamento:"/>
-				</p:column>
-				<p:column style="border-width:0px;">
-					<p:calendar id="dataFechamento" value="#{nceControleChaveBean.controleChave.dataFechamento}" pattern="dd-MM-yyyy - HH:mm"
-							mask="true" size="14" locale="pt" placeholder="Fim Atendimento"/>
-				</p:column>
-				
 				<p:column style="border-width:0px;">
 					<h:outputLabel class="label-padrao" id="sts" value="Status:"/>
 				</p:column>
@@ -196,54 +190,80 @@
 		</p:panelGrid>
 		
 	</h:form>
-<!-- FIM FORM CADASTRO///////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<!-- FIM FORM CADASTRO////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<p:separator />
+<!-- FORM FILTROS/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<h:form id="filtro">
+	<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_CONTROLE_CHAVE_OPER , ROLE_ADM">
+		<h:panelGrid columns="3">
+					
+       		<p:calendar id="dataInicial" value="#{nceControleChaveBean.filtro.dataAbertura}" pattern="dd-MM-yyyy"
+						mask="true" size="8" locale="pt" placeholder="Data Inicial"/>
 
+			<p:calendar id="dataFim" value="#{nceControleChaveBean.filtro.dataFechamento}" pattern="dd-MM-yyyy"
+					mask="true" size="8" locale="pt" placeholder="Data Final"/>
+			
+			<p:commandButton class="btnPadrao" value="Consultar" update=":listaControleChave" />
+		</h:panelGrid>
+	</sec:ifAnyGranted>
+</h:form>
+<!-- FORM FILTROS/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<p:separator />
 <!-- DATATABLE CONTROLECHAVE//////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <h:form id="listaControleChave">
-	<p:poll interval="60" listener="#{nceControleChaveBean.calcTempoAberto}" update=":listaControleChave"/>
+	<p:poll interval="60" listener="#{nceControleChaveBean.calcTempoAberto}" update=":listaControleChave" stop="#{nceControleChaveBean.stopPoll}"/>
 		<p:dataTable width="400"  value="#{nceControleChaveBean.lazyControleChave}" lazy="true" widgetVar="tableControleChave"
 						var="controleChave" border="1" cellpadding="2" cellspacing="0" rowIndexVar="index"
 						paginator="true" paginatorPosition="bottom" rows="10" id="tbl"
 						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						paginatorAlwaysVisible="true"
-						currentPageReportTemplate="{totalRecords} Registros">
+						currentPageReportTemplate="{totalRecords} Requisições em espera">
 			
-			<p:column style="text-align: center;" headerText="Id/Ano" width="70" sortBy="#{controleChave.idAno}">
-				<h:outputText value="#{controleChave.idAno}"/>
+			 <f:facet name="header">
+        		CONSULTA PADRÃO: NOVAS REQUISIÇÕES
+    		</f:facet>
+			
+			<p:column style="text-align: center;" headerText="Número" width="70" sortBy="#{controleChave.idAno}">
+				<h:outputText value="#{controleChave.idAno}"
+								style="font-size:14px; color:#{nceControleChaveBean.aberturaVencida(controleChave)}"/>
 			</p:column>
 			
-			<p:column style="text-align: center;" width="120" headerText="Atendimento" sortBy="#{controleChave.dataAtendimento}">
-				<h:outputText value="#{controleChave.dataAtendimento}">
+			<p:column style="text-align: center;" width="180" headerText="Abertura" sortBy="#{controleChave.dataAbertura}">
+				<h:outputText value="#{controleChave.dataAbertura}"
+								style="font-size:14px; color:#{nceControleChaveBean.aberturaVencida(controleChave)}">
 					<f:convertDateTime pattern="dd/MM/yyyy - H:mm" locale="pt_BR" />
 				</h:outputText>
+			</p:column>
+			
+			<p:column style="text-align: center;" width="200" headerText="Operador Abertura">
+				<h:outputText value="#{controleChave.usuarioAbertura.nome}"
+								style="font-size:14px; color:#{nceControleChaveBean.aberturaVencida(controleChave)}"/>
 			</p:column>
 			
 			<p:column style="text-align: center;" width="200" headerText="Técnico">
-				<h:outputText value="#{controleChave.idTecnico.nome}"/>
-			</p:column>
-			
-			<p:column style="text-align: center;" width="100" headerText="CRQ" sortBy="#{controleChave.crq}">
-				<h:outputText value="#{controleChave.crq}"/>
+				<h:outputText value="#{controleChave.idTecnico.nome}" 
+								style="font-size:14px; color:#{nceControleChaveBean.aberturaVencida(controleChave)}"/>
 			</p:column>
 			
 			<p:column style="text-align: center;" width="200" headerText="Atividade" sortBy="#{controleChave.atividade}">
-				<h:outputText value="#{controleChave.atividade}"/>
+				<h:outputText value="#{controleChave.atividade}"
+							style="font-size:14px; color:#{nceControleChaveBean.aberturaVencida(controleChave)}"/>
 			</p:column>
 			
-			<p:column style="text-align: center;" width="200" headerText="Operador Atendimento">
-				<h:outputText value="#{controleChave.usuarioAtendimento.nome}"/>
+			<p:column style="text-align: center;" width="100" headerText="Tempo Espera">
+				<h:outputText value="#{controleChave.tempoAberto}"
+							style="font-size:14px; color:#{nceControleChaveBean.aberturaVencida(controleChave)}"/>
 			</p:column>
 			
-			<p:column style="text-align: center;" width="120" headerText="Fechamento" sortBy="#{controleChave.dataFechamento}">
-				<h:outputText value="#{controleChave.dataFechamento}">
-					<f:convertDateTime pattern="dd/MM/yyyy - H:mm" locale="pt_BR" />
-				</h:outputText>
+			<p:column style="text-align: center;" width="60" headerText="Ações">
+			<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_CONTROLE_CHAVE_OPER , ROLE_ADM">
+				<p:commandLink action="#{nceControleChaveBean.atenderRequisicao}" update=":cadastro" title="Atender"
+								rendered="#{nceControleChaveBean.botaoAtender(controleChave)}">
+					<h:graphicImage library="imagens" name="atendimento.png"/>
+					<f:setPropertyActionListener value="#{controleChave}" target="#{nceControleChaveBean.controleChave}"/>
+				</p:commandLink>
+			</sec:ifAnyGranted>
 			</p:column>
-			
-			<p:column style="text-align: center;" width="60" headerText="Tempo Aberta">
-				<h:outputText value="#{controleChave.tempoAberto}" style="color:#{nceControleChaveBean.prazoVencido(controleChave)}"/>
-			</p:column>
-			
 		</p:dataTable>
 </h:form>
 <!-- FIM DATATABLE CONTROLECHAVE/////////////////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -266,7 +286,7 @@
 								effect="fade" placeholder="Verifique se este Técnico está cadastrado" style="font-size: 10px;"
 								required="true" requiredMessage="Nome do Técnico é obrigatório."
 								onkeyup="value=value.toUpperCase()">
-							<p:ajax event="itemSelect" listener="#{nceControleChaveBean.tecnicoSelecionado}" update=":formTecnico" />
+							<p:ajax event="blur" listener="#{nceControleChaveBean.tecnicoSelecionado}" update=":formTecnico" />
 						</p:autoComplete>
 					</p:column>
     			</p:row>

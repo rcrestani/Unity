@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags">
+<ui:composition template="/template/interna.xhtml">
+	<ui:define name="titulo">
+		<h:graphicImage library="imagens" name="performancelab.png" style="height:40px;"/>
+		<h:outputLabel class="label-padrao" value="Cadastro de E-mails" style="margin-left:250px; font-size:30px; font-family:Ubuntu;"/>
+	</ui:define>
+	<ui:define name="corpo">
+	
+	<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_CONTROLE_CHAVE_RECEP , ROLE_CONTROLE_CHAVE_OPER , ROLE_ADM">
+	
+	<p:growl id="grow" autoUpdate="true" life="4000" showDetail="true" widgetVar="grow" />
+	
+<!-- NOVOS/////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<h:form id="novos">
+	<p:commandButton class="btnPadrao" value="Novos E-mails" action="#{nceNivelEmailBean.novo}"
+						oncomplete="PF('dlgCadastro').show();" update=":cadastro"/>
+</h:form>
+<!-- FIM NOVOS/////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
+
+<!-- DIALOG CADASTRO//////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<p:dialog id="dlgCadastro" rendered="true" position="center" header="Cadastro de novos E-mails"
+				widgetVar="dlgCadastro" minHeight="40" width="550px" showEffect="explode" hideEffect="explode" modal="true"
+				showCloseIcon="true">
+				
+	<h:form id="cadastro">
+		<p:panelGrid style="border-collapse: unset;">
+			<p:row>
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" id="lblNivel" value="Nível:"/>
+				</p:column>
+				
+				<p:column style="border-width:0px;">
+					<p:selectOneMenu id="niveis" value="#{nceNivelEmailBean.nivelEmail.nivel}" style="width:125px">
+			            <f:selectItem itemLabel="Nível 1" itemValue="nivel1"/>
+			            <f:selectItem itemLabel="Nível 2" itemValue="nivel2"/>
+			            <f:selectItem itemLabel="Nível 3" itemValue="nivel3"/>
+			            <f:selectItem itemLabel="Nível 4" itemValue="nivel4"/>
+	        		</p:selectOneMenu>
+				</p:column>
+			</p:row>
+			
+			<p:row>
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" value="Emails:" for="emails"/>
+				</p:column>
+				<p:column style="border-width:0px;" colspan="3">
+					<p:chips value="#{nceNivelEmailBean.emails}"/>
+				</p:column>
+			</p:row>
+		
+			<p:row>
+            	<p:column style="padding: 0px;" colspan="6"></p:column>
+        	</p:row>
+        	
+        	<p:row>
+        		<p:column style="border-width:0px;" colspan="2">
+        			<p:commandButton class="btnPadrao" style="font-size: 18px;" action="#{nceNivelEmailBean.salvar}"
+								value="Salvar" update=":lista" oncomplete="PF('dlgCadastro').hide();"/>
+				</p:column>
+        	</p:row>
+		</p:panelGrid>
+	</h:form>
+</p:dialog>
+<!-- FIM DIALOG CADASTRO//////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+<p:separator />
+<!-- DATATABLE ////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<h:form id="lista">	
+	<p:dataTable value="#{nceNivelEmailBean.lista}" var="nivelEmail" id="lista"
+						scrollable="true" scrollHeight="390"
+						emptyMessage="Nenhum registro encontrado"
+						currentPageReportTemplate="{totalRecords} Registros">
+			
+			<p:column headerText="Nível" style="text-align: center;" width="40">
+				<h:outputText value="#{nivelEmail.nivel}"/>
+			</p:column>
+			
+			<p:column headerText="E-mail" style="text-align: center;" width="120">
+				<h:outputText value="#{nivelEmail.email}"/>
+			</p:column>
+			
+			<p:column headerText="Data Registro" style="text-align: center;" width="50">
+				<h:outputText value="#{nivelEmail.dataHoraReg}">
+					<f:convertDateTime pattern="dd/MM/yyyy - hh:mm" locale="pt" />
+				</h:outputText>
+			</p:column>
+			
+			<p:column headerText="Usuário Registro" style="text-align: center;" width="60">
+				<h:outputText value="#{nivelEmail.idUsuario.nome}"/>
+			</p:column>
+			
+			<p:column headerText="Ações" style="text-align: center;" width="20">
+				<p:commandLink  action="#{nceNivelEmailBean.editar}" update=":cadastro" title="Editar"
+								oncomplete="PF('dlgCadastro').show();">
+					<h:graphicImage library="imagens" name="editar16.png"/>
+					<f:setPropertyActionListener value="#{nivelEmail}" target="#{nceNivelEmailBean.nivelEmail}"/>
+				</p:commandLink>
+				
+				<h:outputText value=" | "/>
+				
+				<p:commandLink  action="#{nceNivelEmailBean.excluir}" update=":lista" title="Excluir"
+								onclick="if (!confirm('Confirma a exclusão do e-mail #{nivelEmail.email}?')) return false;">
+					<h:graphicImage library="imagens" name="excluir16.png"/>
+					<f:setPropertyActionListener value="#{nivelEmail}" target="#{nceNivelEmailBean.nivelEmail}" />
+				</p:commandLink>
+			</p:column>
+	</p:dataTable>
+</h:form>
+<!-- FIM DATATABLE ////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	</sec:ifAnyGranted>
+	
+	</ui:define>
+</ui:composition>
+</html>

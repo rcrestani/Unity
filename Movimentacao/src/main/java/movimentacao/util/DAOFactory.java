@@ -13,8 +13,11 @@ import movimentacao.produto.ProdutoDAOHibernate;
 import movimentacao.produtoTask.ProdutoTaskDAOHibernate;
 import movimentacao.projetoAES.ControleFrotaDAOHibernate;
 import movimentacao.projetoNCE.ControleChaveDAOHibernate;
+import movimentacao.projetoNCE.anotacao.AnotacaoDAOHibernate;
 import movimentacao.projetoNCE.chave.ChaveDAOHibernate;
+import movimentacao.projetoNCE.controleSiteChave.ControleSiteChaveDAOHibernate;
 import movimentacao.projetoNCE.coordenador.CoordenadorDAOHibernate;
+import movimentacao.projetoNCE.emails.NivelEmailDAOHibernate;
 import movimentacao.projetoNCE.empresa.EmpresaDAOHibernate;
 import movimentacao.projetoNCE.site.SiteDAOHibernate;
 import movimentacao.projetoNCE.status.StatusRequisicaoDAOHibernate;
@@ -173,5 +176,29 @@ public class DAOFactory
 		controleChaveDAO.setSession(HibernateUtil.getSessionFactory().getCurrentSession());
 		
 		return controleChaveDAO;
+	}
+	
+	public static ControleSiteChaveDAOHibernate criarControleSiteChaveDAO()
+	{
+		ControleSiteChaveDAOHibernate control = new ControleSiteChaveDAOHibernate();
+		control.setSession(HibernateUtil.getSessionFactory().getCurrentSession());
+		
+		return control;
+	}
+	
+	public static NivelEmailDAOHibernate criarNivelEmailDAO()
+	{
+		NivelEmailDAOHibernate nivelEmailDAO = new NivelEmailDAOHibernate();
+		nivelEmailDAO.setSession(HibernateUtil.getSessionFactory().getCurrentSession());
+		
+		return nivelEmailDAO;
+	}
+	
+	public static AnotacaoDAOHibernate criarAnotacaoDAO()
+	{
+		AnotacaoDAOHibernate anotacaoDAO = new AnotacaoDAOHibernate();
+		anotacaoDAO.setSession(HibernateUtil.getSessionFactory().getCurrentSession());
+		
+		return anotacaoDAO;
 	}
 }

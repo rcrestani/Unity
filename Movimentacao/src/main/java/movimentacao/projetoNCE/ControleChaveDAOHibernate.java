@@ -60,6 +60,17 @@ public class ControleChaveDAOHibernate implements ControleChaveDAO
 	}
 	
 	@SuppressWarnings("unchecked")
+	public List<ControleChave> listarNovas()
+	{
+		Criteria criteria = this.session.createCriteria(ControleChave.class);
+		
+		criteria.add(Restrictions.isNull("dataAtendimento"));
+		criteria.add(Restrictions.isNull("dataFechamento"));
+		
+		return criteria.list();
+	}
+	
+	@SuppressWarnings("unchecked")
 	public List<ControleChave> buscarTodosPaginado(ControleChaveFiltro filtro)
 	{
 		Criteria criteria = criarCriteriaParaFiltro(filtro);
@@ -103,7 +114,9 @@ public class ControleChaveDAOHibernate implements ControleChaveDAO
 		}
 		else if(filtro.getDataAbertura() == null && filtro.getDataFechamento() == null)
 		{
-			criteria.addOrder(Order.desc("dataAbertura"));
+			criteria.addOrder(Order.asc("dataAbertura"));
+			criteria.add(Restrictions.isNull("dataAtendimento"));
+			criteria.add(Restrictions.isNull("dataFechamento"));
 		}
 		
 		if(StringUtils.isNotEmpty( filtro.getCrq()))

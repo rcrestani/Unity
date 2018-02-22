@@ -36,6 +36,7 @@ public class Tecnico implements Serializable
 	@Column (length = 14)
 	private String cpf;
 	private String re;
+	private boolean status;
 	private Date dataHoraReg;
 	
 	@ManyToOne
@@ -106,6 +107,14 @@ public class Tecnico implements Serializable
 		this.re = re;
 	}
 
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
 	public Date getDataHoraReg() {
 		return dataHoraReg;
 	}
@@ -135,6 +144,7 @@ public class Tecnico implements Serializable
 		result = prime * result + ((nome == null) ? 0 : nome.hashCode());
 		result = prime * result + ((re == null) ? 0 : re.hashCode());
 		result = prime * result + ((rg == null) ? 0 : rg.hashCode());
+		result = prime * result + (status ? 1231 : 1237);
 		result = prime * result + ((usuario == null) ? 0 : usuario.hashCode());
 		return result;
 	}
@@ -193,6 +203,8 @@ public class Tecnico implements Serializable
 				return false;
 		} else if (!rg.equals(other.rg))
 			return false;
+		if (status != other.status)
+			return false;
 		if (usuario == null) {
 			if (other.usuario != null)
 				return false;
@@ -200,4 +212,6 @@ public class Tecnico implements Serializable
 			return false;
 		return true;
 	}
+
+	
 }

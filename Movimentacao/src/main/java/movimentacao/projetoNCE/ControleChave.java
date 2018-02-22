@@ -2,18 +2,13 @@ package movimentacao.projetoNCE;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToOne;
-import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.NaturalId;
 
@@ -42,14 +37,6 @@ public class ControleChave implements Serializable
 	@OneToOne
 	@JoinColumn (name = "idTecnico")
 	private Tecnico idTecnico;
-	
-	@ElementCollection(targetClass = String.class)
-	@JoinTable(
-			name="nce_controleChave_site",
-			uniqueConstraints = {@UniqueConstraint(columnNames = {"controleChave" , "controleSite"})},
-			joinColumns = @JoinColumn(name = "controleChave"))
-	@Column(name = "controleSite")
-	private Set<String> idSite = new HashSet<String>();
 	
 	@OneToOne
 	@JoinColumn (name = "idStatus")
@@ -136,14 +123,6 @@ public class ControleChave implements Serializable
 		this.idTecnico = idTecnico;
 	}
 
-	public Set<String> getIdSite() {
-		return idSite;
-	}
-
-	public void setIdSite(Set<String> idSite) {
-		this.idSite = idSite;
-	}
-
 	public StatusRequisicao getStatus() {
 		return status;
 	}
@@ -203,7 +182,6 @@ public class ControleChave implements Serializable
 		result = prime * result + ((dataFechamento == null) ? 0 : dataFechamento.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((idAno == null) ? 0 : idAno.hashCode());
-		result = prime * result + ((idSite == null) ? 0 : idSite.hashCode());
 		result = prime * result + ((idTecnico == null) ? 0 : idTecnico.hashCode());
 		result = prime * result + ((obs == null) ? 0 : obs.hashCode());
 		result = prime * result + ((status == null) ? 0 : status.hashCode());
@@ -257,11 +235,6 @@ public class ControleChave implements Serializable
 			if (other.idAno != null)
 				return false;
 		} else if (!idAno.equals(other.idAno))
-			return false;
-		if (idSite == null) {
-			if (other.idSite != null)
-				return false;
-		} else if (!idSite.equals(other.idSite))
 			return false;
 		if (idTecnico == null) {
 			if (other.idTecnico != null)

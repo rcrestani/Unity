@@ -37,5 +37,8 @@
 		<mapping class="movimentacao.projetoNCE.site.Site"/>
 		<mapping class="movimentacao.projetoNCE.chave.Chave"/>
 		<mapping class="movimentacao.projetoNCE.ControleChave"/>
+		<mapping class="movimentacao.projetoNCE.controleSiteChave.ControleSiteChave"/>
+		<mapping class="movimentacao.projetoNCE.emails.NivelEmail"/>
+		<mapping class="movimentacao.projetoNCE.anotacao.Anotacao"/>
 	</session-factory>
 </hibernate-configuration>

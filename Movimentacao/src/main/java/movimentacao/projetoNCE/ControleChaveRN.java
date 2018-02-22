@@ -50,6 +50,12 @@ public class ControleChaveRN
 		return this.controleChaveDAO.listarAberto();
 	}
 	
+	public List<ControleChave> listarNovas()
+	{
+		this.controleChaveDAO = DAOFactory.criarControleChaveDAO();
+		return this.controleChaveDAO.listarNovas();
+	}
+	
 	public List<ControleChave> buscarTodosPaginado(ControleChaveFiltro filtro)
 	{
 		this.controleChaveDAO = DAOFactory.criarControleChaveDAO();

@@ -31,9 +31,10 @@ import movimentacao.projetoNCE.ControleChave;
 import movimentacao.projetoNCE.ControleChaveFiltro;
 import movimentacao.projetoNCE.ControleChaveRN;
 import movimentacao.projetoNCE.LazyControleChaveDataModel;
-import movimentacao.projetoNCE.ListaSiteChave;
 import movimentacao.projetoNCE.chave.Chave;
 import movimentacao.projetoNCE.chave.ChaveRN;
+import movimentacao.projetoNCE.controleSiteChave.ControleSiteChave;
+import movimentacao.projetoNCE.controleSiteChave.ControleSiteChaveRN;
 import movimentacao.projetoNCE.empresa.Empresa;
 import movimentacao.projetoNCE.empresa.EmpresaRN;
 import movimentacao.projetoNCE.site.Site;
@@ -53,7 +54,7 @@ public class NceControleChaveBean implements Serializable
 	private ControleChave controleChave = new ControleChave();
 	private ControleChaveRN controleChaveRN = new ControleChaveRN();
 	private UsuarioRN usuarioRN = new UsuarioRN();
-	private Tecnico tecnico = new Tecnico();
+	private Tecnico tecnico;
 	private TecnicoRN tecnicoRN = new TecnicoRN();
 	private Empresa empresa = new Empresa();
 	private EmpresaRN empresaRN = new EmpresaRN();
@@ -64,21 +65,25 @@ public class NceControleChaveBean implements Serializable
 	private ChaveRN chaveRN = new ChaveRN();
 	private List<Chave> listaChaves = new ArrayList<Chave>();
 	private int totalListaChaves = 0;
-	private List<ListaSiteChave> listaSiteChave = new ArrayList<ListaSiteChave>();
+	private List<ControleSiteChave> listaSiteChave = new ArrayList<ControleSiteChave>();
 	private FacesContext context = FacesContext.getCurrentInstance();
 	private ExternalContext external = context.getExternalContext();
 	private String login = external.getRemoteUser();
 	private String usuario = "";
+	private String cpfTecnico = "";
 	private String nomeEmpresa = "";
 	private String cep = "";
 	private Date data48hsAtras;
-	private String rowColor = "";
+	private String rowColorVencido = "";
+	private String rowColorAberto = "";
 	private String tempoAberto = "";
+	private String placeHolderObs = "";//Dica para quando for usuário da recepção abrindo requisição.
 	
 	//Variaveis de controle de formulario===============================
 	private boolean formControleChave = false;
 	private boolean formSiteChave = false;
 	private boolean siteChaveRequisitado = false;
+	private boolean stopPoll = false;
 	//==================================================================
 	private ControleChaveFiltro filtro = new ControleChaveFiltro();
 	private LazyControleChaveDataModel lazyControleChave;
@@ -114,9 +119,7 @@ public class NceControleChaveBean implements Serializable
 	}
 	
 	public String salvarAtendimento()
-	{		
-		this.controleChave.setIdTecnico(this.tecnico);
-		
+	{				
 		Usuario user = new Usuario();
 		user = this.usuarioRN.buscarPorLogin(this.login);
 		//Controle da data e usuario de atendimento pela verificacao da permissao==========================================
@@ -133,7 +136,8 @@ public class NceControleChaveBean implements Serializable
 			if(this.controleChave.getDataAtendimento() == null) {this.controleChave.setDataAtendimento(new Date());}
 		}
 		
-		if(this.controleChave.getIdSite().size() > 0)
+		//Verificando se pelo menos um site foi selecionado========================================
+		if(this.listaSiteChave.size() > 0)
 		{
 			if(this.controleChave.getIdAno() == null)
 			{	
@@ -144,6 +148,7 @@ public class NceControleChaveBean implements Serializable
 			
 			this.controleChaveRN.salvar(this.controleChave);
 			
+			//Setando o ID da requisicao em cada chave, para fins de rastreio das chaves em campo=======================
 			for(int x = 0;x < this.listaChaves.size();x++)
 			{
 				this.listaChaves.get(x).setIdControleChave(this.controleChave);
@@ -191,19 +196,48 @@ public class NceControleChaveBean implements Serializable
 		    		FacesMessage.SEVERITY_ERROR , "Obrigatório informar qual o site e as chaves requisitadas", ""));
 		}
 		
+		this.stopPoll = false;
 		return null;
 	}
 	
 	public String novo()
 	{
 		this.controleChave = new ControleChave();
+		
+		Usuario user = new Usuario();
+		user = this.usuarioRN.buscarPorLogin(this.login);
+		
+		if(user.getPermissao().contains("ROLE_CONTROLE_CHAVE_RECEP"))//Se for usuario da recepcao, setar dica na observação.
+		{
+			this.placeHolderObs = "Qual site o técnico necessita acesso?";
+		}
+		
 		this.formControleChave = true;
 		this.formSiteChave = false;
 		this.siteChaveRequisitado = false;
+		this.stopPoll = true;
 		this.controleChave.setDataAbertura(new Date());
 		this.usuario = this.usuarioRN.buscarPorLogin(this.login).getNome();
 		this.tecnico = new Tecnico();
+		this.cpfTecnico = "";
 		this.empresa = new Empresa();
+		this.site = new Site();
+		this.chave = new Chave();
+		this.nomeEmpresa = "";
+		this.cep = "";
+		
+		return null;
+	}
+	
+	public String atenderRequisicao()
+	{		
+		this.cpfTecnico = this.controleChave.getIdTecnico().getCpf();
+		this.usuario = this.usuarioRN.buscarPorLogin(this.controleChave.getUsuarioAbertura().getLogin()).getNome();
+		
+		this.formControleChave = true;
+		this.formSiteChave = false;
+		this.siteChaveRequisitado = false;
+		this.stopPoll = true;
 		this.site = new Site();
 		this.chave = new Chave();
 		this.nomeEmpresa = "";
@@ -235,6 +269,7 @@ public class NceControleChaveBean implements Serializable
 		
 	}
 	
+	//Método para informar que o prazo de devolução das chaves passou das 48 horas estipuladas=========================
 	public String prazoVencido(ControleChave controleChave)
 	{
 		DateCalculator calcDate = new DateCalculator();
@@ -244,11 +279,11 @@ public class NceControleChaveBean implements Serializable
 		{
 			if(controleChave.getDataAbertura().before(this.data48hsAtras) && controleChave.getDataFechamento() == null)
 			{
-				this.rowColor = "#CD3333;font-weight: bold;";
+				this.rowColorVencido = "#CD3333;font-weight: bold;";
 			}
 			else
 			{
-				this.rowColor = "";
+				this.rowColorVencido = "";
 			}
 		}
 		catch (Exception e)
@@ -256,11 +291,48 @@ public class NceControleChaveBean implements Serializable
 			// TODO: handle exception
 		}
 		
-		
-		
-		return this.rowColor;
+		return this.rowColorVencido;
 	}
 	
+	//Método para informar que a abertura passou de 15 minutos do prazo estipulado====================================
+	public String aberturaVencida(ControleChave controleChave)
+	{
+		DateCalculator calcDate = new DateCalculator();
+		this.data48hsAtras = calcDate.data15MinAtras(new Date());
+		
+		try
+		{
+			if(controleChave.getDataAbertura().before(this.data48hsAtras) && controleChave.getDataFechamento() == null)
+			{
+				this.rowColorAberto = "#CD3333;font-weight: bold;";
+			}
+			else
+			{
+				this.rowColorAberto = "";
+			}
+		}
+		catch (Exception e)
+		{
+			// TODO: handle exception
+		}
+		
+		return this.rowColorAberto;
+	}
+	
+	//Método para controlar a exibição do botão atender da datatable===========================
+	public boolean botaoAtender(ControleChave controleChave)
+	{
+		this.controleChave = controleChave;
+		if(this.controleChave.getDataAtendimento() == null)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		
+	}
 	//MÉTODOS PARA O BEAN TECNICO===============================================================
 	public String salvarTecnico()
 	{
@@ -285,6 +357,7 @@ public class NceControleChaveBean implements Serializable
 		
 		if(controle)
 		{
+			this.cpfTecnico = "";
 			this.nomeEmpresa = "";
 			this.tecnico = new Tecnico();
 		}
@@ -292,7 +365,7 @@ public class NceControleChaveBean implements Serializable
 		return null;
 	}
 	
-	public void tecnicoSelecionado(SelectEvent event) 
+	public void tecnicoSelecionado() 
 	{
 		String nomeTecnico = this.tecnico.getNome();
 		this.tecnico = new Tecnico();
@@ -311,18 +384,16 @@ public class NceControleChaveBean implements Serializable
 	
 	public void tecnicoPorCPF() 
 	{
-		String cpf = this.tecnico.getCpf();
 		//executar apenas se o cpf com a mascará conter 14 caracteres====================================
-		 if (cpf.length() == 14)
+		 if (this.cpfTecnico.length() == 14)
 		 {
 			 //teste da busca, se retornar null, instancia novo tecnico============
-			 if(this.tecnicoRN.tecnicoPorCPF(cpf) != null)
+			 if(this.tecnicoRN.tecnicoPorCPF(this.cpfTecnico) != null)
 			 {
-				 this.tecnico = this.tecnicoRN.tecnicoPorCPF(cpf);
+				 this.controleChave.setIdTecnico(this.tecnicoRN.tecnicoPorCPF(this.cpfTecnico));
 			 }
 			 else
 			 {
-				 this.tecnico = new Tecnico();
 				 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
 				    		FacesMessage.SEVERITY_ERROR , "Técnico não encontrado", ""));
 			 }
@@ -461,63 +532,68 @@ public class NceControleChaveBean implements Serializable
 		this.chave = new Chave();
 		this.tecnico = new Tecnico();
 	}
-	
+
 	public String atribuirSite()
 	{
 		recuperarId();
+		List<Chave> listaChave  = new ArrayList<Chave>();
 		
-		//Pegando as chaves selecionadas e setando o idControleChave e o booleano transito para true======
+		/*Pegando as chaves selecionadas e setando o idControleChave e os booleanos transito para true e selecao para false
+		 * Selecao deve ser setada para false para não interferir nas novas requisições
+		 * Também setando a lista de chaves auxiliar para fazer a concatenação de exibição no formulário*/
 		for(int y = 0; y < this.listaChaves.size(); y++)
 		{
 			if(this.listaChaves.get(y).isSelecao())
 			{
 				this.listaChaves.get(y).setTransito(true);
+				this.listaChaves.get(y).setSelecao(false);
 				this.listaChaves.get(y).setIdControleChave(this.controleChave);
 				this.chaveRN.salvar(this.listaChaves.get(y));
-			}
-			
-		}
-		
-		//Objeto auxiliar para a exibição das chaves concatenadas no form cadastro=======================
-		ListaSiteChave siteChave = new ListaSiteChave();
-		siteChave.setSiteIdCodAtual(this.site.getIdCodAtual());
-		
-		List<Chave> chaveSite  = new ArrayList<Chave>();
-		//Pegando as chaves atribuidas neste controle de saida para os tratamentos abaixo
-		chaveSite = this.chaveRN.listaPorSiteSelecaoTrue(this.site , this.controleChave);
 				
-		//Concatenando as chaves para exibição no form cadastro=============================
-		String chavesConcatenadas = "";
-		for(int x = 0; x < chaveSite.size(); x++)
-		{
-			//Removendo a selecao das chaves para não interferir em uma nova abertura de controle chave
-			//Ex: Qdo for abrir uma nova requisição, as chaves em transito devem estar com selecao false para não entrarem erroneamente
-			chaveSite.get(x).setSelecao(false);
-			this.chaveRN.salvar(chaveSite.get(x));
-			//=================================================================================================================
-			
-			chavesConcatenadas = chavesConcatenadas + chaveSite.get(x).getNome();
-			
-			if(x < chaveSite.size() - 1)
-			{
-				chavesConcatenadas = chavesConcatenadas + ", ";
+				listaChave.add(this.listaChaves.get(y));
 			}
 			
 		}
 		
-		siteChave.setListaChaves(chavesConcatenadas);
+		//Atribuir site e as chaves, se existirem chaves selecionadas=================================================================
+		if(listaChave.size() > 0)
+		{
+			//Objeto auxiliar para a exibição dos sites e suas respectivas chaves concatenadas no form cadastro=======================
+			ControleSiteChaveRN siteChaveRN = new ControleSiteChaveRN();
+			ControleSiteChave siteChave = new ControleSiteChave();
+			siteChave.setIdReq(this.controleChave);
+			siteChave.setSiteIdCodAtual(this.site.getIdCodAtual());
+				
+			//Concatenando as chaves para exibição no form cadastro=============================
+			String chavesConcatenadas = "";
+			for(int x = 0; x < listaChave.size(); x++)
+			{	
+				chavesConcatenadas = chavesConcatenadas + listaChave.get(x).getNome();
+				
+				if(x < listaChave.size() - 1)
+				{
+					chavesConcatenadas = chavesConcatenadas + ", ";
+				}
+				
+			}
+			
+			//Atualizando e salvando o objeto com as chaves concatenadas====================
+			siteChave.setListaChaves(chavesConcatenadas);
+			siteChaveRN.salvar(siteChave);
+			
+			this.listaSiteChave.add(siteChave);
+			this.siteChaveRequisitado = true;
+		}
+		else
+		{
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+		    		FacesMessage.SEVERITY_ERROR , "Deve-se selecionar pelo menos uma chave para atribuir na requisição!", ""));
+		}
 		
-		//Pegando o site em processamento para inserir no set<String> da tabela controleChave=================
-		this.site = this.siteRN.sitePorIdCodAtual(this.site.getIdCodAtual());
-		this.controleChave.getIdSite().add(this.site.getIdCodAtual());
-		
-		this.listaSiteChave.add(siteChave);
-		this.siteChaveRequisitado = true;
-		
+		this.formSiteChave = false;
 		this.listaChaves.clear();
 		this.site = new Site();
 		this.chave = new Chave();
-		this.tecnico = new Tecnico();
 		
 		return null;
 	}
@@ -528,6 +604,7 @@ public class NceControleChaveBean implements Serializable
 		System.out.println("========>teste de execução");
 	}
 	
+	//Método utilizado pelo componente autoComplete==========================
 	public void siteRequisitado(SelectEvent event)
 	{
 		String siteIdAtual = this.site.getIdCodAtual();
@@ -745,11 +822,11 @@ public class NceControleChaveBean implements Serializable
 		this.listaSites = listaSites;
 	}
 
-	public List<ListaSiteChave> getListaSiteChave() {
+	public List<ControleSiteChave> getListaSiteChave() {
 		return listaSiteChave;
 	}
 
-	public void setListaSiteChave(List<ListaSiteChave> listaSiteChave) {
+	public void setListaSiteChave(List<ControleSiteChave> listaSiteChave) {
 		this.listaSiteChave = listaSiteChave;
 	}
 
@@ -777,12 +854,12 @@ public class NceControleChaveBean implements Serializable
 		this.data48hsAtras = data48hsAtras;
 	}
 
-	public String getRowColor() {
-		return rowColor;
+	public String getRowColorVencido() {
+		return rowColorVencido;
 	}
 
-	public void setRowColor(String rowColor) {
-		this.rowColor = rowColor;
+	public void setRowColorVencido(String rowColorVencido) {
+		this.rowColorVencido = rowColorVencido;
 	}
 
 	public String getTempoAberto() {
@@ -792,6 +869,37 @@ public class NceControleChaveBean implements Serializable
 	public void setTempoAberto(String tempoAberto) {
 		this.tempoAberto = tempoAberto;
 	}
-	
+
+	public String getRowColorAberto() {
+		return rowColorAberto;
+	}
+
+	public void setRowColorAberto(String rowColorAberto) {
+		this.rowColorAberto = rowColorAberto;
+	}
+
+	public boolean isStopPoll() {
+		return stopPoll;
+	}
+
+	public void setStopPoll(boolean stopPoll) {
+		this.stopPoll = stopPoll;
+	}
+
+	public String getCpfTecnico() {
+		return cpfTecnico;
+	}
+
+	public void setCpfTecnico(String cpfTecnico) {
+		this.cpfTecnico = cpfTecnico;
+	}
+
+	public String getPlaceHolderObs() {
+		return placeHolderObs;
+	}
+
+	public void setPlaceHolderObs(String placeHolderObs) {
+		this.placeHolderObs = placeHolderObs;
+	}
 	
 }

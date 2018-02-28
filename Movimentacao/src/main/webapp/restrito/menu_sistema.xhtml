@@ -33,11 +33,12 @@
 					            </sec:ifAnyGranted>
 					            
 					            <sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_RECEP , ROLE_CONTROLE_CHAVE_ADM , ROLE_CONTROLE_CHAVE_OPER , ROLE_ADM">
-					            	<p:menuitem value="Controle de Chaves" url="/restrito/nce_controleChave.jsf" icon="ui-icon-key" />
+					            	<p:menuitem value="NCE - Requisição" url="/restrito/nce_controleChave.jsf" icon="ui-icon-key" />
 					            </sec:ifAnyGranted>	
 					            
 					            <sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_ADM">
-					            	<p:menuitem value="Cadastro de E-mails" url="/restrito/nce_nivelEmail.jsf" icon="ui-icon-mail-closed" />
+					            	<p:menuitem value="NCE - E-mails" url="/restrito/nce_nivelEmail.jsf" icon="ui-icon-mail-closed" />
+					            	<p:menuitem value="NCE - Status" url="/restrito/nce_statusReq.jsf" icon="ui-icon-alert" />
 					            </sec:ifAnyGranted>
 				            </p:submenu>
 			            </sec:ifAnyGranted>

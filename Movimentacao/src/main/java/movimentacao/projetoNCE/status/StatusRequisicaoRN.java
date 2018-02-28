@@ -33,11 +33,25 @@ public class StatusRequisicaoRN
 		return this.statusRequisicaoDAO.carregar(id);
 	}
 	
+	public StatusRequisicao buscarPorNome(String nomeStatus)
+	{
+		this.statusRequisicaoDAO = DAOFactory.criarStatusRequisicaoDAO();
+		
+		return this.statusRequisicaoDAO.buscarPorNome(nomeStatus);
+	}
+	
 	public List<StatusRequisicao> listar()
 	{
 		this.statusRequisicaoDAO = DAOFactory.criarStatusRequisicaoDAO();
 		
 		return this.statusRequisicaoDAO.listar();
+	}
+	
+	public List<String> listarAtivos(String text)
+	{
+		this.statusRequisicaoDAO = DAOFactory.criarStatusRequisicaoDAO();
+		
+		return this.statusRequisicaoDAO.listarAtivos(text);
 	}
 	
 	public StatusRequisicaoFiltro getFiltro() {

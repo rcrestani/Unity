@@ -173,7 +173,11 @@
 					<h:outputLabel class="label-padrao" id="sts" value="Status:"/>
 				</p:column>
 				<p:column style="border-width:0px;">
-					<p:inputText id="status" class="form-padrao form-mov" value="STATUS"/>
+					<p:autoComplete id="status" dropdown="true" forceSelection="true" size="30" scrollHeight="150"
+								disabled="#{nceControleChaveBean.campoStatus}" value="#{nceControleChaveBean.nomeStatus}"
+								completeMethod="#{nceControleChaveBean.statusRN.listarAtivos}"
+								effect="fade" placeholder="Selecionar Status" style="font-size: 10px;"
+								required="true" requiredMessage="Selecionar um Status é obrigatório!"/>
 				</p:column>	
 			</p:row>
 		    
@@ -217,7 +221,8 @@
 						paginator="true" paginatorPosition="bottom" rows="10" id="tbl"
 						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						paginatorAlwaysVisible="true"
-						currentPageReportTemplate="{totalRecords} Requisições em espera">
+						currentPageReportTemplate="{totalRecords} Requisições em espera"
+						emptyMessage="Nenhum registro encontrado.">
 			
 			 <f:facet name="header">
         		CONSULTA PADRÃO: NOVAS REQUISIÇÕES
@@ -639,10 +644,10 @@
         </p:column>
         
        <p:column style="text-align: center;" width="30" headerText="Selecionar">
-				<p:commandLink action="#{nceControleChaveBean.selecionarChave}" update=":listaChaves" disabled="#{chave.transito}">
-					<h:graphicImage library="imagens" name="hand_#{chave.selecao}.png" style="border:0"/>
-					<f:setPropertyActionListener value="#{chave}" target="#{nceControleChaveBean.chave}"/>
-				</p:commandLink>	
+			<p:commandLink action="#{nceControleChaveBean.selecionarChave}" update=":listaChaves" disabled="#{chave.transito}">
+				<h:graphicImage library="imagens" name="hand_#{chave.selecao}.png" style="border:0"/>
+				<f:setPropertyActionListener value="#{chave}" target="#{nceControleChaveBean.chave}"/>
+			</p:commandLink>	
 		</p:column>
 		
 		 <p:column headerText="Em Trânsito" style="font-size: 14px; text-align:center; width:70px;">

@@ -28,6 +28,7 @@ public class ControleChave implements Serializable
 	@NaturalId
 	private String idAno;
 	
+	private Date dataAbertura;
 	private Date dataAtendimento;
 	private Date dataFechamento;
 	private String tempoAberto;
@@ -43,9 +44,7 @@ public class ControleChave implements Serializable
 	private StatusRequisicao status;
 	
 	@Column (length = 1000)
-	private String obs;
-	
-	private Date dataAbertura;
+	private String obs;	
 	
 	@OneToOne
 	@JoinColumn (name = "idUsuarioAbertura")

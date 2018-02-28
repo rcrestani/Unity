@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags">
+<ui:composition template="/template/interna.xhtml">
+	<ui:define name="titulo">
+		<h:graphicImage library="imagens" name="performancelab.png" style="height:40px;"/>
+		<h:outputLabel class="label-padrao" value="Cadastro dos Status" style="margin-left:250px; font-size:30px; font-family:Ubuntu;"/>
+	</ui:define>
+	<ui:define name="corpo">
+	
+	<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_CONTROLE_CHAVE_RECEP , ROLE_CONTROLE_CHAVE_OPER , ROLE_ADM">
+	
+	<p:growl id="grow" autoUpdate="true" life="4000" showDetail="true" widgetVar="grow" />
+	
+<!-- NOVOS/////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<h:form id="novos">
+	<p:commandButton class="btnPadrao" value="Novos Status" action="#{nceStatusBean.novo}"
+						oncomplete="PF('dlgCadastro').show();" update=":cadastro"/>
+</h:form>
+<!-- FIM NOVOS/////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<!-- DIALOG CADASTRO//////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<p:dialog id="dlgCadastro" rendered="true" position="center" header="Cadastro de novos Statuss"
+				widgetVar="dlgCadastro" minHeight="40" width="850px" showEffect="explode" hideEffect="explode" modal="true"
+				showCloseIcon="true">
+				
+	<h:form id="cadastro">
+		<p:panelGrid style="border-collapse: unset;">
+			<p:row>
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" id="lblFuncao" value="Função:"/>
+				</p:column>
+				
+				<p:column style="border-width:0px;">
+					<p:selectBooleanButton id="funcao" offLabel="Bloquear" onLabel="Liberar" onIcon="ui-icon-check" offIcon="ui-icon-close"
+											value="#{nceStatusBean.status.funcao}"/>
+				</p:column>
+			</p:row>
+			
+			<p:row>
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" value="Status Nome:"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<p:inputText id="nomeStatus" class="form-padrao form-mov" value="#{nceStatusBean.status.nomeStatus}" size="40"
+								required="true" requiredMessage="Nome do Status é obrigatório."
+								onkeyup="value=value.toUpperCase()"/>
+				</p:column>
+			</p:row>
+			
+			<p:row>
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" value="Observação:"/>
+				</p:column>
+				<p:column style="border-width:0px;">
+					<p:inputText id="obs" class="form-padrao form-mov" value="#{nceStatusBean.status.obs}" size="60"
+								onkeyup="value=value.toUpperCase()"/>
+				</p:column>
+			</p:row>
+			
+			<p:row>
+				<p:column style="border-width:0px;">
+					<h:outputLabel class="label-padrao" id="lblAtivo" value="Status:"/>
+				</p:column>
+				
+				<p:column style="border-width:0px;">
+					<p:selectBooleanButton id="status" offLabel="Inativo" onLabel="Ativo" onIcon="ui-icon-check" offIcon="ui-icon-close"
+											value="#{nceStatusBean.status.ativo}"/>
+				</p:column>
+			</p:row>
+			
+			<p:row>
+            	<p:column style="padding: 0px;" colspan="6"></p:column>
+        	</p:row>
+        	
+        	<p:row>
+        		<p:column style="border-width:0px;" colspan="2">
+        			<p:commandButton class="btnPadrao" style="font-size: 18px;" action="#{nceStatusBean.salvar}"
+								value="Salvar" update=":lista" oncomplete="PF('dlgCadastro').hide();"/>
+				</p:column>
+        	</p:row>
+		</p:panelGrid>
+	</h:form>
+</p:dialog>
+<!-- FIM DIALOG CADASTRO//////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<!-- DATATABLE ///////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<h:form id="lista">	
+	<p:dataTable value="#{nceStatusBean.listaStatus}" var="status" id="lista"
+						scrollable="true" scrollHeight="390"
+						emptyMessage="Nenhum registro encontrado"
+						currentPageReportTemplate="{totalRecords} Registros">
+						
+			<p:column headerText="Função" style="text-align: center;" width="20">
+				<h:graphicImage library="imagens" name="hand_#{status.funcao}.png" style="border:0"/>
+			</p:column>
+			
+			<p:column headerText="Status Nome" style="text-align: center;" width="120">
+				<h:outputText value="#{status.nomeStatus}"/>
+			</p:column>
+			
+			<p:column headerText="Data Registro" style="text-align: center;" width="50">
+				<h:outputText value="#{status.dataHoraReg}">
+					<f:convertDateTime pattern="dd/MM/yyyy - HH:mm" locale="pt" />
+				</h:outputText>
+			</p:column>
+			
+			<p:column headerText="Usuário Registro" style="text-align: center;" width="60">
+				<h:outputText value="#{status.usuario.nome}"/>
+			</p:column>
+			
+			<p:column headerText="Status Operante" style="text-align: center;" width="40">
+				<h:graphicImage library="imagens" name="hand_#{status.ativo}.png" style="border:0"/>
+			</p:column>
+			
+			<p:column headerText="Ações" style="text-align: center;" width="10">
+				<p:commandLink  update=":cadastro" title="Editar"
+								oncomplete="PF('dlgCadastro').show();">
+					<h:graphicImage library="imagens" name="editar16.png"/>
+					<f:setPropertyActionListener value="#{status}" target="#{nceStatusBean.status}"/>
+				</p:commandLink>
+			</p:column>
+						
+						
+	</p:dataTable>
+</h:form>
+<!-- FIM DATATABLE ////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<p:separator />
+
+	</sec:ifAnyGranted>
+	</ui:define>
+</ui:composition>
+</html>

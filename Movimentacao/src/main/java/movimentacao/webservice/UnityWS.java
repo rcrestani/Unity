@@ -31,6 +31,8 @@ import movimentacao.produtoTask.ProdutoTask;
 import movimentacao.produtoTask.ProdutoTaskRN;
 import movimentacao.projetoAES.ControleFrota;
 import movimentacao.projetoAES.ControleFrotaRN;
+import movimentacao.projetoNCE.ControleChave;
+import movimentacao.projetoNCE.ControleChaveRN;
 
 @WebService
 public class UnityWS 
@@ -221,6 +223,16 @@ public class UnityWS
 		ControleFrotaRN controleFrotaRN = new ControleFrotaRN();
 		
 		return controleFrotaRN.ultimoRegistro();
+	}
+	//=================================================================================
+	
+	//Métodos da classe controleChave==================================================
+	@WebMethod
+	public List<ControleChave> listarAberto()
+	{
+		ControleChaveRN controleChaveRN = new ControleChaveRN();
+		
+		return controleChaveRN.listarAberto();
 	}
 	//=================================================================================
 }

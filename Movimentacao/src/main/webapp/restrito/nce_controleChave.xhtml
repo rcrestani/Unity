@@ -177,7 +177,8 @@
 								disabled="#{nceControleChaveBean.campoStatus}" value="#{nceControleChaveBean.nomeStatus}"
 								completeMethod="#{nceControleChaveBean.statusRN.listarAtivos}"
 								effect="fade" placeholder="Selecionar Status" style="font-size: 10px;"
-								required="true" requiredMessage="Selecionar um Status é obrigatório!"/>
+								required="true" requiredMessage="Selecionar um Status é obrigatório!"
+								onkeyup="value=value.toUpperCase()"/>
 				</p:column>	
 			</p:row>
 		    

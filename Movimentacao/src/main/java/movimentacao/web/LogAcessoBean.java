@@ -81,8 +81,9 @@ public class LogAcessoBean implements Serializable
 				logAcessoNew.setDataLogin(dataHora.getTime());
 				
 				logAcessoRN.salvar(logAcessoNew);
-				FacesContext.getCurrentInstance().getExternalContext().redirect("/restrito/" + usuarioRN.buscarPorLogin(login).getPaginaInicial());
 			}
+			
+			FacesContext.getCurrentInstance().getExternalContext().redirect("/restrito/" + usuarioRN.buscarPorLogin(login).getPaginaInicial());
 		}
 		
 	}

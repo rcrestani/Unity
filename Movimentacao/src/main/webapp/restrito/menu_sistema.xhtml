@@ -9,7 +9,7 @@
 	<sec:ifAnyGranted roles="ROLE_USUARIO">
 		<h:form> 
 			    <p:menubar class="menubar">
-			    		 <p:menuitem value=" #{request.remoteUser}" icon="ui-icon-person" url="/restrito/principal.jsf"/>
+			    		 <p:menuitem value=" #{request.remoteUser}" icon="ui-icon-person" url="/restrito/controleAcesso.jsf"/>
 			    		 
 			    		<sec:ifAnyGranted roles="ROLE_DGR , ROLE_ADM">
 			            <p:submenu label="Cadastros" icon="ui-icon-folder-collapsed">

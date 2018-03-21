@@ -424,6 +424,9 @@ public class NceControleChaveBean implements Serializable
 		}
 		catch (Exception e)
 		{
+			this.tecnico = new Tecnico();
+			this.tecnico.setNome(nomeTecnico);
+			
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
 		    		FacesMessage.SEVERITY_ERROR , "Erro ao Localizar dados do Técnico!", ""));
 		}

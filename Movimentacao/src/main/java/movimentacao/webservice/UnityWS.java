@@ -33,6 +33,8 @@ import movimentacao.projetoAES.ControleFrota;
 import movimentacao.projetoAES.ControleFrotaRN;
 import movimentacao.projetoNCE.ControleChave;
 import movimentacao.projetoNCE.ControleChaveRN;
+import movimentacao.projetoNCE.emails.NivelEmail;
+import movimentacao.projetoNCE.emails.NivelEmailRN;
 
 @WebService
 public class UnityWS 
@@ -228,11 +230,84 @@ public class UnityWS
 	
 	//Métodos da classe controleChave==================================================
 	@WebMethod
-	public List<ControleChave> listarAberto()
+	public List<ControleChaveWS> nceListReqOpen()
 	{
 		ControleChaveRN controleChaveRN = new ControleChaveRN();
 		
-		return controleChaveRN.listarAberto();
+		List<ControleChave> lista =  controleChaveRN.listarAberto();
+		List<ControleChaveWS> listaWS = new ArrayList<ControleChaveWS>();
+		
+		for(ControleChave controleChave:lista)
+		{
+			ControleChaveWS controleChaveWS = new ControleChaveWS();
+			controleChaveWS.setId(controleChave.getId());
+			controleChaveWS.setIdAno(controleChave.getIdAno());
+			controleChaveWS.setNomeTecnico(controleChave.getIdTecnico().getNome());
+			controleChaveWS.setCpfTecnico(controleChave.getIdTecnico().getCpf());
+			controleChaveWS.setCelularTecnico(controleChave.getIdTecnico().getCelular());
+			controleChaveWS.setDataAbertura(controleChave.getDataAbertura());
+			controleChaveWS.setDataAtendimento(controleChave.getDataAtendimento());
+			controleChaveWS.setCrq(controleChave.getCrq());
+			controleChaveWS.setAtividade(controleChave.getAtividade());
+			controleChaveWS.setStatus(controleChave.getStatus().getNomeStatus());
+			controleChaveWS.setObs(controleChave.getObs());
+			
+			try
+			{
+				//Setando os dados do usuario no objeto usuarioWS que possui apenas as variáveis necessárias para o webservice
+				UsuarioWS usuarioWSAbertura = new UsuarioWS();
+				usuarioWSAbertura.setCodigo(controleChave.getUsuarioAbertura().getCodigo());
+				usuarioWSAbertura.setNome(controleChave.getUsuarioAbertura().getNome());
+				controleChaveWS.setUsuarioAbertura(usuarioWSAbertura);
+				
+				//Setando os dados do usuario no objeto usuarioWS que possui apenas as variáveis necessárias para o webservice
+				UsuarioWS usuarioWSAtendimento = new UsuarioWS();
+				usuarioWSAtendimento.setCodigo(controleChave.getUsuarioAtendimento().getCodigo());
+				usuarioWSAtendimento.setNome(controleChave.getUsuarioAtendimento().getNome());
+				controleChaveWS.setUsuarioAtendimento(usuarioWSAtendimento);
+				
+				//Setando os dados do usuario no objeto usuarioWS que possui apenas as variáveis necessárias para o webservice
+				UsuarioWS usuarioWSFechamento = new UsuarioWS();
+				usuarioWSFechamento.setCodigo(controleChave.getUsuarioFechamento().getCodigo());
+				usuarioWSFechamento.setNome(controleChave.getUsuarioFechamento().getNome());
+				controleChaveWS.setUsuarioFechamento(usuarioWSFechamento);
+			}
+			catch (Exception e)
+			{
+				System.out.println("=================ERRO LISTA DE REQUISIÇÕES========================");
+				e.printStackTrace();
+			}
+			
+			
+			listaWS.add(controleChaveWS);
+			
+		}
+		
+		return listaWS;
+
 	}
+	
+	@WebMethod
+	public List<NivelEmailWS> nceListEmailLevel()
+	{
+		NivelEmailRN nivelEmailRN = new NivelEmailRN();
+		
+		List<NivelEmail> lista = nivelEmailRN.listar();
+		List<NivelEmailWS> listaWS = new ArrayList<NivelEmailWS>();
+		
+		for(NivelEmail nivelEmail:lista)
+		{
+			NivelEmailWS nivelEmailWS = new NivelEmailWS();
+			
+			nivelEmailWS.setNivel(nivelEmail.getNivel());
+			nivelEmailWS.setEmail(nivelEmail.getEmail());
+			
+			listaWS.add(nivelEmailWS);
+		}
+		
+		return listaWS;
+	}
+
 	//=================================================================================
+
 }

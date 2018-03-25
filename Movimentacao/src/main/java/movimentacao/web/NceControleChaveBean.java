@@ -31,6 +31,8 @@ import movimentacao.projetoNCE.ControleChave;
 import movimentacao.projetoNCE.ControleChaveFiltro;
 import movimentacao.projetoNCE.ControleChaveRN;
 import movimentacao.projetoNCE.LazyControleChaveDataModel;
+import movimentacao.projetoNCE.anotacao.Anotacao;
+import movimentacao.projetoNCE.anotacao.AnotacaoRN;
 import movimentacao.projetoNCE.chave.Chave;
 import movimentacao.projetoNCE.chave.ChaveRN;
 import movimentacao.projetoNCE.controleSiteChave.ControleSiteChave;
@@ -71,9 +73,9 @@ public class NceControleChaveBean implements Serializable
 	private StatusRequisicao status = new StatusRequisicao();
 	private StatusRequisicaoRN statusRN = new StatusRequisicaoRN();
 	private String nomeStatus = "";
-	private FacesContext context = FacesContext.getCurrentInstance();
-	private ExternalContext external = context.getExternalContext();
-	private String login = external.getRemoteUser();
+	private Anotacao anotacao = new Anotacao();
+	private AnotacaoRN anotacaoRN = new AnotacaoRN();
+	private List<Anotacao> listaAnotacao = new ArrayList<Anotacao>();
 	private String usuario = "";
 	private String cpfTecnico = "";
 	private String nomeEmpresa = "";
@@ -90,6 +92,11 @@ public class NceControleChaveBean implements Serializable
 	private boolean siteChaveRequisitado = false;
 	private boolean stopPoll = false;
 	private boolean campoStatus = false;
+	//==================================================================
+	//Dados da sessão===================================================
+	private FacesContext context = FacesContext.getCurrentInstance();
+	private ExternalContext external = context.getExternalContext();
+	private String login = external.getRemoteUser();
 	//==================================================================
 	private ControleChaveFiltro filtro = new ControleChaveFiltro();
 	private LazyControleChaveDataModel lazyControleChave;
@@ -720,8 +727,40 @@ public class NceControleChaveBean implements Serializable
 		
 		return null;
 	}
-	//FIM MÉTIDOS SITECHAVE========================================================================================
+	//FIM MÉTODOS SITECHAVE========================================================================================
 	
+	//MÉTODOS DAS ANOTAÇÕES DAS REQUISIÇÕES========================================================================
+	public String salvarAnotacao()
+	{
+		this.anotacao.setIdUsuario(this.usuarioRN.buscarPorLogin(this.login));
+		this.anotacao.setDataHoraReg(new Date());
+		this.anotacao.setIdReq(this.controleChave);
+		
+		try
+		{
+			this.anotacaoRN.salvar(this.anotacao);
+			
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+		    		FacesMessage.SEVERITY_INFO , "Anotação registrada com sucesso!", ""));
+		}
+		catch (Exception e)
+		{
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+		    		FacesMessage.SEVERITY_ERROR , "Erro ao registrar anotação!" , ""));
+		}
+		
+		return null;
+		
+	}
+	
+	public String carregarListaAnotacao()
+	{
+		this.listaAnotacao.clear();
+		this.listaAnotacao = this.anotacaoRN.listarPorReq(this.controleChave);
+		
+		return null;
+	}
+	//FIM MÉTODOS ANOTAÇÕES========================================================================================
 	private String formatYear(Date data) 
 	{
 		DateFormat dateFormat = new SimpleDateFormat("yyyy");
@@ -974,6 +1013,22 @@ public class NceControleChaveBean implements Serializable
 
 	public void setStatus(StatusRequisicao status) {
 		this.status = status;
+	}
+
+	public Anotacao getAnotacao() {
+		return anotacao;
+	}
+
+	public void setAnotacao(Anotacao anotacao) {
+		this.anotacao = anotacao;
+	}
+
+	public List<Anotacao> getListaAnotacao() {
+		return listaAnotacao;
+	}
+
+	public void setListaAnotacao(List<Anotacao> listaAnotacao) {
+		this.listaAnotacao = listaAnotacao;
 	}
 	
 }

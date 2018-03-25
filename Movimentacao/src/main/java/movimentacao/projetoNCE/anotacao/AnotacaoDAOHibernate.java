@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import movimentacao.projetoNCE.ControleChave;
@@ -34,6 +35,7 @@ private Session session;
 		Criteria criteria = this.session.createCriteria(Anotacao.class);
 		
 		criteria.add(Restrictions.eq("idReq", controleChave));
+		criteria.addOrder(Order.asc("dataHoraReg"));
 		
 		return criteria.list();
 	}

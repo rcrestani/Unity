@@ -92,6 +92,7 @@ public class NceControleChaveBean implements Serializable
 	private boolean siteChaveRequisitado = false;
 	private boolean stopPoll = false;
 	private boolean campoStatus = false;
+	private boolean formAnotacao = false;
 	//==================================================================
 	//Dados da sessão===================================================
 	private FacesContext context = FacesContext.getCurrentInstance();
@@ -730,6 +731,14 @@ public class NceControleChaveBean implements Serializable
 	//FIM MÉTODOS SITECHAVE========================================================================================
 	
 	//MÉTODOS DAS ANOTAÇÕES DAS REQUISIÇÕES========================================================================
+	public String novaAnotacao()
+	{
+		this.anotacao = new Anotacao();
+		this.formAnotacao = true;
+		
+		return null;
+	}
+	
 	public String salvarAnotacao()
 	{
 		this.anotacao.setIdUsuario(this.usuarioRN.buscarPorLogin(this.login));
@@ -739,6 +748,10 @@ public class NceControleChaveBean implements Serializable
 		try
 		{
 			this.anotacaoRN.salvar(this.anotacao);
+			this.formAnotacao = false;
+			
+			//Adicionando a anotação salva na lista de anotações que será recarregada no dialog form================
+			this.listaAnotacao.add(this.anotacao);
 			
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
 		    		FacesMessage.SEVERITY_INFO , "Anotação registrada com sucesso!", ""));
@@ -1029,6 +1042,14 @@ public class NceControleChaveBean implements Serializable
 
 	public void setListaAnotacao(List<Anotacao> listaAnotacao) {
 		this.listaAnotacao = listaAnotacao;
+	}
+
+	public boolean isFormAnotacao() {
+		return formAnotacao;
+	}
+
+	public void setFormAnotacao(boolean formAnotacao) {
+		this.formAnotacao = formAnotacao;
 	}
 	
 }

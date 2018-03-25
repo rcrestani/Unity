@@ -29,7 +29,7 @@ public class AnotacaoRN
 	public List<Anotacao> listarPorReq(ControleChave controleChave)
 	{
 		this.anotacaoDAO = DAOFactory.criarAnotacaoDAO();
-		return this.listarPorReq(controleChave);
+		return this.anotacaoDAO.listarPorReq(controleChave);
 	}
 
 }

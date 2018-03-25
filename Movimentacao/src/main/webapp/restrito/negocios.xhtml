@@ -373,7 +373,7 @@
 			</p:column>
 			
 			<p:column headerText="Atividades" width="30" style="text-align: center;">
-				<h:outputText value="#{negocios.qtdeAtividades} - " style="font-size:18px;"/>
+				<h:outputText value="#{negocios.qtdeAtividades} | " style="font-size:18px;"/>
 				<p:commandLink action="#{negociosBean.viewAtividades}">
 					<h:graphicImage library="imagens" name="lupa.png"/>
 					<f:setPropertyActionListener value="#{negocios}" target="#{negociosBean.negocios}"/>

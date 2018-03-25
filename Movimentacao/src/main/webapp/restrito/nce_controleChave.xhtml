@@ -222,7 +222,7 @@
 						paginator="true" paginatorPosition="bottom" rows="10" id="tbl"
 						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						paginatorAlwaysVisible="true"
-						currentPageReportTemplate="{totalRecords} Requisições em espera"
+						currentPageReportTemplate="{totalRecords} Requisições"
 						emptyMessage="Nenhum registro encontrado.">
 			
 			 <f:facet name="header">
@@ -269,7 +269,9 @@
 					<f:setPropertyActionListener value="#{controleChave}" target="#{nceControleChaveBean.controleChave}"/>
 				</p:commandLink>
 				
-				<p:commandLink action="#{nceControleChaveBean.carregarListaAnotacao}" update=":anotacao" title="Comentário"
+				<h:outputText value="  " style="font-size:18px;"/>
+				
+				<p:commandLink action="#{nceControleChaveBean.carregarListaAnotacao}" update=":anotacao :dlgAnotacao" title="Comentário"
 								oncomplete="PF('dlgAnotacao').show();">
 					<h:graphicImage library="imagens" name="commentIcon.png"/>
 					<f:setPropertyActionListener value="#{controleChave}" target="#{nceControleChaveBean.controleChave}"/>
@@ -283,30 +285,81 @@
 <!-- DIALOG ANOTACAO/////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
 
 <!-- FIM DIALOG ANOTACAO/////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
-	<p:dialog id="dlgAnotacao" rendered="true" position="center" header="Registrar nova Anotação"
-					widgetVar="dlgAnotacao" minHeight="40" width="900px" showEffect="explode" hideEffect="explode" modal="true"
+	<p:dialog id="dlgAnotacao" rendered="true" position="center" header="Comentários da Requisição: #{nceControleChaveBean.controleChave.idAno}"
+					widgetVar="dlgAnotacao" minHeight="40" height="400" width="900px" showEffect="explode" hideEffect="explode" modal="true"
 					showCloseIcon="true">
 		<h:form id="anotacao">
+		
+			<p:commandButton class="btnPadrao" style="font-size: 18px;" value="Novo Comentário" action="#{nceControleChaveBean.novaAnotacao}"
+								update=":anotacao"/>
+			<p:separator />
+			<p:panelGrid style="border-collapse: unset;" rendered="#{nceControleChaveBean.formAnotacao}">
+				<p:row>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" id="lblNomeTecnico" value="Comentário:"/>
+					</p:column>
+					<p:column style="border-width:0px;">
+						<p:inputTextarea id="comentario" rows="5" cols="60" counter="displayComentario" maxlength="1000" counterTemplate="{0} caracteres restantes." 
+									value="#{nceControleChaveBean.anotacao.obs}" autoResize="false"
+									required="true" requiredMessage="Obrigatorio preencher o campo comentário."
+									onkeyup="value=value.toUpperCase()"/>
+					</p:column>
+					<p:column style="border-width:0px;">
+		    			<h:outputText id="displayComentario"/>
+		    		</p:column>
+				</p:row>
+				
+				<p:row>
+					<p:column style="border-width:0px;" colspan="2">
+						<p:commandButton class="btnPadrao" style="font-size: 18px;" value="Salvar" action="#{nceControleChaveBean.salvarAnotacao}"
+								update=":anotacao"/>
+					</p:column>
+				</p:row>
+			</p:panelGrid>
+		
+		
 		<p:outputPanel>
-	        <h:panelGrid columns="1" cellpadding="4">
 			 <p:dataScroller id="scrollerAtividades" value="#{nceControleChaveBean.listaAnotacao}" var="anotacao" chunkSize="10">
 			 	<f:facet name="loader">
 	            	<p:commandButton type="button" value="Exibir mais" icon="ui-icon-circle-triangle-s"/>
 	        	</f:facet>
 	        	
 	        	<h:panelGrid columns="2" style="width:100%" columnClasses="logo,detail">
+	        	
 		            <p:graphicImage library="imagens" name="comment.png" /> 
 		 
 		            <p:outputPanel>
 		                <h:panelGrid columns="6" cellpadding="4">
-		                	  <h:outputText class="label-padrao" value="Anotação:" style="font-size: 14px;"/>
-		                    <h:outputText value="#{anotacao.obs}" style="font-weight: bold; font-family: Arial;
+	                	  	 <h:outputText class="label-padrao" value="Data:" style="font-size: 14px;"/>
+	                    	<h:outputText value="#{anotacao.dataHoraReg}" style="font-weight: bold; font-family: Arial;
+	                    													color: #343436; font-size: 14px;">
+	                    	<f:convertDateTime pattern="dd/MM/yyyy - HH:mm" locale="pt_BR" />
+	                    	</h:outputText>    
+	                	  	
+	                	  	<h:outputText class="label-padrao" value="Responsável:" style="font-size: 14px;"/>
+	                    	<h:outputText value="#{anotacao.idUsuario.nome}" style="font-weight: bold; font-family: Arial;
 		                    													color: #343436; font-size: 14px;"/>
 		                </h:panelGrid>
+		                
+		                <p:separator/>
+	              	
+		                <p:panelGrid style="border-collapse: unset;">
+			                <p:row>
+			                	<p:column style="border-width:0px;" colspan="2">
+				                	<h:outputText class="label-padrao" value="Comentário:" style="font-size: 14px;"/>
+				                </p:column>
+				                <p:column style="border-width:0px;" colspan="4">
+				                    <p:outputLabel value="#{anotacao.obs}" colspan="2" style="font-weight: bold; font-family: Arial;
+				                    													color: #343436; font-size: 14px;"/>
+				                </p:column>
+				             </p:row>
+				        </p:panelGrid>
 		            </p:outputPanel>
+		            
 		        </h:panelGrid>
+		        
+		        <p:separator style="height:10px;"/>
 			 </p:dataScroller>
-			 </h:panelGrid>
 			</p:outputPanel>
 		</h:form>	
 					

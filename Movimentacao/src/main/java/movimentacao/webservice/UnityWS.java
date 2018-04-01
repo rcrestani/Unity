@@ -35,6 +35,7 @@ import movimentacao.projetoNCE.ControleChave;
 import movimentacao.projetoNCE.ControleChaveRN;
 import movimentacao.projetoNCE.emails.NivelEmail;
 import movimentacao.projetoNCE.emails.NivelEmailRN;
+import movimentacao.projetoNCE.tecnico.TecnicoRN;
 
 @WebService
 public class UnityWS 
@@ -230,18 +231,19 @@ public class UnityWS
 	
 	//Métodos da classe controleChave==================================================
 	@WebMethod
-	public List<ControleChaveWS> nceListReqOpen()
+	public List<NceControleChaveWS> nceListReqOpen()
 	{
 		ControleChaveRN controleChaveRN = new ControleChaveRN();
 		
 		List<ControleChave> lista =  controleChaveRN.listarAberto();
-		List<ControleChaveWS> listaWS = new ArrayList<ControleChaveWS>();
+		List<NceControleChaveWS> listaWS = new ArrayList<NceControleChaveWS>();
 		
 		for(ControleChave controleChave:lista)
 		{
-			ControleChaveWS controleChaveWS = new ControleChaveWS();
+			NceControleChaveWS controleChaveWS = new NceControleChaveWS();
 			controleChaveWS.setId(controleChave.getId());
 			controleChaveWS.setIdAno(controleChave.getIdAno());
+			controleChaveWS.setIdTecnico(controleChave.getIdTecnico().getId());
 			controleChaveWS.setNomeTecnico(controleChave.getIdTecnico().getNome());
 			controleChaveWS.setCpfTecnico(controleChave.getIdTecnico().getCpf());
 			controleChaveWS.setCelularTecnico(controleChave.getIdTecnico().getCelular());
@@ -288,16 +290,25 @@ public class UnityWS
 	}
 	
 	@WebMethod
-	public List<NivelEmailWS> nceListEmailLevel()
+	public void statusTecnico(Integer id , boolean status)
+	{
+		TecnicoRN tecnicoRN = new TecnicoRN();
+		
+		tecnicoRN.alterarStatus(id, status);
+		
+	}
+	
+	@WebMethod
+	public List<NceNivelEmailWS> nceListEmailLevel()
 	{
 		NivelEmailRN nivelEmailRN = new NivelEmailRN();
 		
 		List<NivelEmail> lista = nivelEmailRN.listar();
-		List<NivelEmailWS> listaWS = new ArrayList<NivelEmailWS>();
+		List<NceNivelEmailWS> listaWS = new ArrayList<NceNivelEmailWS>();
 		
 		for(NivelEmail nivelEmail:lista)
 		{
-			NivelEmailWS nivelEmailWS = new NivelEmailWS();
+			NceNivelEmailWS nivelEmailWS = new NceNivelEmailWS();
 			
 			nivelEmailWS.setNivel(nivelEmail.getNivel());
 			nivelEmailWS.setEmail(nivelEmail.getEmail());

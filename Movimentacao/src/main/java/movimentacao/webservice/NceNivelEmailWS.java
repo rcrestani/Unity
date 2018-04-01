@@ -1,6 +1,6 @@
 package movimentacao.webservice;
 
-public class NivelEmailWS
+public class NceNivelEmailWS
 {
 	private String nivel;
 	private String email;
@@ -36,7 +36,7 @@ public class NivelEmailWS
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		NivelEmailWS other = (NivelEmailWS) obj;
+		NceNivelEmailWS other = (NceNivelEmailWS) obj;
 		if (email == null) {
 			if (other.email != null)
 				return false;

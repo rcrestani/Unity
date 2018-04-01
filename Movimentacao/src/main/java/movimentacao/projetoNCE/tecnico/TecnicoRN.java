@@ -20,10 +20,25 @@ public class TecnicoRN
 		this.tecnicoDAO.salvar(tecnico);
 	}
 	
+	public void atualizarEvict(Tecnico tecnico)
+	{
+		this.tecnicoDAO = DAOFactory.criarTecnicoDAO();
+		this.tecnicoDAO.atualizarEvict(tecnico);
+	}
+	
 	public void excluir(Tecnico tecnico)
 	{
 		this.tecnicoDAO = DAOFactory.criarTecnicoDAO();
 		this.tecnicoDAO.excluir(tecnico);
+	}
+	
+	public void alterarStatus(Integer id , boolean status)
+	{
+		Tecnico tecnico = new Tecnico();
+		tecnico = carregar(id);
+		tecnico.setStatus(status);
+		
+		salvar(tecnico);
 	}
 	
 	public Tecnico carregar (Integer id)
@@ -36,6 +51,12 @@ public class TecnicoRN
 	{
 		this.tecnicoDAO = DAOFactory.criarTecnicoDAO();
 		return this.tecnicoDAO.tecnicoPorCPF(cpf);
+	}
+	
+	public List<String> completeNome(String text)
+	{
+		this.tecnicoDAO = DAOFactory.criarTecnicoDAO();
+		return this.tecnicoDAO.completeNome(text);
 	}
 	
 	public List<Tecnico> listar()
@@ -54,6 +75,18 @@ public class TecnicoRN
 	{
 		this.tecnicoDAO = DAOFactory.criarTecnicoDAO();
 		return this.tecnicoDAO.tecnicoPorNome(nome);
+	}
+	
+	public List<Tecnico> buscarTodosPaginado(TecnicoFiltro filtro)
+	{
+		this.tecnicoDAO = DAOFactory.criarTecnicoDAO();
+		return this.tecnicoDAO.buscarTodosPaginado(filtro);
+	}
+	
+	public int quantidadeFiltrados(TecnicoFiltro filtro)
+	{
+		this.tecnicoDAO = DAOFactory.criarTecnicoDAO();
+		return this.tecnicoDAO.quantidadeFiltrados(filtro);
 	}
 	
 	public TecnicoFiltro getFiltro() {

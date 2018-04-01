@@ -65,7 +65,6 @@ public class ControleChaveDAOHibernate implements ControleChaveDAO
 	{
 		Criteria criteria = this.session.createCriteria(ControleChave.class);
 		
-		criteria.add(Restrictions.isNull("dataAtendimento"));
 		criteria.add(Restrictions.isNull("dataFechamento"));
 		
 		return criteria.list();

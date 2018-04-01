@@ -22,6 +22,7 @@ import movimentacao.projetoNCE.empresa.EmpresaDAOHibernate;
 import movimentacao.projetoNCE.site.SiteDAOHibernate;
 import movimentacao.projetoNCE.status.StatusRequisicaoDAOHibernate;
 import movimentacao.projetoNCE.tecnico.TecnicoDAOHibernate;
+import movimentacao.projetoNCE.tecnico.notesTecnico.NotesTecnicoDAOHibernate;
 import movimentacao.usuario.*;
 
 public class DAOFactory 
@@ -144,6 +145,14 @@ public class DAOFactory
 		tecnicoDAO.setSession(HibernateUtil.getSessionFactory().getCurrentSession());
 		
 		return tecnicoDAO;
+	}
+	
+	public static NotesTecnicoDAOHibernate criarNotesTecnicoDAO()
+	{
+		NotesTecnicoDAOHibernate notesTecnicoDAO = new NotesTecnicoDAOHibernate();
+		notesTecnicoDAO.setSession(HibernateUtil.getSessionFactory().getCurrentSession());
+		
+		return notesTecnicoDAO;
 	}
 	
 	public static CoordenadorDAOHibernate criarCoordenadorDAO()

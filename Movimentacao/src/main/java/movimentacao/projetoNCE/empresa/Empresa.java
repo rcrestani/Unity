@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.NaturalId;
+
 import movimentacao.usuario.Usuario;
 
 @Entity (name="nce_empresa")
@@ -19,6 +21,7 @@ public class Empresa implements Serializable
 	@Id
 	@GeneratedValue
 	private Integer id;
+	@NaturalId (mutable = true)
 	private String razaoSocial;
 	private String endereco;
 	private String numero;

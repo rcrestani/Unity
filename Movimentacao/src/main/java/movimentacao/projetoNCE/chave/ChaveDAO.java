@@ -14,5 +14,5 @@ public interface ChaveDAO
 	public List<String> completeChave(String text);
 	public Chave chavePorId(Integer id);
 	public List<Chave> listaPorSiteStatusTrue(Site site);
-	public List<Chave> listaPorSiteSelecaoTrue(Site site , ControleChave controleChave);
+	public List<Chave> listaPorSelecaoTrue(ControleChave controleChave);
 }

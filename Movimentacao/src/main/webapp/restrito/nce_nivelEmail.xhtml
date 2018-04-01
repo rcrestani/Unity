@@ -8,11 +8,11 @@
 <ui:composition template="/template/interna.xhtml">
 	<ui:define name="titulo">
 		<h:graphicImage library="imagens" name="performancelab.png" style="height:40px;"/>
-		<h:outputLabel class="label-padrao" value="Cadastro de E-mails" style="margin-left:250px; font-size:30px; font-family:Ubuntu;"/>
+		<h:outputLabel class="label-padrao" value="Alerta por Níveis" style="margin-left:250px; font-size:30px; font-family:Ubuntu;"/>
 	</ui:define>
 	<ui:define name="corpo">
 	
-	<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_CONTROLE_CHAVE_RECEP , ROLE_CONTROLE_CHAVE_OPER , ROLE_ADM">
+	<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_CONTROLE_CHAVE_OPER , ROLE_ADM">
 	
 	<p:growl id="grow" autoUpdate="true" life="4000" showDetail="true" widgetVar="grow" />
 	
@@ -102,7 +102,7 @@
 					<f:setPropertyActionListener value="#{nivelEmail}" target="#{nceNivelEmailBean.nivelEmail}"/>
 				</p:commandLink>
 				
-				<h:outputText value=" | "/>
+				<h:outputText value="  "/>
 				
 				<p:commandLink  action="#{nceNivelEmailBean.excluir}" update=":lista" title="Excluir"
 								onclick="if (!confirm('Confirma a exclusão do e-mail #{nivelEmail.email}?')) return false;">

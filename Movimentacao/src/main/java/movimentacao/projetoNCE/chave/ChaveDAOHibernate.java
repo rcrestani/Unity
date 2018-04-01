@@ -71,11 +71,10 @@ public class ChaveDAOHibernate implements ChaveDAO
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Chave> listaPorSiteSelecaoTrue(Site site , ControleChave controleChave)
+	public List<Chave> listaPorSelecaoTrue(ControleChave controleChave)
 	{
 		Criteria criteria = this.session.createCriteria(Chave.class);
 		
-		criteria.add(Restrictions.eq("idSite", site));
 		criteria.add(Restrictions.eq("idControleChave", controleChave));
 		criteria.add(Restrictions.eq("selecao", true));
 		

@@ -81,8 +81,8 @@ public class NceControleChaveBean implements Serializable
 	private String nomeEmpresa = "";
 	private String cep = "";
 	private Date data48hsAtras;
+	private Date data15MinAtras;
 	private String rowColorVencido = "";
-	private String rowColorAberto = "";
 	private String tempoAberto = "";
 	private String placeHolderObs = "";//Dica para quando for usuário da recepção abrindo requisição.
 	
@@ -93,6 +93,7 @@ public class NceControleChaveBean implements Serializable
 	private boolean stopPoll = false;
 	private boolean campoStatus = false;
 	private boolean formAnotacao = false;
+	private boolean fecharFormSiteChave = true;
 	//==================================================================
 	//Dados da sessão===================================================
 	private FacesContext context = FacesContext.getCurrentInstance();
@@ -136,14 +137,9 @@ public class NceControleChaveBean implements Serializable
 	{				
 		Usuario user = new Usuario();
 		user = this.usuarioRN.buscarPorLogin(this.login);
+		
 		//Controle da data e usuario de atendimento pela verificacao da permissao==========================================
-		if(user.getPermissao().contains("ROLE_CONTROLE_CHAVE_OPER"))
-		{
-			this.controleChave.setUsuarioAtendimento(this.usuarioRN.buscarPorLogin(this.login));
-			
-			if(this.controleChave.getDataAtendimento() == null) {this.controleChave.setDataAtendimento(new Date());}
-		}
-		else if(user.getPermissao().contains("ROLE_CONTROLE_CHAVE_ADM"))
+		if(user.getPermissao().contains("ROLE_CONTROLE_CHAVE_OPER") || user.getPermissao().contains("ROLE_CONTROLE_CHAVE_ADM"))
 		{
 			this.controleChave.setUsuarioAtendimento(this.usuarioRN.buscarPorLogin(this.login));
 			
@@ -174,6 +170,7 @@ public class NceControleChaveBean implements Serializable
 				{
 					if(this.listaChaves.get(x).isSelecao())
 					{
+						System.out.println("SALVANDO CHAVES");
 						this.listaChaves.get(x).setTransito(true);
 						this.listaChaves.get(x).setSelecao(false);
 						this.listaChaves.get(x).setIdControleChave(this.controleChave);
@@ -207,6 +204,8 @@ public class NceControleChaveBean implements Serializable
 		    		FacesMessage.SEVERITY_INFO , "Requisição Registrada com sucesso!", ""));
 			
 			this.formControleChave = false;
+			this.fecharFormSiteChave = true;
+			this.stopPoll = false;
 			this.listaSiteChave.clear();
 			this.site = new Site();
 			this.chave = new Chave();
@@ -231,6 +230,7 @@ public class NceControleChaveBean implements Serializable
 		    		FacesMessage.SEVERITY_INFO , "Requisição Registrada com sucesso!", ""));
 			
 			this.formControleChave = false;
+			this.stopPoll = false;
 			this.listaSiteChave.clear();
 			this.site = new Site();
 			this.chave = new Chave();
@@ -242,7 +242,6 @@ public class NceControleChaveBean implements Serializable
 		    		FacesMessage.SEVERITY_ERROR , "Obrigatório informar qual o site e as chaves requisitadas", ""));
 		}
 		
-		this.stopPoll = false;
 		return null;
 	}
 	
@@ -305,7 +304,7 @@ public class NceControleChaveBean implements Serializable
 	{
 		DateCalculator calcDate = new DateCalculator();
 		List<ControleChave> listControle = new ArrayList<ControleChave>();
-		listControle = this.controleChaveRN.listarAberto();
+		listControle = this.controleChaveRN.listarNovas();
 		
 		for(ControleChave controlChave:listControle)
 		{
@@ -324,15 +323,20 @@ public class NceControleChaveBean implements Serializable
 		
 	}
 	
-	//Método para informar que o prazo de devolução das chaves passou das 48 horas estipuladas=========================
-	public String prazoVencido(ControleChave controleChave)
+	//Método para informar que o prazo de abertura ou devolução expirou========================================================
+	public String controlePrazos(ControleChave controleChave)
 	{
 		DateCalculator calcDate = new DateCalculator();
+		this.data15MinAtras = calcDate.data15MinAtras(new Date());
 		this.data48hsAtras = calcDate.data48HorasAtras(new Date());
 		
 		try
 		{
-			if(controleChave.getDataAbertura().before(this.data48hsAtras) && controleChave.getDataFechamento() == null)
+			if(controleChave.getDataAbertura().before(this.data15MinAtras) && controleChave.getDataAtendimento() == null)
+			{
+				this.rowColorVencido = "#CD3333;font-weight: bold;";
+			}
+			else if(controleChave.getDataAbertura().before(this.data48hsAtras) && controleChave.getDataFechamento() == null)
 			{
 				this.rowColorVencido = "#CD3333;font-weight: bold;";
 			}
@@ -347,31 +351,6 @@ public class NceControleChaveBean implements Serializable
 		}
 		
 		return this.rowColorVencido;
-	}
-	
-	//Método para informar que a abertura passou de 15 minutos do prazo estipulado====================================
-	public String aberturaVencida(ControleChave controleChave)
-	{
-		DateCalculator calcDate = new DateCalculator();
-		this.data48hsAtras = calcDate.data15MinAtras(new Date());
-		
-		try
-		{
-			if(controleChave.getDataAbertura().before(this.data48hsAtras) && controleChave.getDataAtendimento() == null)
-			{
-				this.rowColorAberto = "#CD3333;font-weight: bold;";
-			}
-			else
-			{
-				this.rowColorAberto = "";
-			}
-		}
-		catch (Exception e)
-		{
-			// TODO: handle exception
-		}
-		
-		return this.rowColorAberto;
 	}
 	
 	//Método para controlar a exibição do botão atender da datatable===========================
@@ -391,20 +370,54 @@ public class NceControleChaveBean implements Serializable
 	//MÉTODOS PARA O BEAN TECNICO===============================================================
 	public String salvarTecnico()
 	{
-		this.tecnico.setIdEmpresa(this.empresaRN.empresaPorNome(this.nomeEmpresa));
-		this.tecnico.setDataHoraReg(new Date());
-		this.tecnico.setUsuario(this.usuarioRN.buscarPorLogin(this.login));
-		
 		boolean controle = true;
-		try
+		if(this.tecnicoRN.tecnicoPorCPF(this.tecnico.getCpf()) == null
+				|| this.tecnicoRN.carregar(this.tecnico.getId()) == null)
 		{
-			this.tecnicoRN.salvar(this.tecnico);
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
-		    		FacesMessage.SEVERITY_INFO , "Técnico Registrado com sucesso!", ""));
+			this.tecnico.setStatus(true);
+			this.tecnico.setIdEmpresa(this.empresaRN.empresaPorNome(this.nomeEmpresa));
+			this.tecnico.setDataHoraReg(new Date());
+			this.tecnico.setUsuario(this.usuarioRN.buscarPorLogin(this.login));
+			try
+			{
+				this.tecnicoRN.salvar(this.tecnico);
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+			    		FacesMessage.SEVERITY_INFO , "Técnico Registrado com sucesso!", ""));
+			}
+			catch (Exception e)
+			{
+				controle = false;
+				System.out.println("CATCH TECNICO: " + e.getMessage());
+				e.printStackTrace();
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+			    		FacesMessage.SEVERITY_FATAL ,
+			    		"Técnico não registrado!", "Dados inválidos. Verifique se o técnico já possui cadastro."));
+			}
 		}
-		catch (Exception e)
+		else if(this.tecnicoRN.tecnicoPorCPF(this.tecnico.getCpf()).getId() == this.tecnico.getId())
+		{
+			this.tecnico.setIdEmpresa(this.empresaRN.empresaPorNome(this.nomeEmpresa));
+			this.tecnico.setUsuario(this.usuarioRN.buscarPorLogin(this.login));
+			try
+			{
+				this.tecnicoRN.salvar(this.tecnico);
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+			    		FacesMessage.SEVERITY_INFO , "Técnico Registrado com sucesso!", ""));
+			}
+			catch (Exception e)
+			{
+				controle = false;
+				System.out.println("CATCH TECNICO: " + e.getMessage());
+				e.printStackTrace();
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+			    		FacesMessage.SEVERITY_FATAL ,
+			    		"Técnico não registrado!", "Dados inválidos. Verifique se o técnico já possui cadastro."));
+			}
+		}
+		else
 		{
 			controle = false;
+			System.out.println("ELSE TECNICO");
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
 		    		FacesMessage.SEVERITY_FATAL ,
 		    		"Técnico não registrado!", "Dados inválidos. Verifique se o técnico já possui cadastro."));
@@ -446,17 +459,26 @@ public class NceControleChaveBean implements Serializable
 		 if (this.cpfTecnico.length() == 14)
 		 {
 			 //teste da busca, se retornar null, instancia novo tecnico============
-			 if(this.tecnicoRN.tecnicoPorCPF(this.cpfTecnico) != null)
+			 if(this.tecnicoRN.tecnicoPorCPF(this.cpfTecnico) != null && this.tecnicoRN.tecnicoPorCPF(this.cpfTecnico).isStatus())
 			 {
 				 this.controleChave.setIdTecnico(this.tecnicoRN.tecnicoPorCPF(this.cpfTecnico));
 			 }
 			 else
 			 {
 				 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
-				    		FacesMessage.SEVERITY_ERROR , "Técnico não encontrado", ""));
+				    		FacesMessage.SEVERITY_ERROR , "Técnico não encontrado ou bloqueado!", ""));
 			 }
 		 } 
 		 
+	}
+	
+	public void notificacaoCPF() 
+	{
+		if(this.tecnicoRN.tecnicoPorCPF(this.tecnico.getCpf()) != null)
+		{
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+		    		FacesMessage.SEVERITY_ERROR , "Erro! Este CPF já pertence a outro Técnico!", ""));
+		}
 	}
 	//==========================================================================================
 	
@@ -574,20 +596,25 @@ public class NceControleChaveBean implements Serializable
 	//MÉTODOS PARA O FORM SITECHAVE================================================================================
 	public void fecharDialogSiteChave(CloseEvent event)
 	{
-		//Pegando as chaves selecionadas e setando false na selecao, caso o usuario fechar o Dialog sem salvar=====
-		for(int y = 0; y < this.listaChaves.size(); y++)
+		//Verificando se o DialogSiteChave foi clicado em salvar ou em fechar, padrão true para fechar=================
+		if(this.fecharFormSiteChave)
 		{
-			if(this.listaChaves.get(y).isSelecao())
+			//Pegando as chaves selecionadas e setando false na selecao, caso o usuario fechar o Dialog sem salvar=====
+			for(int y = 0; y < this.listaChaves.size(); y++)
 			{
-				this.listaChaves.get(y).setSelecao(false);
-				this.chaveRN.salvar(this.listaChaves.get(y));
+				if(this.listaChaves.get(y).isSelecao())
+				{
+					this.listaChaves.get(y).setSelecao(false);
+					this.chaveRN.salvar(this.listaChaves.get(y));
+				}
+				
 			}
 			
+			this.site = new Site();
+			this.chave = new Chave();
+			this.tecnico = new Tecnico();
 		}
 		
-		this.site = new Site();
-		this.chave = new Chave();
-		this.tecnico = new Tecnico();
 	}
 
 	public String atribuirSite()
@@ -642,6 +669,7 @@ public class NceControleChaveBean implements Serializable
 		}
 		
 		this.formSiteChave = false;
+		this.fecharFormSiteChave = false;
 		this.site = new Site();
 		this.chave = new Chave();
 		
@@ -948,6 +976,14 @@ public class NceControleChaveBean implements Serializable
 		this.data48hsAtras = data48hsAtras;
 	}
 
+	public Date getData15MinAtras() {
+		return data15MinAtras;
+	}
+
+	public void setData15MinAtras(Date data15MinAtras) {
+		this.data15MinAtras = data15MinAtras;
+	}
+
 	public String getRowColorVencido() {
 		return rowColorVencido;
 	}
@@ -962,14 +998,6 @@ public class NceControleChaveBean implements Serializable
 
 	public void setTempoAberto(String tempoAberto) {
 		this.tempoAberto = tempoAberto;
-	}
-
-	public String getRowColorAberto() {
-		return rowColorAberto;
-	}
-
-	public void setRowColorAberto(String rowColorAberto) {
-		this.rowColorAberto = rowColorAberto;
 	}
 
 	public boolean isStopPoll() {

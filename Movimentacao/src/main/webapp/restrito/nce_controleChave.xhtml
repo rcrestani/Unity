@@ -102,7 +102,7 @@
 								 required="true" requiredMessage="Técnico é obrigatório." disabled="true"/>
 				</p:column>
 				
-				<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_CONTROLE_CHAVE_OPER , ROLE_ADM">
+				<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_ADM">
 					<p:column style="border-width:0px;" colspan="2">
 						<h:panelGrid columns="1" cellpadding="5">
 	    					<p:commandButton class="btnPadrao" style="font-size: 18px;" value="Novo Técnico"
@@ -217,6 +217,7 @@
 <!-- DATATABLE CONTROLECHAVE//////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <h:form id="listaControleChave">
 	<p:poll interval="60" listener="#{nceControleChaveBean.calcTempoAberto}" update=":listaControleChave" stop="#{nceControleChaveBean.stopPoll}"/>
+	
 		<p:dataTable width="400"  value="#{nceControleChaveBean.lazyControleChave}" lazy="true" widgetVar="tableControleChave"
 						var="controleChave" border="1" cellpadding="2" cellspacing="0" rowIndexVar="index"
 						paginator="true" paginatorPosition="bottom" rows="10" id="tbl"
@@ -225,40 +226,38 @@
 						currentPageReportTemplate="{totalRecords} Requisições"
 						emptyMessage="Nenhum registro encontrado.">
 			
-			 <f:facet name="header">
-        		CONSULTA PADRÃO: NOVAS REQUISIÇÕES
-    		</f:facet>
+			 <f:facet name="header">CONSULTA PADRÃO: NOVAS REQUISIÇÕES</f:facet>
 			
 			<p:column style="text-align: center;" headerText="Número" width="70" sortBy="#{controleChave.idAno}">
 				<h:outputText value="#{controleChave.idAno}"
-								style="font-size:14px; color:#{nceControleChaveBean.aberturaVencida(controleChave)}"/>
+								style="font-size:14px; color:#{nceControleChaveBean.controlePrazos(controleChave)}"/>
 			</p:column>
 			
 			<p:column style="text-align: center;" width="180" headerText="Abertura" sortBy="#{controleChave.dataAbertura}">
 				<h:outputText value="#{controleChave.dataAbertura}"
-								style="font-size:14px; color:#{nceControleChaveBean.aberturaVencida(controleChave)}">
+								style="font-size:14px; color:#{nceControleChaveBean.controlePrazos(controleChave)}">
 					<f:convertDateTime pattern="dd/MM/yyyy - H:mm" locale="pt_BR" />
 				</h:outputText>
 			</p:column>
 			
 			<p:column style="text-align: center;" width="200" headerText="Operador Abertura">
 				<h:outputText value="#{controleChave.usuarioAbertura.nome}"
-								style="font-size:14px; color:#{nceControleChaveBean.aberturaVencida(controleChave)}"/>
+								style="font-size:14px; color:#{nceControleChaveBean.controlePrazos(controleChave)}"/>
 			</p:column>
 			
 			<p:column style="text-align: center;" width="200" headerText="Técnico">
 				<h:outputText value="#{controleChave.idTecnico.nome}" 
-								style="font-size:14px; color:#{nceControleChaveBean.aberturaVencida(controleChave)}"/>
+								style="font-size:14px; color:#{nceControleChaveBean.controlePrazos(controleChave)}"/>
 			</p:column>
 			
 			<p:column style="text-align: center;" width="200" headerText="Atividade" sortBy="#{controleChave.atividade}">
 				<h:outputText value="#{controleChave.atividade}"
-							style="font-size:14px; color:#{nceControleChaveBean.aberturaVencida(controleChave)}"/>
+							style="font-size:14px; color:#{nceControleChaveBean.controlePrazos(controleChave)}"/>
 			</p:column>
 			
 			<p:column style="text-align: center;" width="100" headerText="Tempo Espera">
 				<h:outputText value="#{controleChave.tempoAberto}"
-							style="font-size:14px; color:#{nceControleChaveBean.aberturaVencida(controleChave)}"/>
+							style="font-size:14px; color:#{nceControleChaveBean.controlePrazos(controleChave)}"/>
 			</p:column>
 			
 			<p:column style="text-align: center;" width="60" headerText="Ações">
@@ -284,7 +283,6 @@
 
 <!-- DIALOG ANOTACAO/////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
 
-<!-- FIM DIALOG ANOTACAO/////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
 	<p:dialog id="dlgAnotacao" rendered="true" position="center" header="Comentários da Requisição: #{nceControleChaveBean.controleChave.idAno}"
 					widgetVar="dlgAnotacao" minHeight="40" height="400" width="900px" showEffect="explode" hideEffect="explode" modal="true"
 					showCloseIcon="true">
@@ -304,6 +302,7 @@
 									required="true" requiredMessage="Obrigatorio preencher o campo comentário."
 									onkeyup="value=value.toUpperCase()"/>
 					</p:column>
+					
 					<p:column style="border-width:0px;">
 		    			<h:outputText id="displayComentario"/>
 		    		</p:column>
@@ -364,6 +363,7 @@
 		</h:form>	
 					
 	</p:dialog>
+<!-- FIM DIALOG ANOTACAO/////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
 
 <!-- DIALOG TECNICO//////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
 	<p:dialog id="dlgTecnico" rendered="true" position="center" header="Cadastro de novo Técnico"
@@ -424,7 +424,9 @@
 						<p:inputMask id="cpf" class="form-padrao form-mov" value="#{nceControleChaveBean.tecnico.cpf}"
 									placeholder="Informe um CPF Válido" mask="999.999.999-99" maxlength="11"
 									required="true" requiredMessage="CPF é obrigatório."
-									validator="cpf"/>
+									validator="cpf">
+							<p:ajax event="blur" listener="#{nceControleChaveBean.notificacaoCPF}"/>
+						</p:inputMask>
 					</p:column>
 				</p:row>
 				
@@ -467,7 +469,7 @@
 	        	<p:row>
 	        		<p:column style="border-width:0px;" colspan="2">
 	        			<p:commandButton class="btnPadrao" style="font-size: 18px;" action="#{nceControleChaveBean.salvarTecnico}"
-									value="Salvar" update=":formTecnico"/>
+									value="Salvar" oncomplete="PF('dlgTecnico').hide();"/>
 					</p:column>
 	        	</p:row>
     		</p:panelGrid>
@@ -630,7 +632,7 @@
 						</p:autoComplete>
 					</p:column>
 					
-					<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_CONTROLE_CHAVE_OPER , ROLE_ADM">
+					<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_ADM">
 						<p:column style="border-width:0px;" colspan="2">
 							<h:panelGrid columns="1" cellpadding="5">
 		    					<p:commandButton class="btnPadrao" style="font-size: 18px;" value="Cadastrar Novo Site"
@@ -646,7 +648,7 @@
 		
 <h:form id="adicionarChave">
 	<center>
-	<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_CONTROLE_CHAVE_OPER , ROLE_ADM">
+	<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_ADM">
 	<p:panelGrid style="border-collapse: unset;" rendered="#{nceControleChaveBean.formSiteChave}">
 		<p:row>
 			<p:column style="border-width:0px;">

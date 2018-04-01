@@ -134,7 +134,8 @@ public class AtividadesDAOHibernate implements AtividadesDAO
 	public List<Atividades> atividadesDoDia()
 	{
 		Date dataHoje = new Date();
-		String hql = "from atividades where date(prazo) = :dataHoje order by prazo asc";
+		//Consulta busca as atividades pendentes do dia=========================================================
+		String hql = "from atividades where date(prazo) = :dataHoje and finalizado = false order by prazo asc";
 		Query consulta = this.session.createQuery(hql);
 		consulta.setDate("dataHoje", dataHoje);
 		

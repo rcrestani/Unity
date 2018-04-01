@@ -58,10 +58,10 @@ public class ChaveRN
 		return this.chaveDAO.listaPorSiteStatusTrue(site);
 	}
 	
-	public List<Chave> listaPorSiteSelecaoTrue(Site site , ControleChave controleChave)
+	public List<Chave> listaPorSelecaoTrue(ControleChave controleChave)
 	{
 		this.chaveDAO = DAOFactory.criarChaveDAO();
-		return this.chaveDAO.listaPorSiteSelecaoTrue(site , controleChave);
+		return this.chaveDAO.listaPorSelecaoTrue(controleChave);
 	}
 	public ChaveFiltro getFiltro() {
 		return filtro;

@@ -33,6 +33,7 @@
 		<mapping class="movimentacao.projetoNCE.status.StatusRequisicao"/>
 		<mapping class="movimentacao.projetoNCE.empresa.Empresa"/>
 		<mapping class="movimentacao.projetoNCE.tecnico.Tecnico"/>
+		<mapping class="movimentacao.projetoNCE.tecnico.notesTecnico.NotesTecnico"/>
 		<mapping class="movimentacao.projetoNCE.coordenador.Coordenador"/>
 		<mapping class="movimentacao.projetoNCE.site.Site"/>
 		<mapping class="movimentacao.projetoNCE.chave.Chave"/>

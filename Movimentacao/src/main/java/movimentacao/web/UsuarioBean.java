@@ -11,6 +11,7 @@ import movimentacao.usuario.UsuarioFiltro;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
+import org.hibernate.HibernateException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -57,7 +58,7 @@ public class UsuarioBean implements Serializable
 		this.lazyUsuario = new LazyUsuarioDataModel(usuarioRN , filtro);
 	}
 	
-	public String salvar() 
+	public String salvar() throws HibernateException 
 	{ 
 		UsuarioRN userRN = new UsuarioRN();
 		String senha = this.usuario.getSenha();

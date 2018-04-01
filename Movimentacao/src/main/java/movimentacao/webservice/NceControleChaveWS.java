@@ -2,7 +2,7 @@ package movimentacao.webservice;
 
 import java.util.Date;
 
-public class ControleChaveWS
+public class NceControleChaveWS
 {
 
 	private Integer id;
@@ -13,6 +13,7 @@ public class ControleChaveWS
 	private String tempoAberto;
 	private String atividade;
 	private String crq;
+	private Integer idTecnico;
 	private String nomeTecnico;
 	private String cpfTecnico;
 	private String celularTecnico;
@@ -70,6 +71,12 @@ public class ControleChaveWS
 	}
 	public void setCrq(String crq) {
 		this.crq = crq;
+	}
+	public Integer getIdTecnico() {
+		return idTecnico;
+	}
+	public void setIdTecnico(Integer idTecnico) {
+		this.idTecnico = idTecnico;
 	}
 	public String getNomeTecnico() {
 		return nomeTecnico;
@@ -134,6 +141,7 @@ public class ControleChaveWS
 		result = prime * result + ((dataFechamento == null) ? 0 : dataFechamento.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((idAno == null) ? 0 : idAno.hashCode());
+		result = prime * result + ((idTecnico == null) ? 0 : idTecnico.hashCode());
 		result = prime * result + ((nomeTecnico == null) ? 0 : nomeTecnico.hashCode());
 		result = prime * result + ((obs == null) ? 0 : obs.hashCode());
 		result = prime * result + ((status == null) ? 0 : status.hashCode());
@@ -151,7 +159,7 @@ public class ControleChaveWS
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ControleChaveWS other = (ControleChaveWS) obj;
+		NceControleChaveWS other = (NceControleChaveWS) obj;
 		if (atividade == null) {
 			if (other.atividade != null)
 				return false;
@@ -197,6 +205,11 @@ public class ControleChaveWS
 				return false;
 		} else if (!idAno.equals(other.idAno))
 			return false;
+		if (idTecnico == null) {
+			if (other.idTecnico != null)
+				return false;
+		} else if (!idTecnico.equals(other.idTecnico))
+			return false;
 		if (nomeTecnico == null) {
 			if (other.nomeTecnico != null)
 				return false;
@@ -234,5 +247,4 @@ public class ControleChaveWS
 			return false;
 		return true;
 	}
-	
 }

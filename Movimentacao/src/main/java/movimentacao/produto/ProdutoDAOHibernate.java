@@ -76,7 +76,8 @@ public class ProdutoDAOHibernate implements ProdutoDAO
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Produto> buscarTodosPaginado(ProdutoFiltro filtro) {
+	public List<Produto> buscarTodosPaginado(ProdutoFiltro filtro)
+	{
 		Criteria criteria = criarCriteriaParaFiltro(filtro);
 		
 		criteria.setFirstResult(filtro.getPrimeiroRegistro());
@@ -91,7 +92,8 @@ public class ProdutoDAOHibernate implements ProdutoDAO
 		return criteria.list();
 	}
 	
-	public int quantidadeFiltrados(ProdutoFiltro filtro) {
+	public int quantidadeFiltrados(ProdutoFiltro filtro)
+	{
 		Criteria criteria = criarCriteriaParaFiltro(filtro);
 		
 		criteria.setProjection(Projections.rowCount());
@@ -99,7 +101,8 @@ public class ProdutoDAOHibernate implements ProdutoDAO
 		return ((Number) criteria.uniqueResult()).intValue();
 	}
 	
-	private Criteria criarCriteriaParaFiltro(ProdutoFiltro filtro) {
+	private Criteria criarCriteriaParaFiltro(ProdutoFiltro filtro)
+	{
 		
 		Criteria criteria = session.createCriteria(Produto.class);
 		boolean status = Boolean.parseBoolean(filtro.getStatus());

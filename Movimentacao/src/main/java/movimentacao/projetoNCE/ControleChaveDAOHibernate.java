@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
@@ -41,6 +42,16 @@ public class ControleChaveDAOHibernate implements ControleChaveDAO
 		criteria.setMaxResults(1);
 		
 		return (ControleChave) criteria.uniqueResult();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> completeIdAno(String text)
+	{
+		String hql = "select idAno from nce_controleChave where idAno like :text";
+		Query consulta = this.session.createQuery(hql);
+		consulta.setString("text", "%"+text+"%");
+		
+		return (List<String>)consulta.list();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -112,7 +123,10 @@ public class ControleChaveDAOHibernate implements ControleChaveDAO
 		{
 			criteria.add(Restrictions.between("dataAbertura", filtro.getDataAbertura() , filtro.getDataFechamento()));
 		}
-		else if(filtro.getDataAbertura() == null && filtro.getDataFechamento() == null)
+		else if(filtro.getDataAbertura() == null && filtro.getDataFechamento() == null
+												 && filtro.getIdAno() == null
+												 && filtro.getIdTecnico() == null
+												 && filtro.getStatusFechamento() == null)
 		{
 			criteria.addOrder(Order.asc("dataAbertura"));
 			criteria.add(Restrictions.isNull("dataAtendimento"));
@@ -132,6 +146,20 @@ public class ControleChaveDAOHibernate implements ControleChaveDAO
 		if(StringUtils.isNotEmpty( filtro.getIdAno()))
 		{
 			criteria.add(Restrictions.eq("idAno", filtro.getIdAno()));
+		}
+		
+		if(filtro.getIdTecnico() != null)
+		{
+			criteria.add(Restrictions.eq("idTecnico", filtro.getIdTecnico()));
+		}
+		
+		if(StringUtils.isNotEmpty( filtro.getStatusFechamento() ) && filtro.getStatusFechamento().equals("true"))
+		{
+			criteria.add(Restrictions.eq("statusFechamento", true));
+		}
+		else if(StringUtils.isNotEmpty( filtro.getStatusFechamento() ) && filtro.getStatusFechamento().equals("false"))
+		{
+			criteria.add(Restrictions.eq("statusFechamento", false));
 		}
 		
 		return criteria;

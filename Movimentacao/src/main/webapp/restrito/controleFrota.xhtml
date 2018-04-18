@@ -23,11 +23,11 @@
 			<p:calendar id="dataFim" value="#{controleFrotaBean.filtro.fim}" pattern="dd-MM-yyyy"
 					mask="true" size="8" locale="pt" placeholder="Data Final"/>
 			
-			<p:autoComplete id="buscaColetor" dropdown="true" forceSelection="true" size="15" scrollHeight="250" value="#{controleFrotaBean.filtro.coletor}" 
+			<p:autoComplete id="buscaColetor" dropdown="true" forceSelection="true" size="17" scrollHeight="250" value="#{controleFrotaBean.filtro.coletor}" 
 								completeMethod="#{controleFrotaBean.controleFrotaRN.completeColetor}" effect="fade" placeholder="Selecionar Base"
 								style="font-size: 10px;"/>
 								
-			<p:autoComplete id="buscaVtr" dropdown="true" forceSelection="true" size="10" scrollHeight="250" value="#{controleFrotaBean.filtro.vtr}" 
+			<p:autoComplete id="buscaVtr" dropdown="true" forceSelection="true" size="15" scrollHeight="250" value="#{controleFrotaBean.filtro.vtr}" 
 								completeMethod="#{controleFrotaBean.controleFrotaRN.completeVtr}" effect="fade" placeholder="Selecionar Veículo"
 								style="font-size: 10px;"/>		
 			
@@ -96,8 +96,8 @@
 	<p:separator/>
 	
 	<h:form id="reports">
-			<h:panelGrid columns="5">
-				<h:outputLabel class="label-padrao" value="Exportar Relatório: " style="margin-left:400px; font-size:20px; font-family:Ubuntu;"/>
+			<h:panelGrid columns="6">
+				<h:outputLabel class="label-padrao" value="Exportar Relatório: " style="margin-left:300px; font-size:20px; font-family:Ubuntu;"/>
 			
 				<h:commandLink style="margin-right:40px;">
 					<f:setPropertyActionListener target="#{controleFrotaBean.tipoRelatorio}" value="1"/> 
@@ -114,10 +114,14 @@
 					<p:fileDownload value="#{controleFrotaBean.arquivoRetorno}"/>
 					<h:graphicImage library="imagens" name="html.png" title="Imprimir HTML"/>
 				</h:commandLink>
-				<h:commandLink>
+				<h:commandLink style="margin-right:40px;">
 					<f:setPropertyActionListener target="#{controleFrotaBean.tipoRelatorio}" value="4"/>
 					<p:fileDownload value="#{controleFrotaBean.arquivoRetorno}"/>
 					<h:graphicImage library="imagens" name="ods.png" 	title="Imprimir Planilha Open Office"/>
+				</h:commandLink>
+				<h:commandLink>
+					<p:fileDownload value="#{controleFrotaBean.arquivoRetornoCsv}"/>
+					<h:graphicImage library="imagens" name="csv.png" 	title="Imprimir Planilha CSV"/>
 				</h:commandLink>
 			</h:panelGrid>
 	</h:form>

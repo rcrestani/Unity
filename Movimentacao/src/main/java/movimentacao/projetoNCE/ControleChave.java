@@ -44,7 +44,12 @@ public class ControleChave implements Serializable
 	private StatusRequisicao status;
 	
 	@Column (length = 1000)
-	private String obs;	
+	private String obs;
+	
+	@Column (length = 1000)
+	private String obsFechamento;
+	
+	private boolean statusFechamento;
 	
 	@OneToOne
 	@JoinColumn (name = "idUsuarioAbertura")
@@ -72,6 +77,14 @@ public class ControleChave implements Serializable
 
 	public void setIdAno(String idAno) {
 		this.idAno = idAno;
+	}
+
+	public Date getDataAbertura() {
+		return dataAbertura;
+	}
+
+	public void setDataAbertura(Date dataAbertura) {
+		this.dataAbertura = dataAbertura;
 	}
 
 	public Date getDataAtendimento() {
@@ -138,12 +151,20 @@ public class ControleChave implements Serializable
 		this.obs = obs;
 	}
 
-	public Date getDataAbertura() {
-		return dataAbertura;
+	public String getObsFechamento() {
+		return obsFechamento;
 	}
 
-	public void setDataAbertura(Date dataAbertura) {
-		this.dataAbertura = dataAbertura;
+	public void setObsFechamento(String obsFechamento) {
+		this.obsFechamento = obsFechamento;
+	}
+
+	public boolean isStatusFechamento() {
+		return statusFechamento;
+	}
+
+	public void setStatusFechamento(boolean statusFechamento) {
+		this.statusFechamento = statusFechamento;
 	}
 
 	public Usuario getUsuarioAbertura() {
@@ -183,7 +204,9 @@ public class ControleChave implements Serializable
 		result = prime * result + ((idAno == null) ? 0 : idAno.hashCode());
 		result = prime * result + ((idTecnico == null) ? 0 : idTecnico.hashCode());
 		result = prime * result + ((obs == null) ? 0 : obs.hashCode());
+		result = prime * result + ((obsFechamento == null) ? 0 : obsFechamento.hashCode());
 		result = prime * result + ((status == null) ? 0 : status.hashCode());
+		result = prime * result + (statusFechamento ? 1231 : 1237);
 		result = prime * result + ((tempoAberto == null) ? 0 : tempoAberto.hashCode());
 		result = prime * result + ((usuarioAbertura == null) ? 0 : usuarioAbertura.hashCode());
 		result = prime * result + ((usuarioAtendimento == null) ? 0 : usuarioAtendimento.hashCode());
@@ -245,10 +268,17 @@ public class ControleChave implements Serializable
 				return false;
 		} else if (!obs.equals(other.obs))
 			return false;
+		if (obsFechamento == null) {
+			if (other.obsFechamento != null)
+				return false;
+		} else if (!obsFechamento.equals(other.obsFechamento))
+			return false;
 		if (status == null) {
 			if (other.status != null)
 				return false;
 		} else if (!status.equals(other.status))
+			return false;
+		if (statusFechamento != other.statusFechamento)
 			return false;
 		if (tempoAberto == null) {
 			if (other.tempoAberto != null)
@@ -273,5 +303,4 @@ public class ControleChave implements Serializable
 		return true;
 	}
 
-	
 }

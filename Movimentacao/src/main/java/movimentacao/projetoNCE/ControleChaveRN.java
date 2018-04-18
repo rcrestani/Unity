@@ -38,6 +38,12 @@ public class ControleChaveRN
 		return this.controleChaveDAO.ultimoRegistro();
 	}
 	
+	public List<String> completeIdAno(String text)
+	{
+		this.controleChaveDAO = DAOFactory.criarControleChaveDAO();
+		return this.controleChaveDAO.completeIdAno(text);
+	}
+	
 	public List<ControleChave> listar()
 	{
 		this.controleChaveDAO = DAOFactory.criarControleChaveDAO();

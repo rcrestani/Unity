@@ -190,7 +190,8 @@ public class NceTecnicoBean implements Serializable
 	
 	public void notificacaoCPF() 
 	{
-		if(this.tecnicoRN.tecnicoPorCPF(this.tecnico.getCpf()) != null)
+		if(this.tecnicoRN.tecnicoPorCPF(this.tecnico.getCpf()) != null
+				&& this.tecnicoRN.tecnicoPorCPF(this.tecnico.getCpf()).getId() != this.tecnico.getId())
 		{
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
 		    		FacesMessage.SEVERITY_ERROR , "Erro! Este CPF já pertence a outro Técnico!", ""));

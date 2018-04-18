@@ -21,7 +21,7 @@
 						update=":cadastro :formTecnico :formEmpresa :formSiteChave :formSite :listaChaves"/>
 	</h:form>
 <!-- FIM FORM NOVOS////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
-	<p:separator/>
+
 <!-- FORM CADASTRO/////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
 	<h:form id="cadastro">
 		<h:inputHidden id="idControleChave" value="#{nceControleChaveBean.controleChave.id}"/>
@@ -200,7 +200,7 @@
 <!-- FORM FILTROS/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <h:form id="filtro">
 	<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_CONTROLE_CHAVE_OPER , ROLE_ADM">
-		<h:panelGrid columns="3">
+		<h:panelGrid columns="6">
 					
        		<p:calendar id="dataInicial" value="#{nceControleChaveBean.filtro.dataAbertura}" pattern="dd-MM-yyyy"
 						mask="true" size="8" locale="pt" placeholder="Data Inicial"/>
@@ -208,7 +208,21 @@
 			<p:calendar id="dataFim" value="#{nceControleChaveBean.filtro.dataFechamento}" pattern="dd-MM-yyyy"
 					mask="true" size="8" locale="pt" placeholder="Data Final"/>
 			
-			<p:commandButton class="btnPadrao" value="Consultar" update=":listaControleChave" />
+			<p:autoComplete id="buscaIdAno" forceSelection="true" size="15" scrollHeight="250" minQueryLength="3"
+							value="#{nceControleChaveBean.filtro.idAno}" completeMethod="#{nceControleChaveBean.controleChaveRN.completeIdAno}"
+							effect="fade" placeholder="Buscar por Id/Ano" style="font-size: 10px;"/>
+			
+			<p:autoComplete id="buscaTecnicoNome" forceSelection="true" size="25" scrollHeight="250" minQueryLength="3"
+							value="#{nceControleChaveBean.nomeTecnico}" completeMethod="#{nceControleChaveBean.tecnicoRN.completeTecnico}"
+							effect="fade" placeholder="Buscar por Técnico" style="font-size: 10px;"/>
+			
+			<p:selectOneMenu id="buscaStatusFechamento" value="#{nceControleChaveBean.filtro.statusFechamento}" style="width:185px">
+			            <f:selectItem id="statusSubItem" itemLabel="Status Fechamento"/>
+			            <f:selectItem itemLabel="Sem Pendências" itemValue="true" />
+			            <f:selectItem itemLabel="Com Pendências" itemValue="false" />
+	        </p:selectOneMenu>
+							
+			<p:commandButton class="btnPadrao" value="Consultar" action="#{nceControleChaveBean.consultar}" update=":listaControleChave" />
 		</h:panelGrid>
 	</sec:ifAnyGranted>
 </h:form>
@@ -275,11 +289,106 @@
 					<h:graphicImage library="imagens" name="commentIcon.png"/>
 					<f:setPropertyActionListener value="#{controleChave}" target="#{nceControleChaveBean.controleChave}"/>
 				</p:commandLink>
+				
+				<h:outputText value="  " style="font-size:18px;"/>
+				
+				<p:commandLink action="#{nceControleChaveBean.carregarFechamento}" update=":fechamento :dlgFechamento" title="Fechar"
+								oncomplete="PF('dlgFechamento').show();">
+					<h:graphicImage library="imagens" name="turnOff.png"/>
+					<f:setPropertyActionListener value="#{controleChave}" target="#{nceControleChaveBean.controleChave}"/>
+				</p:commandLink>
 			</sec:ifAnyGranted>
 			</p:column>
 		</p:dataTable>
 </h:form>
 <!-- FIM DATATABLE CONTROLECHAVE/////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+<!-- DIALOG FECHAMENTO///////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
+
+	<p:dialog id="dlgFechamento" rendered="true" position="center" header="Fechamento da Requisição: #{nceControleChaveBean.controleChave.idAno}"
+					widgetVar="dlgFechamento" minHeight="40" height="450" width="900px" showEffect="explode" hideEffect="explode" modal="true"
+					showCloseIcon="true">
+		<h:form id="fechamento">
+			<p:panelGrid style="border-collapse: unset;">
+				<p:row>
+			        <p:column style="border-width:0px;" colspan="3">
+							<p:outputLabel id="lblItensSiteChave">
+							<p:dataTable value="#{nceControleChaveBean.listaSiteChave}" var="controleSiteChave" scrollable="true" scrollHeight="100"
+											emptyMessage="Nenhum site/chave selecionado">
+									<p:column headerText="Site" style="font-size: 14px; text-align:center; width:40px;">
+							             <h:outputText value="#{controleSiteChave.siteIdCodAtual}" />
+							        </p:column>
+							        
+							        <p:column headerText="Chaves" style="font-size: 14px; text-align:center; width:180px;">
+							             <h:outputText value="#{controleSiteChave.listaChaves}" />
+							        </p:column>
+						    </p:dataTable>
+						 </p:outputLabel>
+					</p:column>
+				</p:row>
+				
+				<p:row>
+	            	<p:column style="padding: 0px;" colspan="6"></p:column>
+	        	</p:row>
+				
+				<p:row>
+			        <p:column style="border-width:0px;">
+			        	<h:outputLabel class="label-padrao" id="lblStatusFechamento" value="Situação:"/>
+			        </p:column>
+			        <p:column style="border-width:0px;">
+			        	<p:selectBooleanButton id="stsChave" value="#{nceControleChaveBean.controleChave.statusFechamento}"
+									onIcon="ui-icon-check" offIcon="ui-icon-closethick" 
+									onLabel="Encerrado - OK" offLabel="Encerrado com Pendências"
+									disabled="#{nceControleChaveBean.formFechamento}"/>
+			        </p:column>
+			    </p:row> 
+				
+				<p:row>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" id="lblObsFechamento" value="Comentário:"/>
+					</p:column>
+					<p:column style="border-width:0px;">
+						<p:inputTextarea id="obsFechamento" rows="5" cols="60" counter="displayObsFechamento" maxlength="1000" counterTemplate="{0} caracteres restantes." 
+									value="#{nceControleChaveBean.controleChave.obsFechamento}" autoResize="false"
+									required="true" requiredMessage="Obrigatorio preencher o campo de observação."
+									onkeyup="value=value.toUpperCase()" disabled="#{nceControleChaveBean.formFechamento}"/>
+					</p:column>
+					
+					<p:column style="border-width:0px;">
+		    			<h:outputText id="displayObsFechamento"/>
+		    		</p:column>
+				</p:row>
+				
+				<p:row>
+					<p:column style="border-width:0px;" colspan="2">
+						<p:commandButton class="btnPadrao" style="font-size: 18px;" value="Salvar"
+										action="#{nceControleChaveBean.fecharRequisicao}"
+										onclick="if (!confirm('Confirma o fechamento desta Requisição?')) return false;"
+										update=":fechamento :dlgFechamento :listaControleChave"/>
+					</p:column>
+				</p:row>
+				
+				<p:row>
+	            	<p:column style="padding: 0px;" colspan="6"></p:column>
+	        	</p:row>
+				
+				<p:row>
+					<p:column style="border-width:0px;" colspan="2">
+			  			<h:outputText class="label-padrao" value="Fechado por: " style="font-size: 14px;"/>
+	                   	<h:outputText value="#{nceControleChaveBean.controleChave.usuarioFechamento.nome}" style="font-weight: bold; font-family: Arial;
+		                    													color: #343436; font-size: 14px;"/>
+		           
+			  			<h:outputText class="label-padrao" value="  Data: " style="font-size: 14px;"/>
+                    	<h:outputText value="#{nceControleChaveBean.controleChave.dataFechamento}" style="font-weight: bold; font-family: Arial;
+                    													color: #343436; font-size: 14px;">
+                    	<f:convertDateTime pattern="dd/MM/yyyy - HH:mm" locale="pt_BR" />
+                    	</h:outputText>
+	                </p:column>
+	            </p:row>
+	         </p:panelGrid>
+		</h:form>
+	</p:dialog>
+<!-- FIM DIALOG FECHAMENTO///////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
 <!-- DIALOG ANOTACAO/////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
 
@@ -318,7 +427,7 @@
 		
 		
 		<p:outputPanel>
-			 <p:dataScroller id="scrollerAtividades" value="#{nceControleChaveBean.listaAnotacao}" var="anotacao" chunkSize="10">
+			 <p:dataScroller id="scrollerAnotacoes" value="#{nceControleChaveBean.listaAnotacao}" var="anotacao" chunkSize="10">
 			 	<f:facet name="loader">
 	            	<p:commandButton type="button" value="Exibir mais" icon="ui-icon-circle-triangle-s"/>
 	        	</f:facet>

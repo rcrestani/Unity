@@ -18,6 +18,7 @@ public class RelatorioUtil
 	public static final int	RELATORIO_EXCEL		= 2;
 	public static final int	RELATORIO_HTML		= 3;
 	public static final int	RELATORIO_PLANILHA_OPEN_OFFICE	= 4;
+	public static final int	RELATORIO_CSV = 5;
 	
 	public StreamedContent geraRelatorio(String nomeRelatorioJasper,
 		String nomeRelatorioSaida, int tipoRelatorio, JRBeanCollectionDataSource cBean) throws UtilException 
@@ -60,7 +61,7 @@ public class RelatorioUtil
 					htmlExportado.setExporterOutput(new SimpleHtmlExporterOutput(arquivoGerado));
 					htmlExportado.exportReport();
 					arquivoGerado.deleteOnExit();
-				break;
+					break;
 				case RelatorioUtil.RELATORIO_EXCEL:
 					JRXlsExporter xlsExportado = new JRXlsExporter();
 					extensao = "xls";
@@ -79,6 +80,18 @@ public class RelatorioUtil
 					openExportado.exportReport();
 					arquivoGerado.deleteOnExit();
 					break;
+				case RelatorioUtil.RELATORIO_CSV:
+					JRCsvExporter csvExporter = new JRCsvExporter();
+					extensao = "csv";
+					arquivoGerado = new java.io.File(caminhoArquivoRelatorio + "." + extensao);
+					csvExporter.setExporterInput(new SimpleExporterInput(impressoraJasper));
+					csvExporter.setExporterOutput(new SimpleWriterExporterOutput(arquivoGerado));
+					
+					csvExporter.exportReport();
+					arquivoGerado.deleteOnExit();
+					
+					break;
+				
 			}			
 
 			InputStream conteudoRelatorio = new FileInputStream(arquivoGerado);

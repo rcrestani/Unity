@@ -1,5 +1,6 @@
 package movimentacao.web;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -37,6 +38,8 @@ import movimentacao.projetoNCE.chave.Chave;
 import movimentacao.projetoNCE.chave.ChaveRN;
 import movimentacao.projetoNCE.controleSiteChave.ControleSiteChave;
 import movimentacao.projetoNCE.controleSiteChave.ControleSiteChaveRN;
+import movimentacao.projetoNCE.emails.NivelEmail;
+import movimentacao.projetoNCE.emails.NivelEmailRN;
 import movimentacao.projetoNCE.empresa.Empresa;
 import movimentacao.projetoNCE.empresa.EmpresaRN;
 import movimentacao.projetoNCE.site.Site;
@@ -48,6 +51,7 @@ import movimentacao.projetoNCE.tecnico.TecnicoRN;
 import movimentacao.usuario.Usuario;
 import movimentacao.usuario.UsuarioRN;
 import movimentacao.util.DateCalculator;
+import movimentacao.util.JavaMailApp;
 
 @ManagedBean(name = "nceControleChaveBean")
 @ViewScoped
@@ -77,6 +81,7 @@ public class NceControleChaveBean implements Serializable
 	private AnotacaoRN anotacaoRN = new AnotacaoRN();
 	private List<Anotacao> listaAnotacao = new ArrayList<Anotacao>();
 	private String usuario = "";
+	private String nomeTecnico = "";
 	private String cpfTecnico = "";
 	private String nomeEmpresa = "";
 	private String cep = "";
@@ -94,6 +99,7 @@ public class NceControleChaveBean implements Serializable
 	private boolean campoStatus = false;
 	private boolean formAnotacao = false;
 	private boolean fecharFormSiteChave = true;
+	private boolean formFechamento = false;
 	//==================================================================
 	//Dados da sessão===================================================
 	private FacesContext context = FacesContext.getCurrentInstance();
@@ -112,6 +118,14 @@ public class NceControleChaveBean implements Serializable
 	{
 		this.lazyControleChave = new LazyControleChaveDataModel(this.controleChaveRN, this.filtro);
 		calcTempoAberto();
+	}
+	
+	public String consultar()
+	{
+		this.tecnico = this.tecnicoRN.tecnicoPorNome(this.nomeTecnico);
+		this.filtro.setIdTecnico(this.tecnico);
+		
+		return null;
 	}
 	
 	public String recuperarId()
@@ -280,7 +294,7 @@ public class NceControleChaveBean implements Serializable
 		
 		return null;
 	}
-	
+		
 	public String atenderRequisicao()
 	{		
 		this.cpfTecnico = this.controleChave.getIdTecnico().getCpf();
@@ -296,6 +310,98 @@ public class NceControleChaveBean implements Serializable
 		this.chave = new Chave();
 		this.nomeEmpresa = "";
 		this.cep = "";
+		
+		return null;
+	}
+	
+	public String carregarFechamento()
+	{
+		ControleSiteChaveRN siteChaveRN = new ControleSiteChaveRN();
+		this.listaSiteChave.clear();
+		this.listaSiteChave = siteChaveRN.sitesChavesPorReq(this.controleChave);
+		
+		if(this.controleChave.getDataFechamento() != null)
+		{
+			this.formFechamento = true;
+		}
+		else
+		{
+			this.formFechamento = false;
+		}
+		
+		return null;
+	}
+	
+	public String fecharRequisicao()
+	{
+		if(this.controleChave.getDataFechamento() == null)
+		{
+			this.controleChave.setUsuarioFechamento(this.usuarioRN.buscarPorLogin(this.login));
+			this.controleChave.setDataFechamento(new Date());
+			
+			this.controleChaveRN.salvar(this.controleChave);
+			
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+		    		FacesMessage.SEVERITY_INFO , "Requisição encerrada com sucesso!", ""));
+			
+			if(this.controleChave.isStatusFechamento() == false)
+			{
+				JavaMailApp jMail = new JavaMailApp();
+				NivelEmailRN nivelEmailRN = new NivelEmailRN();
+				List<NivelEmail> listaNivelEmail = new ArrayList<NivelEmail>();
+				String nivel1 = "";
+				
+				listaNivelEmail = nivelEmailRN.listar();
+				for(int x = 0; x < listaNivelEmail.size(); x++)
+				{
+					if(listaNivelEmail.get(x).getNivel().equals("nivel1"))
+					{
+						nivel1 = nivel1 + listaNivelEmail.get(x).getEmail();
+						if(x < listaNivelEmail.size() - 1) {nivel1 = nivel1 + ", ";}
+					}
+				}
+				
+				jMail.setDestinatario(nivel1);
+				jMail.setAssunto("Alerta! - Requisição " + this.controleChave.getIdAno() + " encerrada com pendências");
+				jMail.setMsg("<center><h2>Requisição Encerrada com Pendências</h2></center>"
+							+"<br>Olá," 
+							+"<br><br>A requisição " + this.controleChave.getIdAno() + ", foi encerrada com pendências:"
+							+"<br><br>"
+							+ "<br><b>Fechado por:</b> " + this.controleChave.getUsuarioFechamento().getNome()
+							+ "<br><b>Data Fechamento:</b> " + formatDateHour(this.controleChave.getDataFechamento())
+							+ "<br><b>Técnico:</b> " + this.controleChave.getIdTecnico().getNome()
+							+ "<br><b>Celular:</b> " + this.controleChave.getIdTecnico().getCelular()
+							+ "<br><b>CPF:</b> " + this.controleChave.getIdTecnico().getCpf()
+							+ "<br><b>CRQ:</b> " + this.controleChave.getCrq()
+							+ "<br><b>Tempo Aberto:</b> " + this.controleChave.getTempoAberto()
+							+ "<br><b>Obs:</b> " + this.controleChave.getObsFechamento()
+							+ "<br><br>Atenciosamente,"
+							+ "<br><br><b><i>Performancelab Sistemas</i></b>");
+				
+				new Thread()
+				{
+					@Override
+					public void run()
+					{
+						try
+						{
+							jMail.sendMail();
+						}
+						catch (IOException e) 
+						{
+							e.printStackTrace();
+						}
+					}
+				}.start();
+			}
+		}
+		else
+		{
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+		    		FacesMessage.SEVERITY_ERROR ,
+		    		"Nenhuma alteração registrada! Esta requisição já foi fechada por "
+		    		+ this.controleChave.getUsuarioFechamento().getNome(), ""));
+		}
 		
 		return null;
 	}
@@ -474,7 +580,8 @@ public class NceControleChaveBean implements Serializable
 	
 	public void notificacaoCPF() 
 	{
-		if(this.tecnicoRN.tecnicoPorCPF(this.tecnico.getCpf()) != null)
+		if(this.tecnicoRN.tecnicoPorCPF(this.tecnico.getCpf()) != null
+				&& this.tecnicoRN.tecnicoPorCPF(this.tecnico.getCpf()).getId() != this.tecnico.getId())
 		{
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
 		    		FacesMessage.SEVERITY_ERROR , "Erro! Este CPF já pertence a outro Técnico!", ""));
@@ -802,11 +909,19 @@ public class NceControleChaveBean implements Serializable
 		return null;
 	}
 	//FIM MÉTODOS ANOTAÇÕES========================================================================================
+	
 	private String formatYear(Date data) 
 	{
 		DateFormat dateFormat = new SimpleDateFormat("yyyy");
 		
 		return dateFormat.format(data);
+	}
+	
+	private String formatDateHour(Date date) 
+	{
+	    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy - H:mm");
+	    
+	    return dateFormat.format(date);
 	}
 	
 	public ControleChave getControleChave() {
@@ -1078,6 +1193,30 @@ public class NceControleChaveBean implements Serializable
 
 	public void setFormAnotacao(boolean formAnotacao) {
 		this.formAnotacao = formAnotacao;
+	}
+
+	public boolean isFormFechamento() {
+		return formFechamento;
+	}
+
+	public void setFormFechamento(boolean formFechamento) {
+		this.formFechamento = formFechamento;
+	}
+
+	public ControleChaveRN getControleChaveRN() {
+		return controleChaveRN;
+	}
+
+	public void setControleChaveRN(ControleChaveRN controleChaveRN) {
+		this.controleChaveRN = controleChaveRN;
+	}
+
+	public String getNomeTecnico() {
+		return nomeTecnico;
+	}
+
+	public void setNomeTecnico(String nomeTecnico) {
+		this.nomeTecnico = nomeTecnico;
 	}
 	
 }

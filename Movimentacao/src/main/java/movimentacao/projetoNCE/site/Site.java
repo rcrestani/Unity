@@ -35,8 +35,8 @@ public class Site implements Serializable
 	@JoinColumn (name = "idCoordenador")
 	private Coordenador idCoordenador;
 	
-	private Float lat;
-	private Float lng;
+	private String lat;
+	private String lng;
 	private String endereco;
 	private String bairro;
 	private String cidade;
@@ -89,19 +89,19 @@ public class Site implements Serializable
 		this.idCoordenador = idCoordenador;
 	}
 
-	public Float getLat() {
+	public String getLat() {
 		return lat;
 	}
 
-	public void setLat(Float lat) {
+	public void setLat(String lat) {
 		this.lat = lat;
 	}
 
-	public Float getLng() {
+	public String getLng() {
 		return lng;
 	}
 
-	public void setLng(Float lng) {
+	public void setLng(String lng) {
 		this.lng = lng;
 	}
 
@@ -277,6 +277,5 @@ public class Site implements Serializable
 			return false;
 		return true;
 	}
-
 	
 }

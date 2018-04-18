@@ -8,6 +8,7 @@ public interface ControleChaveDAO
 	public void excluir(ControleChave controleChave);
 	public ControleChave carregar(Integer id);
 	public ControleChave ultimoRegistro();
+	public List<String> completeIdAno(String text);
 	public List<ControleChave> listar();
 	public List<ControleChave> listarAberto();
 	public List<ControleChave> listarNovas();

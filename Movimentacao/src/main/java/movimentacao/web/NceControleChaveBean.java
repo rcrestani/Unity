@@ -8,6 +8,7 @@ import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -332,24 +333,123 @@ public class NceControleChaveBean implements Serializable
 		return null;
 	}
 	
+	private void liberarChaves()
+	{
+		ControleSiteChaveRN siteChaveRN = new ControleSiteChaveRN();
+		List<ControleSiteChave> siteChave = siteChaveRN.sitesChavesPorReq(this.controleChave);
+		
+		for(ControleSiteChave sc:siteChave)
+		{
+			String [] chavesSplit = sc.getListaChaves().split(", ");
+			List<String> chavesList = Arrays.asList(chavesSplit);
+			
+			for(int c = 0; c < chavesList.size(); c++)
+			{
+				this.chave = this.chaveRN.chavePorNome(chavesList.get(c));
+				
+				this.chave.setIdControleChave(null);
+				this.chave.setSelecao(false);
+				this.chave.setTransito(false);
+				
+				this.chaveRN.salvar(this.chave);
+			}
+		}
+	}
+	
 	public String fecharRequisicao()
 	{
 		if(this.controleChave.getDataFechamento() == null)
 		{
-			this.controleChave.setUsuarioFechamento(this.usuarioRN.buscarPorLogin(this.login));
-			this.controleChave.setDataFechamento(new Date());
+			DateCalculator calcDate = new DateCalculator();
+			this.data48hsAtras = calcDate.data48HorasAtras(new Date());
 			
-			this.controleChaveRN.salvar(this.controleChave);
+			boolean devForaPrazo = this.controleChave.getDataAbertura().before(this.data48hsAtras)
+									&& this.controleChave.getDataFechamento() == null;
 			
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
-		    		FacesMessage.SEVERITY_INFO , "Requisição encerrada com sucesso!", ""));
+			JavaMailApp jMail = new JavaMailApp();
+			NivelEmailRN nivelEmailRN = new NivelEmailRN();
+			List<NivelEmail> listaNivelEmail = new ArrayList<NivelEmail>();
+			String nivel1 = "";
 			
-			if(this.controleChave.isStatusFechamento() == false)
+			if(this.controleChave.isStatusFechamento() && devForaPrazo == false)
 			{
-				JavaMailApp jMail = new JavaMailApp();
-				NivelEmailRN nivelEmailRN = new NivelEmailRN();
-				List<NivelEmail> listaNivelEmail = new ArrayList<NivelEmail>();
-				String nivel1 = "";
+				liberarChaves();
+				this.controleChave.setUsuarioFechamento(this.usuarioRN.buscarPorLogin(this.login));
+				this.controleChave.setDataFechamento(new Date());
+				
+				this.controleChaveRN.salvar(this.controleChave);
+				
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+			    		FacesMessage.SEVERITY_INFO , "Requisição encerrada com sucesso!", ""));
+			}
+			else if(this.controleChave.isStatusFechamento() == false && devForaPrazo)
+			{
+				this.tecnico = this.tecnicoRN.carregar(this.controleChave.getIdTecnico().getId());
+				this.tecnico.setTempBlock(calcDate.dataAdd72Horas(new Date()));
+				this.tecnico.setStatus(false);
+				
+				this.tecnicoRN.salvar(this.tecnico);
+				
+				this.controleChave.setUsuarioFechamento(this.usuarioRN.buscarPorLogin(this.login));
+				this.controleChave.setDataFechamento(new Date());
+				
+				this.controleChaveRN.salvar(this.controleChave);
+				
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+			    		FacesMessage.SEVERITY_INFO , "Requisição encerrada com sucesso!", ""));
+				
+				listaNivelEmail = nivelEmailRN.listar();
+				for(int x = 0; x < listaNivelEmail.size(); x++)
+				{
+					if(listaNivelEmail.get(x).getNivel().equals("nivel1"))
+					{
+						nivel1 = nivel1 + listaNivelEmail.get(x).getEmail();
+						if(x < listaNivelEmail.size() - 1) {nivel1 = nivel1 + ", ";}
+					}
+				}
+				
+				jMail.setDestinatario(nivel1);
+				jMail.setAssunto("Alerta! - Requisição " + this.controleChave.getIdAno() + " encerrada com pendências e fora do prazo");
+				jMail.setMsg("<center><h2>Requisição Encerrada com Pendências e fora do Prazo</h2></center>"
+							+"<br>Olá," 
+							+"<br><br>A requisição " + this.controleChave.getIdAno() + ", foi encerrada com pendências e fora do prazo das 48 horas:"
+							+"<br><br>"
+							+ "<br><b>Fechado por:</b> " + this.controleChave.getUsuarioFechamento().getNome()
+							+ "<br><b>Data Fechamento:</b> " + formatDateHour(this.controleChave.getDataFechamento())
+							+ "<br><b>Técnico:</b> " + this.controleChave.getIdTecnico().getNome()
+							+ "<br><b>Celular:</b> " + this.controleChave.getIdTecnico().getCelular()
+							+ "<br><b>CPF:</b> " + this.controleChave.getIdTecnico().getCpf()
+							+ "<br><b>CRQ:</b> " + this.controleChave.getCrq()
+							+ "<br><b>Tempo Aberto:</b> " + this.controleChave.getTempoAberto()
+							+ "<br><b>Obs:</b> " + this.controleChave.getObsFechamento()
+							+ "<br><br>Atenciosamente,"
+							+ "<br><br><b><i>Performancelab Sistemas</i></b>");
+				
+				new Thread()
+				{
+					@Override
+					public void run()
+					{
+						try
+						{
+							jMail.sendMail();
+						}
+						catch (IOException e) 
+						{
+							e.printStackTrace();
+						}
+					}
+				}.start();
+			}
+			else if(this.controleChave.isStatusFechamento() == false)
+			{
+				this.controleChave.setUsuarioFechamento(this.usuarioRN.buscarPorLogin(this.login));
+				this.controleChave.setDataFechamento(new Date());
+				
+				this.controleChaveRN.salvar(this.controleChave);
+				
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+			    		FacesMessage.SEVERITY_INFO , "Requisição encerrada com sucesso!", ""));
 				
 				listaNivelEmail = nivelEmailRN.listar();
 				for(int x = 0; x < listaNivelEmail.size(); x++)
@@ -366,6 +466,66 @@ public class NceControleChaveBean implements Serializable
 				jMail.setMsg("<center><h2>Requisição Encerrada com Pendências</h2></center>"
 							+"<br>Olá," 
 							+"<br><br>A requisição " + this.controleChave.getIdAno() + ", foi encerrada com pendências:"
+							+"<br><br>"
+							+ "<br><b>Fechado por:</b> " + this.controleChave.getUsuarioFechamento().getNome()
+							+ "<br><b>Data Fechamento:</b> " + formatDateHour(this.controleChave.getDataFechamento())
+							+ "<br><b>Técnico:</b> " + this.controleChave.getIdTecnico().getNome()
+							+ "<br><b>Celular:</b> " + this.controleChave.getIdTecnico().getCelular()
+							+ "<br><b>CPF:</b> " + this.controleChave.getIdTecnico().getCpf()
+							+ "<br><b>CRQ:</b> " + this.controleChave.getCrq()
+							+ "<br><b>Tempo Aberto:</b> " + this.controleChave.getTempoAberto()
+							+ "<br><b>Obs:</b> " + this.controleChave.getObsFechamento()
+							+ "<br><br>Atenciosamente,"
+							+ "<br><br><b><i>Performancelab Sistemas</i></b>");
+				
+				new Thread()
+				{
+					@Override
+					public void run()
+					{
+						try
+						{
+							jMail.sendMail();
+						}
+						catch (IOException e) 
+						{
+							e.printStackTrace();
+						}
+					}
+				}.start();
+			}
+			else if(devForaPrazo)
+			{
+				liberarChaves();
+				this.tecnico = this.tecnicoRN.carregar(this.controleChave.getIdTecnico().getId());
+				this.tecnico.setTempBlock(calcDate.dataAdd72Horas(new Date()));
+				this.tecnico.setStatus(false);
+				
+				this.tecnicoRN.salvar(this.tecnico);
+				
+				this.controleChave.setUsuarioFechamento(this.usuarioRN.buscarPorLogin(this.login));
+				this.controleChave.setDataFechamento(new Date());
+				
+				this.controleChaveRN.salvar(this.controleChave);
+				
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+			    		FacesMessage.SEVERITY_INFO , "Requisição encerrada com sucesso!", ""));
+				
+				listaNivelEmail = nivelEmailRN.listar();
+				for(int x = 0; x < listaNivelEmail.size(); x++)
+				{
+					if(listaNivelEmail.get(x).getNivel().equals("nivel1"))
+					{
+						nivel1 = nivel1 + listaNivelEmail.get(x).getEmail();
+						if(x < listaNivelEmail.size() - 1) {nivel1 = nivel1 + ", ";}
+					}
+				}
+				
+				jMail.setDestinatario(nivel1);
+				jMail.setAssunto("Alerta! - Requisição " + this.controleChave.getIdAno() + " encerrada fora do prazo");
+				jMail.setMsg("<center><h2>Requisição Encerrada fora do Prazo</h2></center>"
+							+"<br>Olá," 
+							+"<br><br>A requisição " + this.controleChave.getIdAno() + ", foi encerrada fora do prazo das 48 horas:"
 							+"<br><br>"
 							+ "<br><b>Fechado por:</b> " + this.controleChave.getUsuarioFechamento().getNome()
 							+ "<br><b>Data Fechamento:</b> " + formatDateHour(this.controleChave.getDataFechamento())

@@ -50,13 +50,13 @@ public class ChaveDAOHibernate implements ChaveDAO
 		return (List<String>)consulta.list();
 	}
 	
-	public Chave chavePorId(Integer id)
+	public Chave chavePorNome(String nome)
 	{
-		String hql = "select c from nce_chave c where c.id = :id";
-		Query consulta = this.session.createQuery(hql);
-		consulta.setInteger("id", id);
+		Criteria criteria = this.session.createCriteria(Chave.class);
 		
-		return (Chave) consulta.uniqueResult();
+		criteria.add(Restrictions.eq("nome", nome));
+		
+		return (Chave) criteria.uniqueResult();
 	}
 	
 	@SuppressWarnings("unchecked")

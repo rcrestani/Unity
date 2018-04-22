@@ -46,10 +46,10 @@ public class ChaveRN
 		return this.chaveDAO.completeChave(text);
 	}
 	
-	public Chave chavePorId(Integer id)
+	public Chave chavePorNome(String nome)
 	{
 		this.chaveDAO = DAOFactory.criarChaveDAO();
-		return this.chaveDAO.chavePorId(id);
+		return this.chaveDAO.chavePorNome(nome);
 	}
 	
 	public List<Chave> listaPorSiteStatusTrue(Site site)

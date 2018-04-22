@@ -12,7 +12,7 @@ public interface ChaveDAO
 	public Chave carregar(Integer id);
 	public List<Chave> listar();
 	public List<String> completeChave(String text);
-	public Chave chavePorId(Integer id);
+	public Chave chavePorNome(String nome);
 	public List<Chave> listaPorSiteStatusTrue(Site site);
 	public List<Chave> listaPorSelecaoTrue(ControleChave controleChave);
 }

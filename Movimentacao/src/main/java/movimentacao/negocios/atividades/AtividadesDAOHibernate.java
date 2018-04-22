@@ -1,5 +1,6 @@
 package movimentacao.negocios.atividades;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -59,11 +60,23 @@ public class AtividadesDAOHibernate implements AtividadesDAO
 		}
 		else if(filtro.getFim() != null && filtro.getInicial() == null)
 		{
-			criteria.add(Restrictions.le("prazo", filtro.getFim()));
+			Calendar c = Calendar.getInstance();
+			c.setTime(filtro.getFim());
+			c.set(Calendar.HOUR , 23);
+			c.set(Calendar.MINUTE , 59);
+			c.set(Calendar.SECOND, 59);
+			
+			criteria.add(Restrictions.le("prazo", c.getTime()));
 		}
 		else if(filtro.getInicial() != null && filtro.getFim() != null)
 		{
-			criteria.add(Restrictions.between("prazo", filtro.getInicial() , filtro.getFim()));
+			Calendar c = Calendar.getInstance();
+			c.setTime(filtro.getFim());
+			c.set(Calendar.HOUR , 23);
+			c.set(Calendar.MINUTE , 59);
+			c.set(Calendar.SECOND, 59);
+			
+			criteria.add(Restrictions.between("prazo", filtro.getInicial() , c.getTime()));
 		}
 		
 		if(StringUtils.isNotEmpty( filtro.getCliente() ))

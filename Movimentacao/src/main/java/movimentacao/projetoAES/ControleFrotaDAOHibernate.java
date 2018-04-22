@@ -1,5 +1,6 @@
 package movimentacao.projetoAES;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -162,11 +163,23 @@ public class ControleFrotaDAOHibernate implements ControleFrotaDAO
 		}
 		else if(filtro.getFim() != null && filtro.getInicio() == null)
 		{
+			Calendar c = Calendar.getInstance();
+			c.setTime(filtro.getFim());
+			c.set(Calendar.HOUR , 23);
+			c.set(Calendar.MINUTE , 59);
+			c.set(Calendar.SECOND, 59);
+			
 			criteria.add(Restrictions.le("saida", filtro.getFim()));
 		}
 		else if(filtro.getInicio() != null && filtro.getFim() != null)
 		{
-			criteria.add(Restrictions.between("saida", filtro.getInicio() , filtro.getFim()));
+			Calendar c = Calendar.getInstance();
+			c.setTime(filtro.getFim());
+			c.set(Calendar.HOUR , 23);
+			c.set(Calendar.MINUTE , 59);
+			c.set(Calendar.SECOND, 59);
+			
+			criteria.add(Restrictions.between("saida", filtro.getInicio() , c.getTime()));
 		}
 		
 		if(StringUtils.isNotEmpty( filtro.getColetor()))

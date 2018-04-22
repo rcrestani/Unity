@@ -73,5 +73,18 @@ public class DateCalculator
 		return (Date) dataFinal.getTime();
 		
 	}
+	
+	//Método utilizado no controle de chave do projeto NCE========================
+	public Date dataAdd72Horas(Date data)
+	{
+		Calendar dataFinal = Calendar.getInstance();
+		dataFinal.setTime(data);
+		
+		long resultado = dataFinal.getTimeInMillis() + 259200000;
+		dataFinal.setTimeInMillis(resultado);
+		
+		return (Date) dataFinal.getTime();
+		
+	}
 
 }

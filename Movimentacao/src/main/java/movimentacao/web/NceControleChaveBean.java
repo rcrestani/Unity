@@ -980,26 +980,6 @@ public class NceControleChaveBean implements Serializable
 		
 	}
 	
-	public String salvarChave()
-	{
-		this.chave.setSelecao(false);
-		this.chave.setTransito(false);
-		this.chave.setStatus(true);
-		this.chave.setIdSite(this.site);
-		this.chave.setDataHoraReg(new Date());
-		this.chave.setUsuario(this.usuarioRN.buscarPorLogin(this.login));
-		
-		this.chaveRN.salvar(this.chave);
-		
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
-	    		FacesMessage.SEVERITY_INFO , "Chave Registrada com sucesso!", ""));
-		
-		this.listaChaves.add(this.chave);
-		this.chave = new Chave();
-		
-		return null;
-	}
-	
 	public String selecionarChave()
 	{
 		if(this.chave.isSelecao())
@@ -1018,8 +998,6 @@ public class NceControleChaveBean implements Serializable
 		}
 		
 		this.chaveRN.salvar(this.chave);
-		
-		
 		
 		return null;
 	}

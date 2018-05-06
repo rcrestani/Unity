@@ -2,15 +2,20 @@ package movimentacao.projetoNCE.chave;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.UniqueConstraint;
 
 import movimentacao.projetoNCE.ControleChave;
-import movimentacao.projetoNCE.site.Site;
 import movimentacao.usuario.Usuario;
 
 @Entity (name = "nce_chave")
@@ -22,9 +27,13 @@ public class Chave implements Serializable
 	@GeneratedValue
 	private Integer id;
 	
-	@ManyToOne
-	@JoinColumn (name = "IdSite")
-	private Site idSite;
+	@ElementCollection(targetClass = Integer.class)
+	@JoinTable(
+			name="nce_chave_IdSite",
+			uniqueConstraints = {@UniqueConstraint(columnNames = {"chave" , "IdSite"})},
+			joinColumns = @JoinColumn(name = "chave"))
+	@Column(name = "idSite")
+	private Set<Integer> idSite = new HashSet<Integer>();
 	
 	@ManyToOne
 	@JoinColumn (name = "IdControleChave")
@@ -52,11 +61,11 @@ public class Chave implements Serializable
 		this.id = id;
 	}
 
-	public Site getIdSite() {
+	public Set<Integer> getIdSite() {
 		return idSite;
 	}
 
-	public void setIdSite(Site idSite) {
+	public void setIdSite(Set<Integer> idSite) {
 		this.idSite = idSite;
 	}
 
@@ -235,6 +244,5 @@ public class Chave implements Serializable
 			return false;
 		return true;
 	}
-
 
 }

@@ -737,7 +737,7 @@
 								effect="fade" placeholder="Selecione o Site requisitado" style="font-size: 10px;"
 								required="true" requiredMessage="ID Atual do Site é obrigatório." forceSelection="true"
 								onkeyup="value=value.toUpperCase()">
-							<p:ajax event="itemSelect" listener="#{nceControleChaveBean.siteRequisitado}" update=":adicionarChave :listaChaves"/>
+							<p:ajax event="itemSelect" listener="#{nceControleChaveBean.siteRequisitado}" update=":listaChaves"/>
 						</p:autoComplete>
 					</p:column>
 					
@@ -753,69 +753,7 @@
 			</p:panelGrid>
 		</h:form>
 		
-		<p:separator/>
-		
-<h:form id="adicionarChave">
-	<center>
-	<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_ADM">
-	<p:panelGrid style="border-collapse: unset;" rendered="#{nceControleChaveBean.formSiteChave}">
-		<p:row>
-			<p:column style="border-width:0px;">
-				<p:inputText class="form-padrao form-mov" style="font-size: 18px; text-align:center;" id="idChave"
-				value="#{nceControleChaveBean.chave.id}" size="2" placeholder="Id" disabled="true"/>
-			</p:column>
-			
-			<p:column style="border-width:0px;">
-				<p:autoComplete id="nomeChave" minQueryLength="3" size="20" scrollHeight="250" value="#{nceControleChaveBean.chave.nome}"
-								completeMethod="#{nceControleChaveBean.chaveRN.completeChave}" effect="fade"
-								required="true" requiredMessage="Nome Chave é obrigatório." placeholder="Nome Chave"
-								onkeyup="value=value.toUpperCase()"/>
-			</p:column>
-			
-			<p:column style="border-width:0px;">
-				<p:selectOneMenu style="font-size: 18px; text-align:center; margin-left:0px;" id="tipoChave"
-							value="#{nceControleChaveBean.chave.tipo}" size="7" maxlength="7"
-							required="true" requiredMessage="Tipo da chave é obrigatório.">
-					<f:selectItem id="subItem" itemLabel="Tipo Chave" />
-					<f:selectItem itemLabel="PORTÃO" itemValue="PORTÃO" />
-		            <f:selectItem itemLabel="GRADIL DO CONTAINER" itemValue="GRADIL DO CONTAINER" />
-		            <f:selectItem itemLabel="CONTAINER" itemValue="CONTAINER" />
-		            <f:selectItem itemLabel="GRADIL DO ARMÁRIO" itemValue="GRADIL DO ARMÁRIO" />
-		            <f:selectItem itemLabel="GERADOR DE ENERGIA" itemValue="GERADOR DE ENERGIA" />
-		            <f:selectItem itemLabel="GRADIL DO RRU" itemValue="GRADIL DO RRU" />
-				</p:selectOneMenu>
-			</p:column>
-			
-			<p:column style="border-width:0px;">
-				<p:inputText class="form-padrao form-mov" style="font-size: 18px; text-align:center;" id="claviculario"
-							value="#{nceControleChaveBean.chave.claviculario}" size="7" maxlength="7" placeholder="Claviculário" 
-							required="true" requiredMessage="Obrigatório informar o Claviculário."
-							onkeyup="value=value.toUpperCase()"/>
-			</p:column>
-			
-			<p:column style="border-width:0px;">
-				<p:inputText class="form-padrao form-mov" style="font-size: 18px; text-align:center;" id="posicao"
-							value="#{nceControleChaveBean.chave.posicao}" size="7" maxlength="7" placeholder="Posição" 
-							required="true" requiredMessage="Obrigatório informar a Posição."
-							onkeyup="value=value.toUpperCase()"/>
-			</p:column>
-			
-			<p:column style="border-width:0px;">
-				<p:selectBooleanButton id="stsChave" value="#{nceControleChaveBean.chave.status}"
-									offIcon="ui-icon-locked" onIcon="ui-icon-unlocked"
-									onLabel="Operante" offLabel="Inoperante" />
-			</p:column>
-			
-			<p:column style="border-width:0px;">
-				<p:commandButton id="adicionar" value="Adicionar" action="#{nceControleChaveBean.salvarChave}"
-									style="width:125px; margin-left:0px;" update=":listaChaves:itensChave @form"/>
-			</p:column>
-			
-		</p:row>
-	</p:panelGrid>
-	</sec:ifAnyGranted>
-</center>
-</h:form>
+<p:separator/>
 
 <h:form id="listaChaves">
 <p:separator/>

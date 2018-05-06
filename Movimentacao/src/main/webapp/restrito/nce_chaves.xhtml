@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:sec="http://www.springframework.org/security/facelets/tags">
+<ui:composition template="/template/interna.xhtml">
+	<ui:define name="titulo">
+		<h:graphicImage library="imagens" name="performancelab.png" style="height:40px;"/>
+		<h:outputLabel class="label-padrao" value="Chaves" style="margin-left:320px; font-size:30px; font-family:Ubuntu;"/>
+	</ui:define>
+	<ui:define name="corpo">
+	
+	<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_CONTROLE_CHAVE_OPER , ROLE_ADM">
+	
+	<p:growl id="grow" autoUpdate="true" life="4000" showDetail="true" widgetVar="grow" />
+<!-- FORM NOVOS//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
+<h:form id="novos">
+	<p:commandButton class="btnPadrao" value="Nova Chave" action="#{nceChavesBean.novo}"
+						oncomplete="PF('dlgChave').show();" update=":cadastro"/>
+</h:form>
+<!-- FIM FORM NOVOS//////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
+
+<!-- DIALOG CHAVES///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
+	<p:dialog id="dlgChave" rendered="true" position="center" header="Cadastro de nova Chave"
+				widgetVar="dlgChave" minHeight="40" width="850px" showEffect="explode" hideEffect="explode" modal="true"
+				showCloseIcon="true">
+				
+    	<h:form id="cadastro">
+    		<p:panelGrid style="border-collapse: unset;">
+				<p:row>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" id="codigoChave" value="Código da Chave:"/>
+					</p:column>		
+					<p:column style="border-width:0px;">
+						<p:autoComplete id="nomeChave" minQueryLength="3" size="20" scrollHeight="250" value="#{nceChavesBean.chave.nome}"
+										completeMethod="#{nceChavesBean.chaveRN.completeChave}" effect="fade"
+										required="true" requiredMessage="Nome Chave é obrigatório."
+										onkeyup="value=value.toUpperCase()"/>
+					</p:column>
+					
+					<p:column style="border-width:0px;" colspan="2">
+						<p:selectOneMenu style="font-size: 18px; text-align:center; margin-left:0px;" id="tipoChave"
+									value="#{nceChavesBean.chave.tipo}" size="7" maxlength="7"
+									required="true" requiredMessage="Tipo da chave é obrigatório.">
+							<f:selectItem id="subItem" itemLabel="Tipo Chave" />
+							<f:selectItem itemLabel="PORTÃO" itemValue="PORTÃO" />
+				            <f:selectItem itemLabel="GRADIL DO CONTAINER" itemValue="GRADIL DO CONTAINER" />
+				            <f:selectItem itemLabel="CONTAINER" itemValue="CONTAINER" />
+				            <f:selectItem itemLabel="GRADIL DO ARMÁRIO" itemValue="GRADIL DO ARMÁRIO" />
+				            <f:selectItem itemLabel="GERADOR DE ENERGIA" itemValue="GERADOR DE ENERGIA" />
+				            <f:selectItem itemLabel="GRADIL DO RRU" itemValue="GRADIL DO RRU" />
+						</p:selectOneMenu>
+					</p:column>
+				</p:row>
+				<p:row>	
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" id="clavicularioLbl" value="Claviculário:"/>
+					</p:column>	
+					<p:column style="border-width:0px;">
+						<p:inputText class="form-padrao form-mov" style="font-size: 18px; text-align:center;" id="claviculario"
+									value="#{nceChavesBean.chave.claviculario}" size="7" maxlength="7" 
+									required="true" requiredMessage="Obrigatório informar o Claviculário."
+									onkeyup="value=value.toUpperCase()"/>
+					</p:column>
+					
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" id="posicaoLbl" value="Posição:"/>
+					</p:column>	
+					<p:column style="border-width:0px;">
+						<p:inputText class="form-padrao form-mov" style="font-size: 18px; text-align:center;" id="posicao"
+									value="#{nceChavesBean.chave.posicao}" size="7" maxlength="7" 
+									required="true" requiredMessage="Obrigatório informar a Posição."
+									onkeyup="value=value.toUpperCase()"/>
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" id="stsChaveLbl" value="Status da Chave:"/>
+					</p:column>	
+					<p:column style="border-width:0px;">
+						<p:selectBooleanButton id="stsChave" value="#{nceChavesBean.chave.status}"
+											offIcon="ui-icon-locked" onIcon="ui-icon-unlocked"
+											onLabel="Operante" offLabel="Inoperante" />
+					</p:column>
+				</p:row>
+				
+				<p:row>
+					<p:column style="border-width:0px;">
+						<h:outputLabel class="label-padrao" id="sitesLbl" value="Sites:"/>
+					</p:column>
+					<p:column style="border-width:0px;" colspan="2">
+						<p:autoComplete id="sites" minQueryLength="3" size="20" scrollHeight="250" value="#{nceChavesBean.listaSites}"
+										completeMethod="#{nceChavesBean.siteRN.completeSite}" effect="fade" multiple="true" unique="true"
+										required="true" requiredMessage="Nome Chave é obrigatório."
+										onkeyup="value=value.toUpperCase()"/>
+					</p:column>
+				</p:row>
+				
+				<p:row>
+		            <p:column style="padding: 0px;" colspan="6"></p:column>
+		        </p:row>
+				
+				<p:row>
+					<p:column style="border-width:0px;">
+						<p:commandButton id="salvar" value="Salvar" action="#{nceChavesBean.testeSites}"
+											style="width:125px; margin-left:0px;" update="@form"/>
+					</p:column>
+				</p:row>
+			</p:panelGrid>
+		</h:form>
+	</p:dialog>
+<!-- FIM DIALOG CHAVES///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	</sec:ifAnyGranted>
+	</ui:define>
+</ui:composition>
+</html>

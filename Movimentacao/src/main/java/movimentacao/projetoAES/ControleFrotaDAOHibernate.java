@@ -66,17 +66,27 @@ public class ControleFrotaDAOHibernate implements ControleFrotaDAO
 	{
 		Criteria criteria = this.session.createCriteria(ControleFrota.class);
 		
+		Calendar c = Calendar.getInstance();
+		
+		if(filtro.getFim() != null)
+		{
+			c.setTime(filtro.getFim());
+			c.set(Calendar.HOUR , 23);
+			c.set(Calendar.MINUTE , 59);
+			c.set(Calendar.SECOND, 59);
+		}
+		
 		if(filtro.getInicio() != null && filtro.getFim() == null)
 		{
 			criteria.add(Restrictions.ge("saida", filtro.getInicio()));
 		}
 		else if(filtro.getFim() != null && filtro.getInicio() == null)
 		{
-			criteria.add(Restrictions.le("saida", filtro.getFim()));
+			criteria.add(Restrictions.le("saida", c.getTime()));
 		}
 		else if(filtro.getInicio() != null && filtro.getFim() != null)
 		{
-			criteria.add(Restrictions.between("saida", filtro.getInicio() , filtro.getFim()));
+			criteria.add(Restrictions.between("saida", filtro.getInicio() , c.getTime()));
 		}
 		
 		if(StringUtils.isNotEmpty( filtro.getColetor()))
@@ -156,29 +166,26 @@ public class ControleFrotaDAOHibernate implements ControleFrotaDAO
 	private Criteria criarCriteriaParaFiltro(ControleFrotaFiltro filtro)
 	{
 		Criteria criteria = this.session.createCriteria(ControleFrota.class);
+		Calendar c = Calendar.getInstance();
+		
+		if(filtro.getFim() != null)
+		{
+			c.setTime(filtro.getFim());
+			c.set(Calendar.HOUR , 23);
+			c.set(Calendar.MINUTE , 59);
+			c.set(Calendar.SECOND, 59);
+		}
 		
 		if(filtro.getInicio() != null && filtro.getFim() == null)
 		{
 			criteria.add(Restrictions.ge("saida", filtro.getInicio()));
 		}
 		else if(filtro.getFim() != null && filtro.getInicio() == null)
-		{
-			Calendar c = Calendar.getInstance();
-			c.setTime(filtro.getFim());
-			c.set(Calendar.HOUR , 23);
-			c.set(Calendar.MINUTE , 59);
-			c.set(Calendar.SECOND, 59);
-			
-			criteria.add(Restrictions.le("saida", filtro.getFim()));
+		{			
+			criteria.add(Restrictions.le("saida", c.getTime()));
 		}
 		else if(filtro.getInicio() != null && filtro.getFim() != null)
 		{
-			Calendar c = Calendar.getInstance();
-			c.setTime(filtro.getFim());
-			c.set(Calendar.HOUR , 23);
-			c.set(Calendar.MINUTE , 59);
-			c.set(Calendar.SECOND, 59);
-			
 			criteria.add(Restrictions.between("saida", filtro.getInicio() , c.getTime()));
 		}
 		

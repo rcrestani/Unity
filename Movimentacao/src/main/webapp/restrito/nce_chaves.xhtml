@@ -21,7 +21,7 @@
 						oncomplete="PF('dlgChave').show();" update=":cadastro"/>
 </h:form>
 <!-- FIM FORM NOVOS//////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
-
+<p:separator/>
 <!-- DIALOG CHAVES///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->	
 	<p:dialog id="dlgChave" rendered="true" position="center" header="Cadastro de nova Chave"
 				widgetVar="dlgChave" minHeight="40" width="850px" showEffect="explode" hideEffect="explode" modal="true"
@@ -93,7 +93,7 @@
 					<p:column style="border-width:0px;" colspan="2">
 						<p:autoComplete id="sites" minQueryLength="3" size="20" scrollHeight="250" value="#{nceChavesBean.listaSites}"
 										completeMethod="#{nceChavesBean.siteRN.completeSite}" effect="fade" multiple="true" unique="true"
-										required="true" requiredMessage="Nome Chave é obrigatório."
+										required="true" requiredMessage="Pelo menos 1 Site é obrigatório."
 										onkeyup="value=value.toUpperCase()"/>
 					</p:column>
 				</p:row>
@@ -104,14 +104,78 @@
 				
 				<p:row>
 					<p:column style="border-width:0px;">
-						<p:commandButton id="salvar" value="Salvar" action="#{nceChavesBean.testeSites}"
-											style="width:125px; margin-left:0px;" update="@form"/>
+						<p:commandButton id="salvar" value="Salvar" action="#{nceChavesBean.salvar}"
+											style="width:125px; margin-left:0px;" update=":lista @form"/>
 					</p:column>
 				</p:row>
 			</p:panelGrid>
 		</h:form>
 	</p:dialog>
 <!-- FIM DIALOG CHAVES///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+<!-- DATATABLE //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<h:form id="lista">	
+	<p:dataTable value="#{nceChavesBean.lazyChave}" var="chave" lazy="true"
+						border="1" cellpadding="2" cellspacing="0" rowIndexVar="index"
+						paginator="true" paginatorPosition="bottom" rows="10" id="tbl" widgetVar="tableChave"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						paginatorAlwaysVisible="true"
+						currentPageReportTemplate="{totalRecords} Chaves">
+			
+			<p:column headerText="ID" style="text-align: center;" width="10" sortBy="#{chave.id}">
+				<h:outputText value="#{chave.id}"/>
+			</p:column>
+			
+			<p:column headerText="Código Chave" style="text-align: center;" width="80" sortBy="#{chave.nome}">
+				<h:outputText value="#{chave.nome}"/>
+			</p:column>
+			
+			<p:column headerText="Tipo" style="text-align: center;" width="50" sortBy="chave.tipo">
+				<h:outputText value="#{chave.tipo}"/>
+			</p:column>
+			
+			<p:column headerText="Claviculário" style="text-align: center;" width="30">
+				<h:outputText value="#{chave.claviculario}"/>
+			</p:column>
+			
+			<p:column headerText="Data Registro" style="text-align: center;" width="50" sortBy="#{chave.dataHoraReg}">
+				<h:outputText value="#{chave.dataHoraReg}">
+					<f:convertDateTime pattern="dd/MM/yyyy - HH:mm" locale="pt" />
+				</h:outputText>
+			</p:column>
+			
+			<p:column headerText="Usuário Registro" style="text-align: center;" width="80">
+				<h:outputText value="#{chave.usuario.nome}"/>
+			</p:column>
+			
+			<p:column headerText="Status" style="text-align: center;" width="20" sortBy="#{chave.status}">
+				<h:graphicImage library="imagens" name="hand_#{chave.status}.png" style="border:0"/>
+			</p:column>
+			
+			<p:column headerText="Trânsito" style="text-align: center;" width="20" sortBy="#{chave.transito}">
+				<h:outputText value="#{chave.idControleChave.id}  " style="font-size:18px;"/>
+				<h:graphicImage library="imagens" name="hand_#{chave.transito}.png" style="border:0"/>
+			</p:column>
+			
+			<p:column headerText="Ações" style="text-align: center;" width="20">
+				<p:commandLink  action="#{nceChavesBean.liberarChave}" update=":lista" title="Liberar Chave"
+								rendered="#{nceChavesBean.botaoLiberarChave(chave)}">
+					<h:graphicImage library="imagens" name="unlock-green.png"/>
+					<f:setPropertyActionListener value="#{chave}" target="#{nceChavesBean.chave}"/>
+				</p:commandLink>
+				
+				<h:outputText value="  " style="font-size:18px;"/>
+				
+				<p:commandLink  action="#{nceChavesBean.editar}" update=":cadastro" title="Editar"
+								oncomplete="PF('dlgChave').show();">
+					<h:graphicImage library="imagens" name="editar16.png"/>
+					<f:setPropertyActionListener value="#{chave}" target="#{nceChavesBean.chave}"/>
+				</p:commandLink>
+			</p:column>
+	</p:dataTable>
+</h:form>
+<!-- FIM DATATABLE ////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
 	</sec:ifAnyGranted>
 	</ui:define>
 </ui:composition>

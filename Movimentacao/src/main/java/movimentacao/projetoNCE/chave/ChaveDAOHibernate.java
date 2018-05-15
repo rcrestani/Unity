@@ -2,9 +2,12 @@ package movimentacao.projetoNCE.chave;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import movimentacao.projetoNCE.ControleChave;
@@ -23,7 +26,7 @@ public class ChaveDAOHibernate implements ChaveDAO
 	{
 		this.session.saveOrUpdate(chave);
 	}
-
+	
 	public void excluir(Chave chave)
 	{
 		this.session.delete(chave);
@@ -62,12 +65,12 @@ public class ChaveDAOHibernate implements ChaveDAO
 	@SuppressWarnings("unchecked")
 	public List<Chave> listaPorSiteStatusTrue(Site site)
 	{
-		Criteria criteria = this.session.createCriteria(Chave.class);
+		//A query abaixo com JOIN, serve para buscar valores de um element collection da classe/entidade==============
+		String hql = "select c from nce_chave c join c.idSite s where s = :idSite";
+		Query listaIdChaves = this.session.createQuery(hql);
+		listaIdChaves.setInteger("idSite", site.getId());
 		
-		criteria.add(Restrictions.eq("idSite", site));
-		criteria.add(Restrictions.eq("status", true));
-		
-		return criteria.list();
+		return listaIdChaves.list();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -79,5 +82,64 @@ public class ChaveDAOHibernate implements ChaveDAO
 		criteria.add(Restrictions.eq("selecao", true));
 		
 		return criteria.list();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Chave> buscarTodosPaginado(ChaveFiltro filtro)
+	{
+		Criteria criteria = criarCriteriaParaFiltro(filtro);
+		
+		criteria.setFirstResult(filtro.getPrimeiroRegistro());
+		criteria.setMaxResults(filtro.getQuantidadeRegistros());
+		
+		if (filtro.isAscendente() && filtro.getPropriedadeOrdenacao() != null)
+		{
+			criteria.addOrder(Order.asc(filtro.getPropriedadeOrdenacao()));
+		}
+		else if (filtro.getPropriedadeOrdenacao() != null)
+		{
+			criteria.addOrder(Order.desc(filtro.getPropriedadeOrdenacao()));
+		}
+		else
+		{
+			criteria.addOrder(Order.asc("nome"));
+		}
+		
+		return criteria.list();
+	}
+	
+	public int quantidadeFiltrados(ChaveFiltro filtro)
+	{
+		Criteria criteria = criarCriteriaParaFiltro(filtro);
+		
+		criteria.setProjection(Projections.rowCount());
+		
+		return ((Number) criteria.uniqueResult()).intValue();
+	}
+	
+
+	private Criteria criarCriteriaParaFiltro(ChaveFiltro filtro)
+	{
+		Criteria criteria = this.session.createCriteria(Chave.class);
+		
+		if(filtro.getInicio() != null && filtro.getFim() == null)
+		{
+			criteria.add(Restrictions.ge("dataHoraReg", filtro.getInicio()));
+		}
+		else if(filtro.getFim() != null && filtro.getInicio() == null)
+		{
+			criteria.add(Restrictions.le("dataHoraReg", filtro.getFim()));
+		}
+		else if(filtro.getInicio() != null && filtro.getFim() != null)
+		{
+			criteria.add(Restrictions.between("dataHoraReg", filtro.getInicio() , filtro.getFim()));
+		}
+		
+		if(StringUtils.isNotEmpty( filtro.getNome()))
+		{
+			criteria.add(Restrictions.eq("nome", filtro.getNome()));
+		}
+		
+		return criteria;
 	}
 }

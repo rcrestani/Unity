@@ -15,4 +15,6 @@ public interface ChaveDAO
 	public Chave chavePorNome(String nome);
 	public List<Chave> listaPorSiteStatusTrue(Site site);
 	public List<Chave> listaPorSelecaoTrue(ControleChave controleChave);
+	public List<Chave> buscarTodosPaginado(ChaveFiltro filtro);
+	public int quantidadeFiltrados(ChaveFiltro filtro);
 }

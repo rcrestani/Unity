@@ -17,7 +17,8 @@ public class ChaveFiltro implements Serializable
 	private String claviculario;
 	private String posicao;
 	private String obs;
-	private Date dataHoraReg;
+	private Date inicio;
+	private Date fim;
 	private Usuario usuario;
 	
 	private int primeiroRegistro;
@@ -68,11 +69,18 @@ public class ChaveFiltro implements Serializable
 	public void setObs(String obs) {
 		this.obs = obs;
 	}
-	public Date getDataHoraReg() {
-		return dataHoraReg;
+	
+	public Date getInicio() {
+		return inicio;
 	}
-	public void setDataHoraReg(Date dataHoraReg) {
-		this.dataHoraReg = dataHoraReg;
+	public void setInicio(Date inicio) {
+		this.inicio = inicio;
+	}
+	public Date getFim() {
+		return fim;
+	}
+	public void setFim(Date fim) {
+		this.fim = fim;
 	}
 	public Usuario getUsuario() {
 		return usuario;
@@ -103,93 +111,5 @@ public class ChaveFiltro implements Serializable
 	}
 	public void setAscendente(boolean ascendente) {
 		this.ascendente = ascendente;
-	}
-	
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (ascendente ? 1231 : 1237);
-		result = prime * result + ((claviculario == null) ? 0 : claviculario.hashCode());
-		result = prime * result + ((dataHoraReg == null) ? 0 : dataHoraReg.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((idSite == null) ? 0 : idSite.hashCode());
-		result = prime * result + ((nome == null) ? 0 : nome.hashCode());
-		result = prime * result + ((obs == null) ? 0 : obs.hashCode());
-		result = prime * result + ((posicao == null) ? 0 : posicao.hashCode());
-		result = prime * result + primeiroRegistro;
-		result = prime * result + ((propriedadeOrdenacao == null) ? 0 : propriedadeOrdenacao.hashCode());
-		result = prime * result + quantidadeRegistros;
-		result = prime * result + ((tipo == null) ? 0 : tipo.hashCode());
-		result = prime * result + ((usuario == null) ? 0 : usuario.hashCode());
-		return result;
-	}
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ChaveFiltro other = (ChaveFiltro) obj;
-		if (ascendente != other.ascendente)
-			return false;
-		if (claviculario == null) {
-			if (other.claviculario != null)
-				return false;
-		} else if (!claviculario.equals(other.claviculario))
-			return false;
-		if (dataHoraReg == null) {
-			if (other.dataHoraReg != null)
-				return false;
-		} else if (!dataHoraReg.equals(other.dataHoraReg))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (idSite == null) {
-			if (other.idSite != null)
-				return false;
-		} else if (!idSite.equals(other.idSite))
-			return false;
-		if (nome == null) {
-			if (other.nome != null)
-				return false;
-		} else if (!nome.equals(other.nome))
-			return false;
-		if (obs == null) {
-			if (other.obs != null)
-				return false;
-		} else if (!obs.equals(other.obs))
-			return false;
-		if (posicao == null) {
-			if (other.posicao != null)
-				return false;
-		} else if (!posicao.equals(other.posicao))
-			return false;
-		if (primeiroRegistro != other.primeiroRegistro)
-			return false;
-		if (propriedadeOrdenacao == null) {
-			if (other.propriedadeOrdenacao != null)
-				return false;
-		} else if (!propriedadeOrdenacao.equals(other.propriedadeOrdenacao))
-			return false;
-		if (quantidadeRegistros != other.quantidadeRegistros)
-			return false;
-		if (tipo == null) {
-			if (other.tipo != null)
-				return false;
-		} else if (!tipo.equals(other.tipo))
-			return false;
-		if (usuario == null) {
-			if (other.usuario != null)
-				return false;
-		} else if (!usuario.equals(other.usuario))
-			return false;
-		return true;
 	}
 }

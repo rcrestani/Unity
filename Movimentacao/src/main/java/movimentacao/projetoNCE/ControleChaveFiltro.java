@@ -20,6 +20,7 @@ public class ControleChaveFiltro implements Serializable
 	private Tecnico idTecnico;
 	private StatusRequisicao status;
 	private String statusFechamento;
+	private String reqFechada;
 	private String obs;
 	private Date dataHoraReg;
 	private Usuario usuario;
@@ -82,6 +83,12 @@ public class ControleChaveFiltro implements Serializable
 	}
 	public void setStatusFechamento(String statusFechamento) {
 		this.statusFechamento = statusFechamento;
+	}
+	public String getReqFechada() {
+		return reqFechada;
+	}
+	public void setReqFechada(String reqFechada) {
+		this.reqFechada = reqFechada;
 	}
 	public String getObs() {
 		return obs;

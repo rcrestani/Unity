@@ -67,17 +67,17 @@
 	       <p:row>
 		        <p:column style="border-width:0px;" colspan="3">
 						<p:outputLabel id="lblItensSiteChave">
-						<p:dataTable value="#{nceControleChaveBean.listaSiteChave}" var="controleSiteChave" scrollable="true" scrollHeight="100"
-										emptyMessage="Nenhum site/chave selecionado">
-								<p:column headerText="Site" style="font-size: 14px; text-align:center; width:40px;">
-						             <h:outputText value="#{controleSiteChave.siteIdCodAtual}" />
-						        </p:column>
-						        
-						        <p:column headerText="Chaves" style="font-size: 14px; text-align:center; width:180px;">
-						             <h:outputText value="#{controleSiteChave.listaChaves}" />
-						        </p:column>
-					    </p:dataTable>
-					 </p:outputLabel>
+							<p:dataTable value="#{nceControleChaveBean.listaSiteChave}" var="controleSiteChave" scrollable="true" scrollHeight="100"
+											emptyMessage="Nenhum site/chave selecionado">
+									<p:column headerText="Site" style="font-size: 14px; text-align:center; width:40px;">
+							             <h:outputText value="#{controleSiteChave.siteIdCodAtual}" />
+							        </p:column>
+							        
+							        <p:column headerText="Chaves" style="font-size: 14px; text-align:center; width:180px;">
+							             <h:outputText value="#{controleSiteChave.listaChaves}" />
+							        </p:column>
+						    </p:dataTable>
+					 	</p:outputLabel>
 				</p:column>
 			</p:row>
 			
@@ -200,7 +200,7 @@
 <!-- FORM FILTROS/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <h:form id="filtro">
 	<sec:ifAnyGranted roles="ROLE_CONTROLE_CHAVE_ADM , ROLE_CONTROLE_CHAVE_OPER , ROLE_ADM">
-		<h:panelGrid columns="6">
+		<h:panelGrid columns="7">
 					
        		<p:calendar id="dataInicial" value="#{nceControleChaveBean.filtro.dataAbertura}" pattern="dd-MM-yyyy"
 						mask="true" size="8" locale="pt" placeholder="Data Inicial"/>
@@ -216,10 +216,16 @@
 							value="#{nceControleChaveBean.nomeTecnico}" completeMethod="#{nceControleChaveBean.tecnicoRN.completeTecnico}"
 							effect="fade" placeholder="Buscar por Técnico" style="font-size: 10px;"/>
 			
-			<p:selectOneMenu id="buscaStatusFechamento" value="#{nceControleChaveBean.filtro.statusFechamento}" style="width:185px">
+			<p:selectOneMenu id="buscaStatusFechamento" value="#{nceControleChaveBean.filtro.statusFechamento}" style="width:165px">
 			            <f:selectItem id="statusSubItem" itemLabel="Status Fechamento"/>
 			            <f:selectItem itemLabel="Sem Pendências" itemValue="true" />
 			            <f:selectItem itemLabel="Com Pendências" itemValue="false" />
+	        </p:selectOneMenu>
+	        
+	        <p:selectOneMenu id="buscaReqFechada" value="#{nceControleChaveBean.filtro.reqFechada}" style="width:150px">
+			            <f:selectItem id="reqFechadaSubItem" itemLabel="Abertas/Fechadas"/>
+			            <f:selectItem itemLabel="Abertas" itemValue="false" />
+			            <f:selectItem itemLabel="Fechadas" itemValue="true" />
 	        </p:selectOneMenu>
 							
 			<p:commandButton class="btnPadrao" value="Consultar" action="#{nceControleChaveBean.consultar}" update=":listaControleChave" />
@@ -292,9 +298,18 @@
 				
 				<h:outputText value="  " style="font-size:18px;"/>
 				
+				<h:commandLink title="Gerar Protocolo">
+					<f:setPropertyActionListener value="#{controleChave}" target="#{nceControleChaveBean.controleChave}"/>
+					<p:fileDownload value="#{nceControleChaveBean.protocoloEntrega}"/>
+					<h:graphicImage library="imagens" name="seta_avancar.png"/>
+				</h:commandLink>
+				
+				<h:outputText value="  " style="font-size:18px;"/>
+				
 				<p:commandLink action="#{nceControleChaveBean.carregarFechamento}" update=":fechamento :dlgFechamento" title="Fechar"
+								rendered="#{nceControleChaveBean.botaoFechar(controleChave)}"
 								oncomplete="PF('dlgFechamento').show();">
-					<h:graphicImage library="imagens" name="turnOff.png"/>
+					<h:graphicImage library="imagens" name="turnOff_#{nceControleChaveBean.CorBotaoFechar(controleChave)}.png"/>
 					<f:setPropertyActionListener value="#{controleChave}" target="#{nceControleChaveBean.controleChave}"/>
 				</p:commandLink>
 			</sec:ifAnyGranted>
@@ -308,6 +323,7 @@
 	<p:dialog id="dlgFechamento" rendered="true" position="center" header="Fechamento da Requisição: #{nceControleChaveBean.controleChave.idAno}"
 					widgetVar="dlgFechamento" minHeight="40" height="450" width="900px" showEffect="explode" hideEffect="explode" modal="true"
 					showCloseIcon="true">
+		<p:ajax event="close" listener="#{nceControleChaveBean.fecharDialogFechamento}" update=":cadastro"/>
 		<h:form id="fechamento">
 			<p:panelGrid style="border-collapse: unset;">
 				<p:row>
@@ -721,9 +737,7 @@
 	<p:dialog id="dlgSiteChave" rendered="true" position="top" header="Cadastro e seleção de novos Sites e Chaves"
 				widgetVar="dlgSiteChave" minHeight="40" width="1250px" showEffect="explode" hideEffect="explode" modal="true"
 				showCloseIcon="true">
-		<p:ajax event="close" listener="#{nceControleChaveBean.fecharDialogSiteChave}"
-				update=":cadastro :listaChaves :adicionarChave :formSiteChave"/>
-				
+
     	<h:form id="formSiteChave">
     		<p:panelGrid style="border-collapse: unset;">
     			<p:row>
@@ -756,16 +770,11 @@
 <p:separator/>
 
 <h:form id="listaChaves">
-<p:separator/>
 <center>
  <p:outputPanel id="itensChave">
 	<p:dataTable value="#{nceControleChaveBean.listaChaves}" var="chave" scrollable="true" scrollHeight="160">
 		<p:column headerText="Id" style="font-size: 14px; text-align:center; width:10px;">
              <h:outputText value="#{chave.id}" />
-        </p:column>
-        
-        <p:column headerText="Site" style="font-size: 14px; text-align:center; width:20px;">
-             <h:outputText value="#{chave.idSite.idCodAtual}" />
         </p:column>
         
         <p:column headerText="Nome Chave" style="font-size: 14px; text-align:center; width:70px;">
@@ -806,7 +815,7 @@
 </p:outputPanel>
 <p:separator />
 	<p:commandButton class="btnPadrao" value="Salvar" action="#{nceControleChaveBean.atribuirSite}" 
-					update=":cadastro :listaChaves :adicionarChave :formSiteChave"
+					update=":cadastro :listaChaves :formSiteChave"
 					oncomplete="PF('dlgSiteChave').hide();"/>
 </center>
 </h:form>

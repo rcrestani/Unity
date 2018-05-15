@@ -21,6 +21,7 @@ public class ControleChaveDAOHibernate implements ControleChaveDAO
 
 	public void salvar(ControleChave controleChave)
 	{
+		this.session.clear();
 		this.session.saveOrUpdate(controleChave);
 	}
 
@@ -126,7 +127,8 @@ public class ControleChaveDAOHibernate implements ControleChaveDAO
 		else if(filtro.getDataAbertura() == null && filtro.getDataFechamento() == null
 												 && filtro.getIdAno() == null
 												 && filtro.getIdTecnico() == null
-												 && filtro.getStatusFechamento() == null)
+												 && filtro.getStatusFechamento() == null
+												 && filtro.getReqFechada() == null)
 		{
 			criteria.addOrder(Order.asc("dataAbertura"));
 			criteria.add(Restrictions.isNull("dataAtendimento"));
@@ -160,6 +162,15 @@ public class ControleChaveDAOHibernate implements ControleChaveDAO
 		else if(StringUtils.isNotEmpty( filtro.getStatusFechamento() ) && filtro.getStatusFechamento().equals("false"))
 		{
 			criteria.add(Restrictions.eq("statusFechamento", false));
+		}
+		
+		if(StringUtils.isNotEmpty( filtro.getReqFechada() ) && filtro.getReqFechada().equals("true"))
+		{
+			criteria.add(Restrictions.eq("reqFechada", true));
+		}
+		else if(StringUtils.isNotEmpty( filtro.getReqFechada() ) && filtro.getReqFechada().equals("false"))
+		{
+			criteria.add(Restrictions.eq("reqFechada", false));
 		}
 		
 		return criteria;

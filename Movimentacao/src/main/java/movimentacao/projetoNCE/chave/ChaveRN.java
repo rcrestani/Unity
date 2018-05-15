@@ -63,6 +63,19 @@ public class ChaveRN
 		this.chaveDAO = DAOFactory.criarChaveDAO();
 		return this.chaveDAO.listaPorSelecaoTrue(controleChave);
 	}
+	
+	public List<Chave> buscarTodosPaginado(ChaveFiltro filtro)
+	{
+		this.chaveDAO = DAOFactory.criarChaveDAO();
+		return this.chaveDAO.buscarTodosPaginado(filtro);
+	}
+	
+	public int quantidadeFiltrados(ChaveFiltro filtro)
+	{
+		this.chaveDAO = DAOFactory.criarChaveDAO();
+		return this.chaveDAO.quantidadeFiltrados(filtro);
+	}
+	
 	public ChaveFiltro getFiltro() {
 		return filtro;
 	}
@@ -70,5 +83,4 @@ public class ChaveRN
 	public void setFiltro(ChaveFiltro filtro) {
 		this.filtro = filtro;
 	}
-	
 }

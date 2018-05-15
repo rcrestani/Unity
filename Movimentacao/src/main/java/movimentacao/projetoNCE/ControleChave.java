@@ -25,7 +25,7 @@ public class ControleChave implements Serializable
 	@GeneratedValue
 	private Integer id;
 	
-	@NaturalId
+	@NaturalId (mutable = true)
 	private String idAno;
 	
 	private Date dataAbertura;
@@ -50,6 +50,7 @@ public class ControleChave implements Serializable
 	private String obsFechamento;
 	
 	private boolean statusFechamento;
+	private boolean reqFechada;
 	
 	@OneToOne
 	@JoinColumn (name = "idUsuarioAbertura")
@@ -167,6 +168,14 @@ public class ControleChave implements Serializable
 		this.statusFechamento = statusFechamento;
 	}
 
+	public boolean isReqFechada() {
+		return reqFechada;
+	}
+
+	public void setReqFechada(boolean reqFechada) {
+		this.reqFechada = reqFechada;
+	}
+
 	public Usuario getUsuarioAbertura() {
 		return usuarioAbertura;
 	}
@@ -205,6 +214,7 @@ public class ControleChave implements Serializable
 		result = prime * result + ((idTecnico == null) ? 0 : idTecnico.hashCode());
 		result = prime * result + ((obs == null) ? 0 : obs.hashCode());
 		result = prime * result + ((obsFechamento == null) ? 0 : obsFechamento.hashCode());
+		result = prime * result + (reqFechada ? 1231 : 1237);
 		result = prime * result + ((status == null) ? 0 : status.hashCode());
 		result = prime * result + (statusFechamento ? 1231 : 1237);
 		result = prime * result + ((tempoAberto == null) ? 0 : tempoAberto.hashCode());
@@ -272,6 +282,8 @@ public class ControleChave implements Serializable
 			if (other.obsFechamento != null)
 				return false;
 		} else if (!obsFechamento.equals(other.obsFechamento))
+			return false;
+		if (reqFechada != other.reqFechada)
 			return false;
 		if (status == null) {
 			if (other.status != null)
